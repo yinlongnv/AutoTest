@@ -1,0 +1,23 @@
+[
+  {
+    "description": "模拟一个带Cookie的pst请求",
+    "request":{
+      "uri": "/postDemo",
+      "method": "post"
+    },
+    "response": {
+      "text": "这是一个不带参数post请求"
+    }
+  },{
+  "description": "模拟一个带参数的pst请求",
+  "request":{
+    "uri": "/postDemoWithParam",
+    "method": "post",
+
+  },
+  "response": {
+    "text": "这是一个带参数的post请求"
+  }
+}
+
+]
