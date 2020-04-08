@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @SpringBootTest(classes = AutoTestApplication.class)
 //@SpringBootTest
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class)
 public class AutotestApplicationTests {
     @Autowired
     private IUserService iUserService;
