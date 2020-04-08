@@ -4,7 +4,7 @@
     <test name="param">
         <classes>
 
-            <class name="com.dadalong.testng.paramter.ParamterTest"></class>
+            <class name="com.dadalong.autotest.testng.paramter.ParamterTest"></class>
             <parameter name="name" value="dadalong" />
             <parameter name="age" value="22" />
 
