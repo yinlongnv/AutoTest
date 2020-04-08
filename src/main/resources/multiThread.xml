@@ -16,15 +16,15 @@
 
     <test name="multi1">
         <classes>
-            <class name="com.dadalong.testng.multiThread.MultiThreadOnXml"></class>
-            <class name="com.dadalong.testng.BasicAnnotation"></class>
-            <class name="com.dadalong.testng.multiThread.MultiThreadOnXml"></class>
+            <class name="com.dadalong.autotest.testng.multiThread.MultiThreadOnXml"></class>
+            <class name="com.dadalong.autotest.testng.BasicAnnotation"></class>
+            <class name="com.dadalong.autotest.testng.multiThread.MultiThreadOnXml"></class>
         </classes>
     </test>
 
     <test name="multi2">
         <classes>
-            <class name="com.dadalong.testng.BasicAnnotation"></class>
+            <class name="com.dadalong.autotest.testng.BasicAnnotation"></class>
         </classes>
     </test>
 

@@ -5,15 +5,15 @@
 
     <test name="login">
         <classes>
-            <class name="com.dadalong.testng.suite.SuiteConfig"></class>
-            <class name="com.dadalong.testng.suite.LoginTest"></class>
+            <class name="com.dadalong.autotest.testng.suite.SuiteConfig"></class>
+            <class name="com.dadalong.autotest.testng.suite.LoginTest"></class>
         </classes>
     </test>
 
     <test name="search">
         <classes>
-            <class name="com.dadalong.testng.suite.SuiteConfig"></class>
-            <class name="com.dadalong.testng.suite.SearchTest"></class>
+            <class name="com.dadalong.autotest.testng.suite.SuiteConfig"></class>
+            <class name="com.dadalong.autotest.testng.suite.SearchTest"></class>
         </classes>
     </test>
 
