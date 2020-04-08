@@ -17,4 +17,10 @@
         </classes>
     </test>
 
+    <!--添加监听器-->
+    <listeners>
+        <!--<listener class-name="com.vimalselvam.testng.listener.ExtentTestNgFormatter"></listener>-->
+        <listener class-name="com.dadalong.testng.ExtentTestNGIReportListener"></listener>
+    </listeners>
+
 </suite>

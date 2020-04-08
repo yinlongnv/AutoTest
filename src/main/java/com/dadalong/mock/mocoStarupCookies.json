@@ -1,22 +1,48 @@
 [
   {
-    "description": "模拟一个带Cookie的pst请求",
-    "request":{
-      "uri": "/postDemo",
-      "method": "post"
+    "description": "这是一个会返回cookies的get请求",
+    "request": {
+      "uri": "/getCookies",
+      "method": "get"
     },
     "response": {
-      "text": "这是一个不带参数post请求"
+      "cookies": {
+        "login": "true"
+      },
+      "text": "恭喜你获得cookies信息success"
+    }
+  },
+  {
+    "description": "模拟一个带Cookie的get请求",
+    "request": {
+      "uri": "/cookiesWithGetDemo",
+      "method": "get",
+      "cookies": {
+        "login": "true"
+      }
+    },
+    "response": {
+      "text": "这是一个带cookies的get请求"
     }
   },{
-  "description": "模拟一个带参数的pst请求",
-  "request":{
-    "uri": "/postDemoWithParam",
+  "description": "模拟一个带Cookie的post请求",
+  "request": {
+    "uri": "/cookiesWithPostDemo",
     "method": "post",
-
+    "cookies": {
+      "login": "true"
+    },
+    "json": {
+      "name": "dada",
+      "age":"18"
+    }
   },
   "response": {
-    "text": "这是一个带参数的post请求"
+    "status": 200,
+    "json":{
+      "dada": "success",
+      "status": "1"
+    }
   }
 }
 
