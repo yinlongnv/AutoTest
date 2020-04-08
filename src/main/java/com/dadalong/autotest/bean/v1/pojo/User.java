@@ -1,7 +1,9 @@
 package com.dadalong.autotest.bean.v1.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,6 +13,11 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class User extends Datetime{
 
+    /**
+     * 用户id
+     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
     /**
      * 用户编号
      */
@@ -60,9 +67,4 @@ public class User extends Datetime{
      */
     private String createdBy;
 
-//    @TableField(fill = FieldFill.INSERT)
-//    private Date createdAt;
-//
-//    @TableField(fill = FieldFill.INSERT_UPDATE)
-//    private Date updatedAt;
 }

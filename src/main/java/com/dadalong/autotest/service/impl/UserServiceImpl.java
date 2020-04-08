@@ -35,7 +35,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public void deleteBatch(List<String> lists) {
+    public void deleteBatch(String[] lists) {
         Map<String,Object> map = new HashMap<String,Object>();
         for(String userNumber : lists){
             map.put("user_number",userNumber);
@@ -43,25 +43,30 @@ public class UserServiceImpl implements IUserService {
         }
     }
 
+    //存在小问题，wrapper好像不能进行循环，待解决  运行正常
     @Override
-    public void disableBatch(List<String> lists) {
+    public void disableBatch(String[] lists) {
         UserWrapper userWrapper = new UserWrapper();
+        Map<String,Object> map = new HashMap<>();
         User user;
         for(String userNumber : lists){
-            user = userMapper.selectOne(userWrapper.ofUserNumber(userNumber));
-            user.setStatus(true);
-            userMapper.updateById(user);
+            map.put("user_number",userNumber);
+            List<User> users = userMapper.selectByMap(map);
+            users.get(0).setStatus(true);
+            userMapper.updateById(users.get(0));
         }
     }
 
     @Override
-    public void enableBatch(List<String> lists) {
+    public void enableBatch(String[] lists) {
         UserWrapper userWrapper = new UserWrapper();
+        Map<String,Object> map = new HashMap<>();
         User user;
         for(String userNumber : lists){
-            user = userMapper.selectOne(userWrapper.ofUserNumber(userNumber));
-            user.setStatus(false);
-            userMapper.updateById(user);
+            map.put("user_number",userNumber);
+            List<User> users = userMapper.selectByMap(map);
+            users.get(0).setStatus(false);
+            userMapper.updateById(users.get(0));
         }
     }
 
@@ -74,11 +79,13 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public List<User> searchByDate(Date lastLoginTime) {
-        return null;
+        UserWrapper userWrapper = new UserWrapper();
+        return userMapper.selectList(userWrapper.ofLastLoginDate(lastLoginTime));
     }
 
     @Override
     public List<User> searchByName(String name) {
-        return null;
+        UserWrapper userWrapper = new UserWrapper();
+        return userMapper.selectList(userWrapper.oflikeName(name));
     }
 }

@@ -2,13 +2,12 @@ package com.dadalong.autotest.control;
 
 
 import com.dadalong.autotest.model.user.CreateUserDTO;
+import com.dadalong.autotest.model.user.BatchDTO;
 import com.dadalong.autotest.service.IUserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -30,6 +29,34 @@ public class UserControl {
     public String create(@RequestBody CreateUserDTO createUserDTO){
         iUserService.addUser(createUserDTO);
         return "创建成功";
+    }
+
+    @PostMapping("/delete")
+    public String deleteBatch(@RequestBody BatchDTO batchDTO){
+        iUserService.deleteBatch(batchDTO.getUserNumbers());
+        return "删除成功";
+    }
+
+    @PostMapping("/disable")
+    public String disableBatch(@RequestBody BatchDTO batchDTO){
+        iUserService.disableBatch(batchDTO.getUserNumbers());
+        return "禁用成功";
+    }
+
+    @PostMapping("/enable")
+    public String enableBatch(@RequestBody BatchDTO batchDTO){
+        iUserService.enableBatch(batchDTO.getUserNumbers());
+        return "恢复成功";
+    }
+
+    @GetMapping("/filter-role")
+    public @ResponseBody List filterRole(String role){
+        return iUserService.filterRole(role);
+    }
+
+    @GetMapping("/filter-name")
+    public @ResponseBody List searchByName(String name){
+        return iUserService.searchByName(name);
     }
 
 
