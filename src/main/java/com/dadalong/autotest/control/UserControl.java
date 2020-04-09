@@ -61,13 +61,13 @@ public class UserControl {
     }
 
     @GetMapping("/filter-role")
-    public @ResponseBody List filterRole(String role){
-        return iUserService.filterRole(role);
+    public @ResponseBody Page<User> filterRole(String role,Integer page){
+        return iUserService.filterRole(role,page);
     }
 
     @GetMapping("/filter-name")
-    public @ResponseBody List searchByName(String name){
-        return iUserService.searchByName(name);
+    public @ResponseBody Page<User> searchByName(String name, Integer page){
+        return iUserService.searchByName(name,page);
     }
 
     @GetMapping("/list")
@@ -75,12 +75,6 @@ public class UserControl {
         Page<User> pages = iUserService.list(page);
         return pages;
     }
-
-    @PostMapping("/json")
-    public void getJson(@RequestBody List<ApiDTO> apiDTO){
-        System.out.println(apiDTO);
-    }
-
 
     @PostMapping("/upload")
     public void upload(MultipartFile file) throws IOException {

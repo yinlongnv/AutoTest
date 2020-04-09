@@ -43,23 +43,34 @@ public interface IUserService {
      * @param role 角色类型
      * @return 返回筛选结果
      */
-    public List<User> filterRole(String role);
+    public Page<User> filterRole(String role,Integer page);
 
     /**
      * 根据最后登陆的时间进行搜索
      * @param lastLoginTime 最后登陆的时间
      * @return 返回筛选结果
      */
-    public List<User> searchByDate(Date lastLoginTime);
+    public Page<User> searchByDate(Date lastLoginTime,Integer page);
 
     /**
      * 根据传进来的用户名/用户编号进行模糊搜索
      * @param name
      * @return 返回搜索结果
      */
-    public List<User> searchByName(String name);
+    public Page<User> searchByName(String name,Integer page);
 
+    /**
+     * 返回用户列表
+     * @param page 分页
+     * @return
+     */
     public Page<User> list(Integer page);
 
+    /**
+     * 接收上传的json文件
+     * @param file
+     * @return
+     * @throws IOException
+     */
     public String handleUploadedFile(MultipartFile file) throws IOException;
 }
