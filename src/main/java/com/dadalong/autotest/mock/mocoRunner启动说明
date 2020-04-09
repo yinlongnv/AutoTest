@@ -1,7 +1,0 @@
-启动jar包：java -jar
-端口号：-p
-
-java -jar ./moco-runner-0.11.0-standalone.jar http -p 8888 -c XX.json的路径
-
-java -jar D:\Workspace\IDEA\AutoTest\src\main\java\com\dadalong\mock\moco-runner-0.11.0-standalone.jar http -p 8888 -c D:\Workspace\IDEA\AutoTest\src\main\java\com\dadalong\moc
-k\mocoStarupPost.json
