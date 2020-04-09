@@ -57,14 +57,14 @@ public interface IUserService {
      * @param name
      * @return 返回搜索结果
      */
-    public Page<User> searchByName(String name,Integer page);
+//    public Page<User> searchByName(String name,Integer page);
 
     /**
      * 返回用户列表
      * @param page 分页
      * @return
      */
-    public Page<User> list(Integer page);
+    public Page<User> list(String name,Integer page);
 
     /**
      * 接收上传的json文件

@@ -95,20 +95,24 @@ public class UserServiceImpl implements IUserService {
         return pages;
     }
 
-    @Override
-    public Page<User> searchByName(String name,Integer page) {
-        UserWrapper userWrapper = new UserWrapper();
-        Page<User> pages = new Page<>(page,size);
-        userMapper.selectPage(pages,userWrapper.oflikeName(name));
-        return pages;
-    }
+//    @Override
+//    public Page<User> searchByName(String name,Integer page) {
+//
+//    }
 
     @Override
-    public Page<User> list(Integer page) {
-        UserWrapper userWrapper = new UserWrapper();
-        Page<User> pages = new Page<>(page,size);
-        userMapper.selectPage(pages,null);
-        return pages;
+    public Page<User> list(String name,Integer page) {
+        if(name != null && !name.equals("")){
+            UserWrapper userWrapper = new UserWrapper();
+            Page<User> pages = new Page<>(page,size);
+            userMapper.selectPage(pages,userWrapper.oflikeName(name));
+            return pages;
+        }else {
+            UserWrapper userWrapper = new UserWrapper();
+            Page<User> pages = new Page<>(page, size);
+            userMapper.selectPage(pages, null);
+            return pages;
+        }
     }
 
     @Override
