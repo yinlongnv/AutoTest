@@ -39,7 +39,12 @@ public class UserServiceImpl implements IUserService {
         user.setEmail(createUserDTO.getEmail());
         user.setRole(createUserDTO.getRole());
         user.setPassword(createUserDTO.getPassword());
-        userMapper.insert(user);
+        if(createUserDTO.getId() != null && createUserDTO.getId() != 0){
+            user.setId(createUserDTO.getId());
+            userMapper.updateById(user);
+        }else {
+            userMapper.insert(user);
+        }
     }
 
     @Override
