@@ -1,14 +1,21 @@
 package com.dadalong.autotest.control;
 
 
-import com.dadalong.autotest.model.user.CreateUserDTO;
-import com.dadalong.autotest.model.user.BatchDTO;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dadalong.autotest.bean.v1.pojo.User;
+import com.dadalong.autotest.model.user.*;
 import com.dadalong.autotest.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import java.util.List;
 
 @Api(value="/", description = "这是用户管理下的全部接口")
@@ -64,5 +71,25 @@ public class UserControl {
     public @ResponseBody List searchByName(String name){
         return iUserService.searchByName(name);
     }
+
+
+    @GetMapping("/list")
+    public @ResponseBody Page<User> list(Integer page){
+        Page<User> pages = iUserService.list(page);
+        return pages;
+    }
+
+    @PostMapping("/json")
+    public void getJson(@RequestBody List<ApiDTO> apiDTO){
+        System.out.println(apiDTO);
+    }
+
+
+    @PostMapping("/upload")
+    public void upload(MultipartFile file) throws IOException {
+         iUserService.handleUploadedFile(file);
+
+    }
+
 
 }

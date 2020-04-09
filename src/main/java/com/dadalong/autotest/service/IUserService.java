@@ -1,9 +1,13 @@
 package com.dadalong.autotest.service;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.user.CreateUserDTO;
+import org.springframework.web.multipart.MultipartFile;
 
+
+import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
 
@@ -54,4 +58,8 @@ public interface IUserService {
      * @return 返回搜索结果
      */
     public List<User> searchByName(String name);
+
+    public Page<User> list(Integer page);
+
+    public String handleUploadedFile(MultipartFile file) throws IOException;
 }
