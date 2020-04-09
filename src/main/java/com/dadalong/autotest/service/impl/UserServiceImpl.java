@@ -27,6 +27,8 @@ public class UserServiceImpl implements IUserService {
     @Resource
     private UserMapper userMapper;
 
+    private static final Integer size = 5;
+
     @Override
     public void addUser(CreateUserDTO createUserDTO) {
         User user = new User();
@@ -77,30 +79,40 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public List<User> filterRole(String role) {
+    public Page<User> filterRole(String role,Integer page) {
         UserWrapper userWrapper = new UserWrapper();
-        return userMapper.selectList(userWrapper.filterOfRole(role));
-    }
-
-
-    @Override
-    public List<User> searchByDate(Date lastLoginTime) {
-        UserWrapper userWrapper = new UserWrapper();
-        return userMapper.selectList(userWrapper.ofLastLoginDate(lastLoginTime));
-    }
-
-    @Override
-    public List<User> searchByName(String name) {
-        UserWrapper userWrapper = new UserWrapper();
-        return userMapper.selectList(userWrapper.oflikeName(name));
-    }
-
-    @Override
-    public Page<User> list(Integer page) {
-        UserWrapper userWrapper = new UserWrapper();
-        Page<User> pages = new Page<>(page,3);
-        userMapper.selectPage(pages,null);
+        Page<User> pages = new Page<>(page,size);
+        userMapper.selectPage(pages,userWrapper.filterOfRole(role));
         return pages;
+    }
+
+
+    @Override
+    public Page<User> searchByDate(Date lastLoginTime,Integer page) {
+        UserWrapper userWrapper = new UserWrapper();
+        Page<User> pages = new Page<>(page,size);
+        userMapper.selectPage(pages,userWrapper.ofLastLoginDate(lastLoginTime));
+        return pages;
+    }
+
+//    @Override
+//    public Page<User> searchByName(String name,Integer page) {
+//
+//    }
+
+    @Override
+    public Page<User> list(String name,Integer page) {
+        if(name != null && !name.equals("")){
+            UserWrapper userWrapper = new UserWrapper();
+            Page<User> pages = new Page<>(page,size);
+            userMapper.selectPage(pages,userWrapper.oflikeName(name));
+            return pages;
+        }else {
+            UserWrapper userWrapper = new UserWrapper();
+            Page<User> pages = new Page<>(page, size);
+            userMapper.selectPage(pages, null);
+            return pages;
+        }
     }
 
     @Override
