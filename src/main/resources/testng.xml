@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="mySuite">
+    <test name="myTest">
+        <classes>
+            <class name="com.dadalong.autotest.testng.AssertDemo">
+                <methods>
+                    <include name="assertTest1"/>
+                    <include name="assertTest2"/>
+                    <include name="assertTest3"/>
+                    <include name="logTest1"/>
+                </methods>
+            </class>
+            <class name="com.dadalong.autotest.httpclient.TestHttpClient" />
+        </classes>
+    </test>
+
+    <!--添加监听器-->
+    <listeners>
+    <!--<listener class-name="com.vimalselvam.testng.listener.ExtentTestNgFormatter"></listener>-->
+        <listener class-name="com.dadalong.autotest.testng.ExtentTestNGIReportListener" />
+    </listeners>
+
+</suite>

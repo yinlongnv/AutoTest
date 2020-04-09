@@ -1,4 +1,0 @@
-启动jar包：java -jar
-端口号：-p
-
-java -jar ./moco-runner-0.11.0-standalone.jar http -p 8888 -c XX.json的路径
