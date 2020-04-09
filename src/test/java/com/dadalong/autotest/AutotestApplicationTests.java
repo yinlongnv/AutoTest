@@ -36,7 +36,7 @@ public class AutotestApplicationTests {
 
     @Test
     public void ofRole(){
-        List<User> users = iUserService.filterRole("qa");
+        List<User> users = (List<User>) iUserService.filterRole("qa", 1);
         users.forEach(System.out::println);
     }
 
@@ -44,9 +44,9 @@ public class AutotestApplicationTests {
 
     }
 
-    @Test
-    public void ofLike(){
-        List<User> users = iUserService.searchByName("c");
-        users.forEach(System.out::println);
-    }
+//    @Test
+//    public void ofLike(){
+//        List<User> users = iUserService.searchByName("c");
+//        users.forEach(System.out::println);
+//    }
 }

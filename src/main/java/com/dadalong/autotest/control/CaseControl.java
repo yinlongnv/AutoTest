@@ -55,14 +55,14 @@ public class CaseControl {
         return "恢复成功";
     }
 
-    @GetMapping("/filter-role")
-    public @ResponseBody List filterRole(String role){
-        return iUserService.filterRole(role);
-    }
-
-    @GetMapping("/filter-name")
-    public @ResponseBody List searchByName(String name){
-        return iUserService.searchByName(name);
-    }
+//    @GetMapping("/filter-role")
+//    public @ResponseBody List filterRole(String role){
+//        return iUserService.filterRole(role);
+//    }
+//
+//    @GetMapping("/filter-name")
+//    public @ResponseBody List searchByName(String name){
+//        return iUserService.searchByName(name);
+//    }
 
 }
