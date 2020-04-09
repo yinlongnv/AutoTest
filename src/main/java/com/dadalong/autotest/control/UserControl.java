@@ -72,7 +72,8 @@ public class UserControl {
         return iUserService.searchByName(name);
     }
 
-
+//    @CrossOrigin("http://localhost:8080")
+    @ApiOperation(value="显示用户列表",httpMethod = "GET")
     @GetMapping("/list")
     public @ResponseBody Page<User> list(Integer page){
         Page<User> pages = iUserService.list(page);
