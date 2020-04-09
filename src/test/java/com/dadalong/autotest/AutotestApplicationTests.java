@@ -35,19 +35,19 @@ public class AutotestApplicationTests {
         iUserService.addUser(userDTO);
     }
 
-    @Test
-    public void ofRole(){
-        List<User> users = iUserService.filterRole("qa");
-        users.forEach(System.out::println);
-    }
+//    @Test
+//    public void ofRole(){
+//        List<User> users = iUserService.filterRole("qa");
+//        users.forEach(System.out::println);
+//    }
+//
+//    public void lastLogin(){
+//
+//    }
 
-    public void lastLogin(){
-
-    }
-
-    @Test
-    public void ofLike(){
-        List<User> users = iUserService.searchByName("c");
-        users.forEach(System.out::println);
-    }
+//    @Test
+//    public void ofLike(){
+//        List<User> users = iUserService.searchByName("c");
+//        users.forEach(System.out::println);
+//    }
 }

@@ -48,22 +48,22 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public void deleteBatch(String[] lists) {
-        Map<String,Object> map = new HashMap<String,Object>();
-        for(String userNumber : lists){
-            map.put("user_number",userNumber);
+    public void deleteBatch(Integer[] lists) {
+        Map<String,Object> map = new HashMap<String, Object>();
+        for(Integer userId : lists){
+            map.put("id",userId);
             userMapper.deleteByMap(map);
         }
     }
 
     //存在小问题，wrapper好像不能进行循环，待解决  运行正常
     @Override
-    public void disableBatch(String[] lists) {
+    public void disableBatch(Integer[] lists) {
         UserWrapper userWrapper = new UserWrapper();
         Map<String,Object> map = new HashMap<>();
         User user;
-        for(String userNumber : lists){
-            map.put("user_number",userNumber);
+        for(Integer userId : lists){
+            map.put("id",userId);
             List<User> users = userMapper.selectByMap(map);
             users.get(0).setStatus(true);
             userMapper.updateById(users.get(0));
@@ -71,12 +71,12 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public void enableBatch(String[] lists) {
+    public void enableBatch(Integer[] lists) {
         UserWrapper userWrapper = new UserWrapper();
         Map<String,Object> map = new HashMap<>();
         User user;
-        for(String userNumber : lists){
-            map.put("user_number",userNumber);
+        for(Integer userId : lists){
+            map.put("id",userId);
             List<User> users = userMapper.selectByMap(map);
             users.get(0).setStatus(false);
             userMapper.updateById(users.get(0));
