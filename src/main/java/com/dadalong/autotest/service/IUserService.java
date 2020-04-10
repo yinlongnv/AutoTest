@@ -4,6 +4,7 @@ package com.dadalong.autotest.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.user.CreateUserDTO;
+import com.dadalong.autotest.model.user.SearchDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -65,6 +66,8 @@ public interface IUserService {
      * @return
      */
     public Page<User> list(String name,Integer page);
+
+    public Page<User> list(SearchDTO searchDTO);
 
     /**
      * 接收上传的json文件

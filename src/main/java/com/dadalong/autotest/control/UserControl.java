@@ -60,19 +60,12 @@ public class UserControl {
         return "恢复成功";
     }
 
-    @GetMapping("/filter-role")
-    public @ResponseBody Page<User> filterRole(String role,Integer page){
-        return iUserService.filterRole(role,page);
-    }
-
-//    @GetMapping("/filter-name")
-//    public @ResponseBody Page<User> searchByName(String name, Integer page){
-//        return iUserService.searchByName(name,page);
-//    }
 
     @GetMapping("/list")
-    public @ResponseBody Page<User> list(String name,Integer page){
-        Page<User> pages = iUserService.list(name,page);
+    public @ResponseBody Page<User> list(SearchDTO searchDTO){
+        System.out.println(searchDTO.toString());
+        System.out.println(searchDTO.getUserNumber().toString());
+        Page<User> pages = iUserService.list(searchDTO);
         return pages;
     }
 
