@@ -63,8 +63,6 @@ public class UserControl {
 
     @GetMapping("/list")
     public @ResponseBody Page<User> list(SearchDTO searchDTO){
-        System.out.println(searchDTO.toString());
-        System.out.println(searchDTO.getUserNumber().toString());
         Page<User> pages = iUserService.list(searchDTO);
         return pages;
     }
