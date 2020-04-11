@@ -1,6 +1,7 @@
 package com.dadalong.autotest.control;
 
 
+import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.user.*;
@@ -12,11 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-
-import java.util.List;
 
 @Api(value="/", description = "这是用户管理下的全部接口")
 @RestController
@@ -35,7 +32,7 @@ public class UserControl {
         this.request = request;
     }
 
-    @ApiOperation(value="创建账号",httpMethod = "POST")
+    @ApiOperation(value="创建账号", httpMethod = "POST")
     @PostMapping("/create")
     public String create(@RequestBody CreateUserDTO createUserDTO){
         iUserService.addUser(createUserDTO);
@@ -62,22 +59,20 @@ public class UserControl {
         return "恢复成功";
     }
 
-    @GetMapping("/filter-role")
-    public @ResponseBody Page<User> filterRole(String role,Integer page){
-        return iUserService.filterRole(role,page);
-    }
-
-//    @GetMapping("/filter-name")
-//    public @ResponseBody Page<User> searchByName(String name, Integer page){
-//        return iUserService.searchByName(name,page);
-//    }
 
 //    @CrossOrigin("http://localhost:8080")
+//    @ApiOperation(value="显示用户列表",httpMethod = "GET")
+//    @GetMapping("/list")
+//    public @ResponseBody Page<User> list(SearchDTO searchDTO){
+//        Page<User> pages = iUserService.list(searchDTO);
+//        return pages;
+//    }
+
     @ApiOperation(value="显示用户列表",httpMethod = "GET")
     @GetMapping("/list")
-    public @ResponseBody Page<User> list(String name,Integer page){
-        Page<User> pages = iUserService.list(name,page);
-        return pages;
+    public @ResponseBody TypedApiResponse list(SearchDTO searchDTO){
+        Page<User> pages = iUserService.list(searchDTO);
+        return TypedApiResponse.ok().message("list-ok").data(pages);
     }
 
     @PostMapping("/upload")

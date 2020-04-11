@@ -1,7 +1,5 @@
 package com.dadalong.autotest.control;
 
-
-import com.dadalong.autotest.model.user.BatchDTO;
 import com.dadalong.autotest.model.user.CreateUserDTO;
 import com.dadalong.autotest.service.IUserService;
 import io.swagger.annotations.Api;
@@ -9,9 +7,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
-@Api(value="/", description = "这是用户管理下的全部接口")
+@Api(value="/", description = "这是接口管理下的全部接口")
 @RestController
 @RequestMapping("/api")
 public class ApiControl {

@@ -18,12 +18,30 @@
     <properties>
         <java.version>1.8</java.version>
         <swagger.version>2.6.1</swagger.version>
+
+        <apache-commons-lang.version>3.9</apache-commons-lang.version>
+        <jdbc.version>8.0.14</jdbc.version>
+        <jedis.version>3.1.0</jedis.version>
     </properties>
 
+
     <dependencies>
+
+        <dependency>
+            <groupId>cn.com.dbapp.slab</groupId>
+            <artifactId>slab-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.0</version>
         </dependency>
 
         <dependency>

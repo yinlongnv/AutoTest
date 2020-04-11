@@ -7,6 +7,12 @@ import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
+/**
+ *  实体——用户user
+ * "@Data"：@Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode这5个注解的合集。
+ * "@EqualsAndHashCode"：会生成equals(Object other) 和 hashCode()方法。默认仅使用该类中定义的属性且不调用父类的方法——通过callSuper=true解决
+ * "@TableId"：表示表的主键。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class User extends Datetime{
@@ -25,11 +31,11 @@ public class User extends Datetime{
      */
     private String username;
     /**
-     * 账号角色
+     * 账号角色：QA0，root1
      */
-    private String role;
+    private Integer role;
     /**
-     * 账号状态
+     * 账号状态：启用0，禁用1
      */
     private Boolean status;
     /**
@@ -53,16 +59,16 @@ public class User extends Datetime{
      */
     private String lastIp;
     /**
-     * 最后登陆时间
+     * 最后登录时间
      */
     private Date lastLogin;
     /**
-     * 总登陆次数
+     * 总登录次数：默认为0
      */
     private Integer loginCount;
     /**
-     * 创建者
+     * 创建该账号的用户id
      */
-    private String createdBy;
+    private Integer userId;
 
 }

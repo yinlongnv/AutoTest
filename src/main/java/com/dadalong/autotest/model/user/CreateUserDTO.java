@@ -10,7 +10,7 @@ public class CreateUserDTO {
     private String idNumber;
     private String phoneNumber;
     private String email;
-    private String role;
+    private Integer role;
     private String password;
 
 }

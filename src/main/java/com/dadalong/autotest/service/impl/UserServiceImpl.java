@@ -1,13 +1,14 @@
 package com.dadalong.autotest.service.impl;
 
+import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.mapper.UserMapper;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 import com.dadalong.autotest.model.user.CreateUserDTO;
+import com.dadalong.autotest.model.user.SearchDTO;
 import com.dadalong.autotest.service.IUserService;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -121,12 +122,22 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public Page<User> list(SearchDTO searchDTO) {
+        if (searchDTO == null)
+            return null;
+        UserWrapper userWrapper = new UserWrapper();
+        Page<User> pages = new Page<>(searchDTO.getPage(),size);
+        userMapper.selectPage(pages,userWrapper.ofSearch(searchDTO));
+        return pages;
+    }
+
+    @Override
     public String handleUploadedFile(MultipartFile file) throws IOException {
         String content = new String(file.getBytes());
         JsonArray jsonArry = new JsonParser().parse(content).getAsJsonArray();
         System.out.println(jsonArry);
-
         return null;
     }
+
 
 }

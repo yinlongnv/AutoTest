@@ -5,13 +5,15 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import java.util.Date;
 
 public class Datetime {
-    @TableField(
-        fill = FieldFill.INSERT
-    )
+
+    /**
+     * "@TableField" ：完成字段自动填充
+     * "@TableField(exist = false)" ：注明非数据库字段属性
+     * "字段填充策略FieldFill"：DEFAULT默认不处理、INSERT插入填充字段、UPDATE更新填充字段、INSERT_UPDATE插入和更新填充字段
+     */
+    @TableField(fill = FieldFill.INSERT)
     protected Date createdAt;
-    @TableField(
-        fill = FieldFill.INSERT_UPDATE
-    )
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     protected Date updatedAt;
 
     public Datetime() {

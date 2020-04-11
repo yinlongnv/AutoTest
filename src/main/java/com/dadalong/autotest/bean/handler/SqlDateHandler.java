@@ -6,8 +6,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+/**
+ * 时间自动填充的帮助类：实现createdAt字段的和updatedAt字段的自动插入和更新
+ */
 @Component
-public class MydataHandler implements MetaObjectHandler {
+public class SqlDateHandler implements MetaObjectHandler {
+
     @Override
     public void insertFill(MetaObject metaObject) {
         this.setFieldValByName("createdAt",new Date(),metaObject);

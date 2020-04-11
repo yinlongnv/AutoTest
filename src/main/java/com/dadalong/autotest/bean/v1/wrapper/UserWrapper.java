@@ -2,8 +2,11 @@ package com.dadalong.autotest.bean.v1.wrapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dadalong.autotest.bean.v1.pojo.User;
+import com.dadalong.autotest.model.user.SearchDTO;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
+
 
 public class UserWrapper extends QueryWrapper<User> {
     public UserWrapper ofUserNumber(String userNumber){
@@ -26,5 +29,11 @@ public class UserWrapper extends QueryWrapper<User> {
         return this;
     }
 
+    public UserWrapper ofSearch(SearchDTO searchDTO){
+        this.like(StringUtils.isNotBlank(searchDTO.getUserNumber()),"user_number",searchDTO.getUserNumber())
+                .like(StringUtils.isNotBlank(String.valueOf(searchDTO.getRole())),"role",searchDTO.getRole())
+                .like(StringUtils.isNotBlank(searchDTO.getLastLogin()),"last_login",searchDTO.getLastLogin());
+        return this;
+    }
 
 }
