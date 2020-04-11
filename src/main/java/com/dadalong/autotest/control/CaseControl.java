@@ -1,15 +1,13 @@
 package com.dadalong.autotest.control;
 
 
-import com.dadalong.autotest.model.user.BatchDTO;
-import com.dadalong.autotest.model.user.CreateUserDTO;
+import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @Api(value="/", description = "这是用例管理下的全部接口")
 @RestController
@@ -30,8 +28,8 @@ public class CaseControl {
 
     @ApiOperation(value="创建账号",httpMethod = "POST")
     @PostMapping("/create")
-    public String create(@RequestBody CreateUserDTO createUserDTO){
-        iUserService.addUser(createUserDTO);
+    public String create(@RequestBody CreateOrEditUserDTO createOrEditUserDTO){
+        iUserService.createOrEditUser(createOrEditUserDTO);
         return "创建成功";
     }
 

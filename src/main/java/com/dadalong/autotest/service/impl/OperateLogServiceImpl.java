@@ -3,7 +3,7 @@
 //import com.dadalong.autotest.bean.v1.mapper.UserMapper;
 //import com.dadalong.autotest.bean.v1.pojo.User;
 //import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
-//import com.dadalong.autotest.model.user.CreateUserDTO;
+//import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 //import com.dadalong.autotest.service.IUserService;
 //import org.springframework.stereotype.Service;
 //import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +22,7 @@
 //    private UserMapper userMapper;
 //
 //    @Override
-//    public void addUser(CreateUserDTO createUserDTO) {
+//    public void addUser(CreateOrEditUserDTO createUserDTO) {
 //        User user = new User();
 //        user.setUsername(createUserDTO.getUsername());
 //        user.setUserNumber("需要自定义一个生成函数");

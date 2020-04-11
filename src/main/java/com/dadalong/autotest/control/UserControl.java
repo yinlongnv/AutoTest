@@ -32,11 +32,22 @@ public class UserControl {
         this.request = request;
     }
 
-    @ApiOperation(value="创建账号", httpMethod = "POST")
-    @PostMapping("/create")
-    public String create(@RequestBody CreateUserDTO createUserDTO){
-        iUserService.addUser(createUserDTO);
-        return "创建成功";
+    @ApiOperation(value="显示用户列表",httpMethod = "GET")
+    @GetMapping("/listWithSearch")
+    public @ResponseBody TypedApiResponse listWithSearch(ListWithSearchDTO listWithSearchDTO){
+        if (listWithSearchDTO.getPage() == null) {
+            return TypedApiResponse.error().message("page can't be null");
+        } else {
+            Page<User> pages = iUserService.listWithSearch(listWithSearchDTO);
+            return TypedApiResponse.ok().message("listWithSearch-success").data(pages);
+        }
+    }
+
+    @ApiOperation(value="创建/编辑账号", httpMethod = "POST")
+    @PostMapping("/createOrEdit")
+    public @ResponseBody TypedApiResponse createOrEditUser(@RequestBody CreateOrEditUserDTO createOrEditUserDTO){
+        iUserService.createOrEditUser(createOrEditUserDTO);
+        return TypedApiResponse.ok().message("createOrEdit-success");
     }
 
     @ApiOperation(value="删除账号",httpMethod = "POST")
@@ -53,26 +64,11 @@ public class UserControl {
         return "禁用成功";
     }
 
+    @ApiOperation(value="批量启用账号",httpMethod = "POST")
     @PostMapping("/enable")
     public String enableBatch(@RequestBody BatchDTO batchDTO){
         iUserService.enableBatch(batchDTO.getUserIds());
         return "恢复成功";
-    }
-
-
-//    @CrossOrigin("http://localhost:8080")
-//    @ApiOperation(value="显示用户列表",httpMethod = "GET")
-//    @GetMapping("/list")
-//    public @ResponseBody Page<User> list(SearchDTO searchDTO){
-//        Page<User> pages = iUserService.list(searchDTO);
-//        return pages;
-//    }
-
-    @ApiOperation(value="显示用户列表",httpMethod = "GET")
-    @GetMapping("/list")
-    public @ResponseBody TypedApiResponse list(SearchDTO searchDTO){
-        Page<User> pages = iUserService.list(searchDTO);
-        return TypedApiResponse.ok().message("list-ok").data(pages);
     }
 
     @PostMapping("/upload")

@@ -3,7 +3,7 @@ package com.dadalong.autotest.model.user;
 import lombok.Data;
 
 @Data
-public class CreateUserDTO {
+public class CreateOrEditUserDTO {
 
     private Integer id;
     private String username;
@@ -12,5 +12,7 @@ public class CreateUserDTO {
     private String email;
     private Integer role;
     private String password;
+    private String lastIp;
+    private Integer userId;
 
 }

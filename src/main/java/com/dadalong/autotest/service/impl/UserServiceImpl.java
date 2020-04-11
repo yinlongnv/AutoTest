@@ -1,13 +1,13 @@
 package com.dadalong.autotest.service.impl;
 
-import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.mapper.UserMapper;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
-import com.dadalong.autotest.model.user.CreateUserDTO;
-import com.dadalong.autotest.model.user.SearchDTO;
+import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
+import com.dadalong.autotest.model.user.ListWithSearchDTO;
 import com.dadalong.autotest.service.IUserService;
+import com.dadalong.autotest.utils.CreateUserNumberUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,20 +27,45 @@ public class UserServiceImpl implements IUserService {
     @Resource
     private UserMapper userMapper;
 
-    private static final Integer size = 5;
+    /**
+     * 设置每页10条记录
+     */
+    private static final Integer size = 10;
 
     @Override
-    public void addUser(CreateUserDTO createUserDTO) {
+    public Page<User> listWithSearch(ListWithSearchDTO listWithSearchDTO) {
+        UserWrapper userWrapper = new UserWrapper();
+        Page<User> pages = new Page<>(listWithSearchDTO.getPage(), size);
+        System.out.println(listWithSearchDTO.getStartTime()==null);
+        System.out.println(listWithSearchDTO.getEndTime()==null);
+        System.out.println(listWithSearchDTO.getUserNumber()==null);
+        if((listWithSearchDTO.getUserNumber()==null)&&(listWithSearchDTO.getStartTime()==null)&&(listWithSearchDTO.getRole()==null)&&(listWithSearchDTO.getEndTime()==null)){
+            userMapper.selectPage(pages,null);
+        }else {
+            userMapper.selectPage(pages, userWrapper.ofSearch(listWithSearchDTO));
+        }
+        return pages;
+    }
+
+    /**
+     * 创建/编辑用户
+     * @param createOrEditUserDTO 从前端传回来的json格式数据转换的对象
+     */
+    @Override
+    public void createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO) {
         User user = new User();
-        user.setUsername(createUserDTO.getUsername());
-        user.setUserNumber("需要自定义一个生成函数");
-        user.setIdNumber(createUserDTO.getIdNumber());
-        user.setPhoneNumber(createUserDTO.getPhoneNumber());
-        user.setEmail(createUserDTO.getEmail());
-        user.setRole(createUserDTO.getRole());
-        user.setPassword(createUserDTO.getPassword());
-        if(createUserDTO.getId() != null && createUserDTO.getId() != 0){
-            user.setId(createUserDTO.getId());
+        //随机生成用户编号
+        CreateUserNumberUtils createUserNumberUtils = new CreateUserNumberUtils();
+        user.setUserNumber(createUserNumberUtils.createUserNumber());
+        user.setUsername(createOrEditUserDTO.getUsername());
+        user.setRole(createOrEditUserDTO.getRole());
+        user.setIdNumber(createOrEditUserDTO.getIdNumber());
+        user.setPhoneNumber(createOrEditUserDTO.getPhoneNumber());
+        user.setEmail(createOrEditUserDTO.getEmail());
+        user.setPassword(createOrEditUserDTO.getPassword());
+        user.setLastIp(createOrEditUserDTO.getLastIp());
+        if(createOrEditUserDTO.getId() != null && createOrEditUserDTO.getId() != 0){
+            user.setId(createOrEditUserDTO.getId());
             userMapper.updateById(user);
         }else {
             userMapper.insert(user);
@@ -82,53 +106,6 @@ public class UserServiceImpl implements IUserService {
             users.get(0).setStatus(false);
             userMapper.updateById(users.get(0));
         }
-    }
-
-    @Override
-    public Page<User> filterRole(String role,Integer page) {
-        UserWrapper userWrapper = new UserWrapper();
-        Page<User> pages = new Page<>(page,size);
-        userMapper.selectPage(pages,userWrapper.filterOfRole(role));
-        return pages;
-    }
-
-
-    @Override
-    public Page<User> searchByDate(Date lastLoginTime,Integer page) {
-        UserWrapper userWrapper = new UserWrapper();
-        Page<User> pages = new Page<>(page,size);
-        userMapper.selectPage(pages,userWrapper.ofLastLoginDate(lastLoginTime));
-        return pages;
-    }
-
-//    @Override
-//    public Page<User> searchByName(String name,Integer page) {
-//
-//    }
-
-    @Override
-    public Page<User> list(String name,Integer page) {
-        if(name != null && !name.equals("")){
-            UserWrapper userWrapper = new UserWrapper();
-            Page<User> pages = new Page<>(page,size);
-            userMapper.selectPage(pages,userWrapper.oflikeName(name));
-            return pages;
-        }else {
-            UserWrapper userWrapper = new UserWrapper();
-            Page<User> pages = new Page<>(page, size);
-            userMapper.selectPage(pages, null);
-            return pages;
-        }
-    }
-
-    @Override
-    public Page<User> list(SearchDTO searchDTO) {
-        if (searchDTO == null)
-            return null;
-        UserWrapper userWrapper = new UserWrapper();
-        Page<User> pages = new Page<>(searchDTO.getPage(),size);
-        userMapper.selectPage(pages,userWrapper.ofSearch(searchDTO));
-        return pages;
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.dadalong.autotest.service;
 
 
 import com.dadalong.autotest.bean.v1.pojo.User;
-import com.dadalong.autotest.model.user.CreateUserDTO;
+import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 
 import java.sql.Date;
 import java.util.List;
@@ -12,9 +12,9 @@ public interface IOperateLogService {
 
     /**
      *创建账号
-     * @param createUserDTO 从前端传回来的json格式数据转换的对象
+     * @param createOrEditUserDTO 从前端传回来的json格式数据转换的对象
      */
-    public void addUser(CreateUserDTO createUserDTO);
+    public void addUser(CreateOrEditUserDTO createOrEditUserDTO);
 
     /**
      * 通过传回来的用户编号进行批量删除
