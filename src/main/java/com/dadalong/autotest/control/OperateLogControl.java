@@ -35,25 +35,25 @@ public class OperateLogControl {
         return "创建成功";
     }
 
-    @ApiOperation(value="删除账号",httpMethod = "POST")
-    @PostMapping("/delete")
-    public String deleteBatch(@RequestBody BatchDTO batchDTO){
-        iUserService.deleteBatch(batchDTO.getUserNumbers());
-        return "删除成功";
-    }
-
-    @ApiOperation(value="批量禁用账号",httpMethod = "POST")
-    @PostMapping("/disable")
-    public String disableBatch(@RequestBody BatchDTO batchDTO){
-        iUserService.disableBatch(batchDTO.getUserNumbers());
-        return "禁用成功";
-    }
-
-    @PostMapping("/enable")
-    public String enableBatch(@RequestBody BatchDTO batchDTO){
-        iUserService.enableBatch(batchDTO.getUserNumbers());
-        return "恢复成功";
-    }
+//    @ApiOperation(value="删除账号",httpMethod = "POST")
+//    @PostMapping("/delete")
+//    public String deleteBatch(@RequestBody BatchDTO batchDTO){
+//        iUserService.deleteBatch(batchDTO.getUserNumbers());
+//        return "删除成功";
+//    }
+//
+//    @ApiOperation(value="批量禁用账号",httpMethod = "POST")
+//    @PostMapping("/disable")
+//    public String disableBatch(@RequestBody BatchDTO batchDTO){
+//        iUserService.disableBatch(batchDTO.getUserNumbers());
+//        return "禁用成功";
+//    }
+//
+//    @PostMapping("/enable")
+//    public String enableBatch(@RequestBody BatchDTO batchDTO){
+//        iUserService.enableBatch(batchDTO.getUserNumbers());
+//        return "恢复成功";
+//    }
 //
 //    @GetMapping("/filter-role")
 //    public @ResponseBody List filterRole(String role){

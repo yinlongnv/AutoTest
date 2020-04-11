@@ -24,19 +24,19 @@ public interface IUserService {
      * 通过传回来的用户编号进行批量删除
      * @param lists 用户编号列表
      */
-    public void deleteBatch(String[] lists);
+    public void deleteBatch(Integer[] lists);
 
     /**
      * 通过传回来的用户编号进行批量禁用
      * @param lists
      */
-    public void disableBatch(String[] lists);
+    public void disableBatch(Integer[] lists);
 
     /**
      * 通过传回的用户编号进行批量启用
      * @param lists
      */
-    public void enableBatch(String[] lists);
+    public void enableBatch(Integer[] lists);
 
     /**
      * 通过传回来的账号角色进行筛选

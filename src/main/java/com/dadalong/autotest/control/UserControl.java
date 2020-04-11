@@ -45,20 +45,20 @@ public class UserControl {
     @ApiOperation(value="删除账号",httpMethod = "POST")
     @PostMapping("/delete")
     public String deleteBatch(@RequestBody BatchDTO batchDTO){
-        iUserService.deleteBatch(batchDTO.getUserNumbers());
+        iUserService.deleteBatch(batchDTO.getUserIds());
         return "删除成功";
     }
 
     @ApiOperation(value="批量禁用账号",httpMethod = "POST")
     @PostMapping("/disable")
     public String disableBatch(@RequestBody BatchDTO batchDTO){
-        iUserService.disableBatch(batchDTO.getUserNumbers());
+        iUserService.disableBatch(batchDTO.getUserIds());
         return "禁用成功";
     }
 
     @PostMapping("/enable")
     public String enableBatch(@RequestBody BatchDTO batchDTO){
-        iUserService.enableBatch(batchDTO.getUserNumbers());
+        iUserService.enableBatch(batchDTO.getUserIds());
         return "恢复成功";
     }
 
