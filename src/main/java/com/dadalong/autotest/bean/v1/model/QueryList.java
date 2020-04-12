@@ -10,8 +10,8 @@ public class QueryList {
     private String method;
     private String title;
     private String markdown;
-    private List<ReqHeader> reqHeaders;
-    private String reqBodyType; //如果是form类型，则是列表，如果是row,json类型 则是other 是字符串
-    private List<ReqBodyForm> reqBodyFormList;
-    private String reqBodyOther;
+    private List<ReqHeader> req_headers;
+    private String req_body_type; //如果是form类型，则是列表，如果是row,json类型 则是other 是字符串
+    private List<ReqBodyForm> req_body_form;
+    private String req_body_other;
 }

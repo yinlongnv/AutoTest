@@ -119,8 +119,8 @@ public class UserServiceImpl implements IUserService {
 //        JsonArray jsonArry = new JsonParser().parse(content).getAsJsonArray();
 //        System.out.println(jsonArry.get(0).getAsJsonObject().get("name").toString());
         List<ApiData> apiDatas = toDatabaseFromJson(content);
-        System.out.println(apiDatas.get(0).getList().get(0).getReqBodyType());
-        System.out.println(apiDatas.get(0).getList().get(0).getReqBodyOther());
+        System.out.println(apiDatas.get(0).getList().get(0).getReq_body_type());
+        System.out.println(apiDatas.get(0).getList().get(0).getReq_body_type());
         System.out.println(apiDatas.get(1).getName());
         return null;
     }
