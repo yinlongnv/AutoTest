@@ -2,6 +2,7 @@ package com.dadalong.autotest.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.mapper.UserMapper;
+import com.dadalong.autotest.bean.v1.model.ApiData;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
@@ -9,7 +10,10 @@ import com.dadalong.autotest.model.user.ListWithSearchDTO;
 import com.dadalong.autotest.service.IUserService;
 import com.dadalong.autotest.utils.CreateUserNumberUtils;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+//import org.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -111,9 +116,25 @@ public class UserServiceImpl implements IUserService {
     @Override
     public String handleUploadedFile(MultipartFile file) throws IOException {
         String content = new String(file.getBytes());
-        JsonArray jsonArry = new JsonParser().parse(content).getAsJsonArray();
-        System.out.println(jsonArry);
+//        JsonArray jsonArry = new JsonParser().parse(content).getAsJsonArray();
+//        System.out.println(jsonArry.get(0).getAsJsonObject().get("name").toString());
+        List<ApiData> apiDatas = toDatabaseFromJson(content);
+        System.out.println(apiDatas.get(0).getList().get(0).getReqBodyType());
+        System.out.println(apiDatas.get(0).getList().get(0).getReqBodyOther());
+        System.out.println(apiDatas.get(1).getName());
         return null;
+    }
+
+    private List<ApiData> toDatabaseFromJson(String content){
+        JsonArray jsonArray = new JsonParser().parse(content).getAsJsonArray();
+        List<ApiData> apis = new LinkedList<>();
+        ApiData apiData;
+        for(int i = 0 ; i < jsonArray.size();i++){
+            JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
+            apiData = JSONObject.parseObject(jsonObject.toString(),ApiData.class);
+            apis.add(apiData);
+        }
+        return apis;
     }
 
 
