@@ -32,6 +32,17 @@ public class UserControl {
         this.request = request;
     }
 
+    @ApiOperation(value = "用户登录", httpMethod = "POST")
+    @PostMapping("/login")
+    public @ResponseBody TypedApiResponse login(LoginDTO loginDTO) {
+        User user = iUserService.login(loginDTO);
+        if (user == null) {
+            return TypedApiResponse.error().message("用户名或密码错误！");
+        } else {
+            return TypedApiResponse.ok().message("Login Success").data(user);
+        }
+    }
+
     @ApiOperation(value="显示用户列表",httpMethod = "GET")
     @GetMapping("/listWithSearch")
     public @ResponseBody TypedApiResponse listWithSearch(ListWithSearchDTO listWithSearchDTO){
@@ -71,6 +82,7 @@ public class UserControl {
         return "恢复成功";
     }
 
+    @ApiOperation(value="上传暂时放在这里",httpMethod = "POST")
     @PostMapping("/upload")
     public void upload(MultipartFile file) throws IOException {
          iUserService.handleUploadedFile(file);

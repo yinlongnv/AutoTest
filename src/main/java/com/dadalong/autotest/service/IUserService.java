@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.model.user.ListWithSearchDTO;
+import com.dadalong.autotest.model.user.LoginDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -12,6 +13,13 @@ import java.io.IOException;
 import java.sql.Date;
 
 public interface IUserService {
+
+    /**
+     * 用户登录，更新用户最后登录IP和最后登录时间，返回当前登录用户全部信息
+     * @param loginDTO
+     * @return
+     */
+    public User login(LoginDTO loginDTO);
 
     /**
      * 获取用户列表，可同时筛选搜索条件

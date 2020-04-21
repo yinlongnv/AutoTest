@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class ListWithSearchDTO {
 
+    private String username;
     private String userNumber;
     private Integer role;
     private String startTime;

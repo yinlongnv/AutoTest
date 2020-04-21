@@ -20,3 +20,6 @@ like(boolean condition, String column, String value)
 like(String column, String value)
 like(boolean condition, String column, String value, SqlLike type)
 like(String column, String value, SqlLike type)
+
+BaseMapper：
+selectOne查询无数据时需要判空处理，要不然会报空指针异常

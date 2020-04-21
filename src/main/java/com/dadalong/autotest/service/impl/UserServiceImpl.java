@@ -7,12 +7,13 @@ import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.model.user.ListWithSearchDTO;
+import com.dadalong.autotest.model.user.LoginDTO;
 import com.dadalong.autotest.service.IUserService;
 import com.dadalong.autotest.utils.CreateUserNumberUtils;
+import com.dadalong.autotest.utils.DateFormatUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-//import org.json.JSONObject;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -37,18 +35,44 @@ public class UserServiceImpl implements IUserService {
      */
     private static final Integer size = 10;
 
+    /**
+     * 用户登录，更新上次登录IP信息，更新最后登录时间信息，更新登录次数
+     * @param loginDTO
+     * @return
+     */
+    @Override
+    public User login(LoginDTO loginDTO) {
+        UserWrapper userWrapper = new UserWrapper();
+        User user = new User();
+        DateFormatUtils dateFormatUtils = new DateFormatUtils();
+        user = userMapper.selectOne(userWrapper.ofUsernameAndPassword(loginDTO.getUsername(), loginDTO.getPassword()));
+        if (user != null) {
+            user.setLastIp(loginDTO.getLastIp());
+            user.setLastLogin(new Date());
+            Integer loginCount = user.getLoginCount() + 1;
+            user.setLoginCount(loginCount);
+            userMapper.updateById(user);
+            return user;
+        } else {
+            return null;
+        }
+    }
+
+    //这个还需要修改，判空还没完善
     @Override
     public Page<User> listWithSearch(ListWithSearchDTO listWithSearchDTO) {
         UserWrapper userWrapper = new UserWrapper();
         Page<User> pages = new Page<>(listWithSearchDTO.getPage(), size);
-        System.out.println(listWithSearchDTO.getStartTime()==null);
-        System.out.println(listWithSearchDTO.getEndTime()==null);
-        System.out.println(listWithSearchDTO.getUserNumber()==null);
-        if((listWithSearchDTO.getUserNumber()==null)&&(listWithSearchDTO.getStartTime()==null)&&(listWithSearchDTO.getRole()==null)&&(listWithSearchDTO.getEndTime()==null)){
-            userMapper.selectPage(pages,null);
-        }else {
-            userMapper.selectPage(pages, userWrapper.ofSearch(listWithSearchDTO));
-        }
+//        System.out.println(listWithSearchDTO.getStartTime()==null);
+//        System.out.println(listWithSearchDTO.getEndTime()==null);
+//        System.out.println(listWithSearchDTO.getUserNumber()==null);
+
+//        if((listWithSearchDTO.getUserNumber()==null)&&(listWithSearchDTO.getStartTime()==null)&&(listWithSearchDTO.getRole()==null)&&(listWithSearchDTO.getEndTime()==null)){
+//            userMapper.selectPage(pages,null);
+//        }else {
+//            userMapper.selectPage(pages, userWrapper.ofListWithSearch(listWithSearchDTO));
+//        }
+        userMapper.selectPage(pages, userWrapper.ofListWithSearch(listWithSearchDTO));
         return pages;
     }
 
