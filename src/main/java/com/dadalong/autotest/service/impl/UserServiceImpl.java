@@ -4,6 +4,7 @@ import cn.com.dbapp.slab.common.lang.LangUtil;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.common.model.dto.SlabPage;
 import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
+import cn.com.dbapp.slab.java.commons.utils.ConverterUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dadalong.autotest.bean.v1.mapper.UserMapper;
@@ -14,6 +15,7 @@ import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.model.user.LoginDTO;
 import com.dadalong.autotest.service.IUserService;
 import com.dadalong.autotest.utils.CreateUserNumberUtils;
+import com.dadalong.autotest.utils.UniqueJudgementUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -41,10 +43,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     private static final Integer size = 10;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
-    private final LangUtil langUtil;
-    public UserServiceImpl() {
-        this.langUtil = new LangUtil();
-    }
+//    private final LangUtil langUtil;
+//    public UserServiceImpl() {
+//        this.langUtil = new LangUtil();
+//    }
 
     /**
      * 用户登录，更新上次登录IP信息，更新最后登录时间信息，更新登录次数
@@ -91,21 +93,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
      */
     @Override
     public void createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO) {
-        User user = new User();
+        UniqueJudgementUtils uniqueJudgementUtils = new UniqueJudgementUtils();
+//        UserWrapper userWrapper = new UserWrapper();
+        User user;
         //随机生成用户编号
         CreateUserNumberUtils createUserNumberUtils = new CreateUserNumberUtils();
-        user.setUsername(createOrEditUserDTO.getUsername());
-        user.setRole(createOrEditUserDTO.getRole());
-        user.setIdNumber(createOrEditUserDTO.getIdNumber());
-        user.setPhoneNumber(createOrEditUserDTO.getPhoneNumber());
-        user.setEmail(createOrEditUserDTO.getEmail());
-        user.setPassword(createOrEditUserDTO.getPassword());
-        if(createOrEditUserDTO.getUserId() != null && createOrEditUserDTO.getUserId() != 0){
-            user.setUserNumber(createUserNumberUtils.createUserNumber());
-            user.setUserId(createOrEditUserDTO.getUserId());
-            userMapper.insert(user);
-        }else {
+//        user.setUsername(createOrEditUserDTO.getUsername());
+//        user.setRole(createOrEditUserDTO.getRole());
+//        user.setIdNumber(createOrEditUserDTO.getIdNumber());
+//        user.setPhoneNumber(createOrEditUserDTO.getPhoneNumber());
+//        user.setEmail(createOrEditUserDTO.getEmail());
+//        user.setPassword(createOrEditUserDTO.getPassword());
+         user = ConverterUtil.getTranslate(createOrEditUserDTO, new User());
+//        if (!uniqueJudgementUtils.ifUsernameExist(createOrEditUserDTO.getUsername())) {
+//            saveOrUpdate(user);
+//        } else {
+//            throw new ConflictException("用户名已存在");
+//        }
+        if(createOrEditUserDTO.getId() == null) {
+            if (!uniqueJudgementUtils.ifUsernameExist(user.getUsername())) {
+                user.setUserNumber(createUserNumberUtils.createUserNumber());
+                user.setUserId(createOrEditUserDTO.getUserId());
+                userMapper.insert(user);
+            } else {
+                throw new ConflictException("用户名已存在");
+            }
+        } else if (!uniqueJudgementUtils.ifUsernameExist(user.getUsername())){
+            user.setId(createOrEditUserDTO.getId());
             userMapper.updateById(user);
+        } else {
+            throw new ConflictException("用户名已存在");
         }
     }
 
@@ -153,28 +170,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     }
 
     @Override
-    public String handleUploadedFile(MultipartFile file) throws IOException {
-        String content = new String(file.getBytes());
-//        JsonArray jsonArry = new JsonParser().parse(content).getAsJsonArray();
-//        System.out.println(jsonArry.get(0).getAsJsonObject().get("name").toString());
-        List<ApiData> apiDatas = toDatabaseFromJson(content);
-        System.out.println(apiDatas.get(0).getList().get(0).getReq_body_type());
-        System.out.println(apiDatas.get(0).getList().get(0).getReq_body_type());
-        System.out.println(apiDatas.get(1).getName());
-        return null;
+    public User detail(Integer id) {
+        return userMapper.selectById(id);
     }
 
-    private List<ApiData> toDatabaseFromJson(String content){
-        JsonArray jsonArray = new JsonParser().parse(content).getAsJsonArray();
-        List<ApiData> apis = new LinkedList<>();
-        ApiData apiData;
-        for(int i = 0 ; i < jsonArray.size();i++){
-            JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
-            apiData = JSONObject.parseObject(jsonObject.toString(),ApiData.class);
-            apis.add(apiData);
-        }
-        return apis;
-    }
 
 
 }

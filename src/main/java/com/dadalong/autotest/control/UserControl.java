@@ -66,31 +66,29 @@ public class UserControl {
 
     @ApiOperation(value="(批量)删除账号",httpMethod = "POST")
     @PostMapping("/delete")
-    public @ResponseBody TypedApiResponse deleteBatch(@RequestBody BatchDTO batchDTO){
+    public @ResponseBody TypedApiResponse delete(@RequestBody BatchDTO batchDTO){
         iUserService.deleteBatch(batchDTO.getUserIds());
         return TypedApiResponse.ok().message("delete-success");
     }
 
     @ApiOperation(value="(批量)禁用账号",httpMethod = "POST")
     @PostMapping("/disable")
-    public @ResponseBody TypedApiResponse disableBatch(@RequestBody BatchDTO batchDTO){
+    public @ResponseBody TypedApiResponse disable(@RequestBody BatchDTO batchDTO){
         iUserService.disableBatch(batchDTO.getUserIds());
         return TypedApiResponse.ok().message("disable-success");
     }
 
     @ApiOperation(value="(批量)启用账号",httpMethod = "POST")
     @PostMapping("/enable")
-    public @ResponseBody TypedApiResponse enableBatch(@RequestBody BatchDTO batchDTO){
+    public @ResponseBody TypedApiResponse enable(@RequestBody BatchDTO batchDTO){
         iUserService.enableBatch(batchDTO.getUserIds());
         return TypedApiResponse.ok().message("enable-success");
     }
 
-    @ApiOperation(value="上传暂时放在这里",httpMethod = "POST")
-    @PostMapping("/upload")
-    public void upload(MultipartFile file) throws IOException {
-         iUserService.handleUploadedFile(file);
-
+    @ApiOperation(value="查看用户详情",httpMethod = "GET")
+    @GetMapping("/detail")
+    public TypedApiResponse detail(Integer id){
+        return TypedApiResponse.ok().message("detail-success").data(iUserService.detail(id));
     }
-
 
 }

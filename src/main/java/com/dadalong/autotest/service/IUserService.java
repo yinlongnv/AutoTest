@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.model.user.LoginDTO;
+import io.swagger.models.auth.In;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
@@ -52,11 +53,10 @@ public interface IUserService {
     public void enableBatch(List<Integer> userIds);
 
     /**
-     * 接收上传的json文件
-     * @param file
-     * @return
-     * @throws IOException
+     * 查看用户详情
+     * @param id
      */
-    public String handleUploadedFile(MultipartFile file) throws IOException;
+    public User detail(Integer id);
+
 
 }

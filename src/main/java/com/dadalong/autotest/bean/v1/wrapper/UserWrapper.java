@@ -65,5 +65,14 @@ public class UserWrapper extends QueryWrapper<User> {
         return this;
     }
 
+    /**
+     * 通过username查找用户
+     * @param username
+     * @return
+     */
+    public UserWrapper ofUsername(String username) {
+        this.eq("username", username);
+        return this;
+    }
 
 }
