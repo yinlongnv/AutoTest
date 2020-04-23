@@ -65,44 +65,49 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
         }
     }
 
+    @Override
+    public void createOrEditApi(CreateOrEditUserDTO createOrEditUserDTO) {
+
+    }
+
     /**
      * 创建/编辑用户，以userId区分是创建还是编辑
      * @param createOrEditUserDTO 从前端传回来的json格式数据转换的对象
      */
-    @Override
-    public void createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO) {
-        UniqueJudgementUtils uniqueJudgementUtils = new UniqueJudgementUtils();
-//        UserWrapper userWrapper = new UserWrapper();
-        Api api;
-        //随机生成用户编号
-        CreateUserNumberUtils createUserNumberUtils = new CreateUserNumberUtils();
-//        user.setUsername(createOrEditUserDTO.getUsername());
-//        user.setRole(createOrEditUserDTO.getRole());
-//        user.setIdNumber(createOrEditUserDTO.getIdNumber());
-//        user.setPhoneNumber(createOrEditUserDTO.getPhoneNumber());
-//        user.setEmail(createOrEditUserDTO.getEmail());
-//        user.setPassword(createOrEditUserDTO.getPassword());
-        api = ConverterUtil.getTranslate(createOrEditUserDTO, new Api());
-//        if (!uniqueJudgementUtils.ifUsernameExist(createOrEditUserDTO.getUsername())) {
-//            saveOrUpdate(user);
+//    @Override
+//    public void createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO) {
+//        UniqueJudgementUtils uniqueJudgementUtils = new UniqueJudgementUtils();
+////        UserWrapper userWrapper = new UserWrapper();
+//        Api api;
+//        //随机生成用户编号
+//        CreateUserNumberUtils createUserNumberUtils = new CreateUserNumberUtils();
+////        user.setUsername(createOrEditUserDTO.getUsername());
+////        user.setRole(createOrEditUserDTO.getRole());
+////        user.setIdNumber(createOrEditUserDTO.getIdNumber());
+////        user.setPhoneNumber(createOrEditUserDTO.getPhoneNumber());
+////        user.setEmail(createOrEditUserDTO.getEmail());
+////        user.setPassword(createOrEditUserDTO.getPassword());
+//        api = ConverterUtil.getTranslate(createOrEditUserDTO, new Api());
+////        if (!uniqueJudgementUtils.ifUsernameExist(createOrEditUserDTO.getUsername())) {
+////            saveOrUpdate(user);
+////        } else {
+////            throw new ConflictException("用户名已存在");
+////        }
+//        if(createOrEditUserDTO.getId() == null) {
+//            if (!uniqueJudgementUtils.ifUsernameExist(api.getApiName())) {
+////                api.setUserNumber(createUserNumberUtils.createUserNumber());
+//                api.setUserId(createOrEditUserDTO.getUserId());
+//                apiMapper.insert(api);
+//            } else {
+//                throw new ConflictException("用户名已存在");
+//            }
+//        } else if (!uniqueJudgementUtils.ifUsernameExist(api.getApiName())){
+//            api.setId(createOrEditUserDTO.getId());
+//            apiMapper.updateById(api);
 //        } else {
 //            throw new ConflictException("用户名已存在");
 //        }
-        if(createOrEditUserDTO.getId() == null) {
-            if (!uniqueJudgementUtils.ifUsernameExist(api.getApiName())) {
-//                api.setUserNumber(createUserNumberUtils.createUserNumber());
-                api.setUserId(createOrEditUserDTO.getUserId());
-                apiMapper.insert(api);
-            } else {
-                throw new ConflictException("用户名已存在");
-            }
-        } else if (!uniqueJudgementUtils.ifUsernameExist(api.getApiName())){
-            api.setId(createOrEditUserDTO.getId());
-            apiMapper.updateById(api);
-        } else {
-            throw new ConflictException("用户名已存在");
-        }
-    }
+//    }
 
     /**
      * (批量)删除用户

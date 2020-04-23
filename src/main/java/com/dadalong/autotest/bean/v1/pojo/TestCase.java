@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Case extends Datetime {
+public class TestCase extends Datetime {
 
     /**
      * 用例id

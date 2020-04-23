@@ -8,7 +8,7 @@ import java.sql.Date;
 import java.util.List;
 
 
-public interface ICaseService {
+public interface ITestCaseService {
 
     /**
      *创建账号

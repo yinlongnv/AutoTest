@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,13 +24,13 @@ public interface IApiService {
      * @return
      */
     public IPage<Api> listWithSearch(SearchRequest searchRequest);
-//    public Page<User> listWithSearch(ListWithSearchDTO listWithSearchDTO);
+
 
     /**
-     * 创建/编辑用户，以userId区分是创建还是编辑
+     * 创建/编辑接口，以Id区分是创建还是编辑
      * @param createOrEditUserDTO 从前端传回来的json格式数据转换的对象
      */
-    public void createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO);
+    public void createOrEditApi(CreateOrEditUserDTO createOrEditUserDTO);
 
     /**
      * (批量)删除用户

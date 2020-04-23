@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 @Api(value="/", description = "这是用例管理下的全部接口")
 @RestController
 @RequestMapping("/case")
-public class CaseControl {
+public class TestCaseControl {
 
     /**
      * 为方便都是如此定义 到时候再进行优化  所有异常判定都没有进行捕获，逻辑存在缺陷
@@ -21,7 +21,7 @@ public class CaseControl {
     private final IUserService iUserService;
     private final HttpServletRequest request;
 
-    public CaseControl(IUserService iUserService, HttpServletRequest request){
+    public TestCaseControl(IUserService iUserService, HttpServletRequest request){
         this.iUserService = iUserService;
         this.request = request;
     }

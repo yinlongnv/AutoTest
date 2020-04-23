@@ -45,10 +45,23 @@ public class ApiControl {
         return TypedApiResponse.ok().message("listWithSearch-success").data(response);
     }
 
+    @ApiOperation(value="获取所有接口业务筛选项列表",httpMethod = "GET")
+    @GetMapping("/getProjectNameList")
+    public TypedApiResponse getProjectNameList(){
+        //提取请求中的参数到map中
+        SearchRequest searchRequest = new SearchRequest(request);
+        //将分页信息和筛选查询到的用户列表信息引入pages
+        IPage<com.dadalong.autotest.bean.v1.pojo.Api> pages = iApiService.listWithSearch(searchRequest);
+        //构造响应体pageInfo+tbody形式
+        CollectionResponse response = new CollectionResponse<>(pages, new com.dadalong.autotest.bean.v1.pojo.Api());
+        return TypedApiResponse.ok().message("listWithSearch-success").data(response);
+    }
+
+
     @ApiOperation(value="创建/编辑账号", httpMethod = "POST")
     @PostMapping("/createOrEdit")
     public @ResponseBody TypedApiResponse createOrEditUser(@RequestBody CreateOrEditUserDTO createOrEditUserDTO){
-        iApiService.createOrEditUser(createOrEditUserDTO);
+        iApiService.createOrEditApi(createOrEditUserDTO);
         return TypedApiResponse.ok().message("createOrEdit-success");
     }
 

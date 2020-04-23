@@ -26,10 +26,9 @@ public interface IUserService {
      * @return
      */
     public IPage<User> listWithSearch(SearchRequest searchRequest);
-//    public Page<User> listWithSearch(ListWithSearchDTO listWithSearchDTO);
 
     /**
-     * 创建/编辑用户，以userId区分是创建还是编辑
+     * 创建/编辑用户，以Id区分是创建还是编辑
      * @param createOrEditUserDTO 从前端传回来的json格式数据转换的对象
      */
     public void createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO);

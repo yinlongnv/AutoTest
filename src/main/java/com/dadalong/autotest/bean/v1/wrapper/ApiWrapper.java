@@ -9,11 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Date;
 import java.util.Map;
 
-/**
- * 具体内容还没填，这是复制的
- */
 public class ApiWrapper extends QueryWrapper<Api> {
-
 
     /**
      * 显示接口列表，包含筛选查询功能
@@ -45,6 +41,11 @@ public class ApiWrapper extends QueryWrapper<Api> {
             System.out.println(reqMethod.toString());
             this.eq("req_method",reqMethod.toString());
         }
+        return this;
+    }
+
+    public ApiWrapper getProjectName(){
+        this.select("project_name");
         return this;
     }
 
