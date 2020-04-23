@@ -23,3 +23,7 @@ like(String column, String value, SqlLike type)
 
 BaseMapper：
 selectOne查询无数据时需要判空处理，要不然会报空指针异常
+
+Date：
+HH返回的是24小时制的时间
+hh返回的是12小时制的时间

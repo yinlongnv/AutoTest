@@ -38,7 +38,7 @@ public class User extends Datetime{
     /**
      * 账号状态：启用0，禁用1
      */
-    private Boolean status;
+    private Integer status;
     /**
      * 身份证号
      */
@@ -62,6 +62,7 @@ public class User extends Datetime{
     /**
      * 最后登录时间
      */
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date lastLogin;
     /**
@@ -71,6 +72,6 @@ public class User extends Datetime{
     /**
      * 创建该账号的用户id
      */
-    private Integer created_by;
+    private Integer userId;
 
 }

@@ -12,7 +12,6 @@ public class CreateOrEditUserDTO {
     private String email;
     private Integer role;
     private String password;
-    private String lastIp;
-    private Integer userId;
+    private Integer userId;//如果是创建用户，前端需要传回当前登录用户的id——即创建该账户的用户id
 
 }

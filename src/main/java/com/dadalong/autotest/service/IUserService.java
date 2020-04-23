@@ -3,16 +3,12 @@ package com.dadalong.autotest.service;
 
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
-import com.dadalong.autotest.model.user.ListWithSearchDTO;
 import com.dadalong.autotest.model.user.LoginDTO;
 import org.springframework.web.multipart.MultipartFile;
-
-
 import java.io.IOException;
-import java.sql.Date;
+import java.util.List;
 
 public interface IUserService {
 
@@ -25,34 +21,35 @@ public interface IUserService {
 
     /**
      * 获取用户列表，可同时筛选搜索条件
-     * @param listWithSearchDTO
+     * @param searchRequest
      * @return
      */
-    public Page<User> listWithSearch(ListWithSearchDTO listWithSearchDTO);
+    public IPage<User> listWithSearch(SearchRequest searchRequest);
+//    public Page<User> listWithSearch(ListWithSearchDTO listWithSearchDTO);
 
     /**
-     *创建或编辑账号
+     * 创建/编辑用户，以userId区分是创建还是编辑
      * @param createOrEditUserDTO 从前端传回来的json格式数据转换的对象
      */
     public void createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO);
 
     /**
-     * 通过传回来的用户编号进行批量删除
-     * @param lists 用户编号列表
+     * (批量)删除用户
+     * @param userIds
      */
-    public void deleteBatch(Integer[] lists);
+    public void deleteBatch(List<Integer> userIds);
 
     /**
-     * 通过传回来的用户编号进行批量禁用
-     * @param lists
+     * (批量)禁用用户
+     * @param userIds
      */
-    public void disableBatch(Integer[] lists);
+    public void disableBatch(List<Integer> userIds);
 
     /**
-     * 通过传回的用户编号进行批量启用
-     * @param lists
+     * (批量)启用用户
+     * @param userIds
      */
-    public void enableBatch(Integer[] lists);
+    public void enableBatch(List<Integer> userIds);
 
     /**
      * 接收上传的json文件
@@ -62,5 +59,4 @@ public interface IUserService {
      */
     public String handleUploadedFile(MultipartFile file) throws IOException;
 
-    public IPage<User> search(SearchRequest searchRequest);
 }

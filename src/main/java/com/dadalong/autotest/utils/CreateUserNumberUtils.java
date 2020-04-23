@@ -15,19 +15,20 @@ public class CreateUserNumberUtils {
         //用户编号前缀——AH
         String header = "AH";
 
-        //获取当前年月日——yyyyMMdd
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+        //获取当前年月日——yyyyMMddHHmmss
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String date = simpleDateFormat.format(new Date());
         System.out.println("+++++++++++++++++++++++++新增用户编号时间：" + date);
 
         //随时生成两位数
-        Random random = new Random();
-        int num = random.nextInt(99);
-        System.out.println("+++++++++++++++++++++++++新增随机用户编号：" + num);
-        String number = "" + num;
+//        Random random = new Random();
+//        int num = random.nextInt(99);
+//        System.out.println("+++++++++++++++++++++++++新增随机用户编号：" + num);
+//        String number = "" + num;
+//
+//        String userNumber = header + date + number;
 
-        String userNumber = header + date + number;
-
+        String userNumber = header + date;
         return  userNumber;
     }
 }

@@ -1,23 +1,19 @@
 package com.dadalong.autotest.service.impl;
 
 import cn.com.dbapp.slab.common.lang.LangUtil;
-import cn.com.dbapp.slab.common.model.constant.Common;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.common.model.dto.SlabPage;
 import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dadalong.autotest.bean.v1.mapper.UserMapper;
 import com.dadalong.autotest.bean.v1.model.ApiData;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
-import com.dadalong.autotest.model.user.ListWithSearchDTO;
 import com.dadalong.autotest.model.user.LoginDTO;
 import com.dadalong.autotest.service.IUserService;
 import com.dadalong.autotest.utils.CreateUserNumberUtils;
-import com.dadalong.autotest.utils.DateFormatUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -59,7 +55,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     public User login(LoginDTO loginDTO) {
         UserWrapper userWrapper = new UserWrapper();
         User user = new User();
-        DateFormatUtils dateFormatUtils = new DateFormatUtils();
         user = userMapper.selectOne(userWrapper.ofUsernameAndPassword(loginDTO.getUsername(), loginDTO.getPassword()));
         if (user != null) {
             user.setLastIp(loginDTO.getLastIp());
@@ -73,37 +68,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         }
     }
 
-    //这个还需要修改，判空还没完善
-    @Override
-    public Page<User> listWithSearch(ListWithSearchDTO listWithSearchDTO) {
-        UserWrapper userWrapper = new UserWrapper();
-        Page<User> pages = new Page<>(listWithSearchDTO.getPage(), size);
-//        System.out.println(listWithSearchDTO.getStartTime()==null);
-//        System.out.println(listWithSearchDTO.getEndTime()==null);
-//        System.out.println(listWithSearchDTO.getUserNumber()==null);
-
-//        if((listWithSearchDTO.getUserNumber()==null)&&(listWithSearchDTO.getStartTime()==null)&&(listWithSearchDTO.getRole()==null)&&(listWithSearchDTO.getEndTime()==null)){
-//            userMapper.selectPage(pages,null);
-//        }else {
-//            userMapper.selectPage(pages, userWrapper.ofListWithSearch(listWithSearchDTO));
-//        }
-        userMapper.selectPage(pages, userWrapper.ofListWithSearch(listWithSearchDTO));
-        return pages;
-    }
-
-    public IPage<User> search(SearchRequest searchRequest){
+    /**
+     * 获取用户列表，包含筛选查询
+     * @param searchRequest
+     * @return
+     */
+    public IPage<User> listWithSearch(SearchRequest searchRequest){
         try {
             UserWrapper wrapper = new UserWrapper();
-            wrapper.search(searchRequest);
-            SlabPage<User> mypage = new SlabPage<>(searchRequest);
-            return page(mypage, wrapper);
+            wrapper.ofListWithSearch(searchRequest);
+            SlabPage<User> userSlabPage = new SlabPage<>(searchRequest);
+            return page(userSlabPage, wrapper);
         }catch (Exception e){
-            LOGGER.error("search error",e);
-            throw new ConflictException("search");
+            LOGGER.error("listWithSearchError",e);
+            throw new ConflictException("listWithSearchError");//暂时没啥用
         }
     }
+
     /**
-     * 创建/编辑用户
+     * 创建/编辑用户，以userId区分是创建还是编辑
      * @param createOrEditUserDTO 从前端传回来的json格式数据转换的对象
      */
     @Override
@@ -111,54 +94,60 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         User user = new User();
         //随机生成用户编号
         CreateUserNumberUtils createUserNumberUtils = new CreateUserNumberUtils();
-        user.setUserNumber(createUserNumberUtils.createUserNumber());
         user.setUsername(createOrEditUserDTO.getUsername());
         user.setRole(createOrEditUserDTO.getRole());
         user.setIdNumber(createOrEditUserDTO.getIdNumber());
         user.setPhoneNumber(createOrEditUserDTO.getPhoneNumber());
         user.setEmail(createOrEditUserDTO.getEmail());
         user.setPassword(createOrEditUserDTO.getPassword());
-        user.setLastIp(createOrEditUserDTO.getLastIp());
-        if(createOrEditUserDTO.getId() != null && createOrEditUserDTO.getId() != 0){
-            user.setId(createOrEditUserDTO.getId());
-            userMapper.updateById(user);
-        }else {
+        if(createOrEditUserDTO.getUserId() != null && createOrEditUserDTO.getUserId() != 0){
+            user.setUserNumber(createUserNumberUtils.createUserNumber());
+            user.setUserId(createOrEditUserDTO.getUserId());
             userMapper.insert(user);
+        }else {
+            userMapper.updateById(user);
         }
     }
 
+    /**
+     * (批量)删除用户
+     * @param userIds
+     */
     @Override
-    public void deleteBatch(Integer[] lists) {
-        Map<String,Object> map = new HashMap<String, Object>();
-        for(Integer userId : lists){
-            map.put("id",userId);
-            userMapper.deleteByMap(map);
+    public void deleteBatch(List<Integer> userIds) {
+        try {
+            removeByIds(userIds);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
-    //存在小问题，wrapper好像不能进行循环，待解决  运行正常
+    /**
+     * (批量)禁用用户
+     * @param userIds
+     */
     @Override
-    public void disableBatch(Integer[] lists) {
-        UserWrapper userWrapper = new UserWrapper();
+    public void disableBatch(List<Integer> userIds) {
         Map<String,Object> map = new HashMap<>();
-        User user;
-        for(Integer userId : lists){
+        for(Integer userId : userIds){
             map.put("id",userId);
             List<User> users = userMapper.selectByMap(map);
-            users.get(0).setStatus(true);
+            users.get(0).setStatus(1);
             userMapper.updateById(users.get(0));
         }
     }
 
+    /**
+     * (批量)启用用户
+     * @param userIds
+     */
     @Override
-    public void enableBatch(Integer[] lists) {
-        UserWrapper userWrapper = new UserWrapper();
+    public void enableBatch(List<Integer> userIds) {
         Map<String,Object> map = new HashMap<>();
-        User user;
-        for(Integer userId : lists){
+        for(Integer userId : userIds){
             map.put("id",userId);
             List<User> users = userMapper.selectByMap(map);
-            users.get(0).setStatus(false);
+            users.get(0).setStatus(0);
             userMapper.updateById(users.get(0));
         }
     }

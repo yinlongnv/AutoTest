@@ -24,21 +24,17 @@ import java.util.Collection;
 @RequestMapping("/user")
 public class UserControl {
 
-    /**
-     * 为方便都是如此定义 到时候再进行优化  所有异常判定都没有进行捕获，逻辑存在缺陷
-     * 但是正常的CRUD操作没有问题
-     */
     private final IUserService iUserService;
     private final HttpServletRequest request;
 
-    public UserControl(IUserService iUserService,HttpServletRequest request){
+    public UserControl(IUserService iUserService, HttpServletRequest request){
         this.iUserService = iUserService;
         this.request = request;
     }
 
     @ApiOperation(value = "用户登录", httpMethod = "POST")
     @PostMapping("/login")
-    public @ResponseBody TypedApiResponse login(LoginDTO loginDTO) {
+    public @ResponseBody TypedApiResponse login(@RequestBody LoginDTO loginDTO) {
         User user = iUserService.login(loginDTO);
         if (user == null) {
             return TypedApiResponse.error().message("用户名或密码错误！");
@@ -47,28 +43,16 @@ public class UserControl {
         }
     }
 
-//    @ApiOperation(value="显示用户列表",httpMethod = "GET")
-//    @GetMapping("/listWithSearch")
-//    public @ResponseBody TypedApiResponse listWithSearch(ListWithSearchDTO listWithSearchDTO){
-//        if (listWithSearchDTO.getPage() == null) {
-//            return TypedApiResponse.error().message("page can't be null");
-//        } else {
-//            Page<User> pages = iUserService.listWithSearch(listWithSearchDTO);
-//            return TypedApiResponse.ok().message("listWithSearch-success").data(pages);
-//        }
-//    }
-
-    @ApiOperation(value="显示用户列表",httpMethod = "POST")
-    @GetMapping("/search")
+    @ApiOperation(value="显示用户列表，包含筛选查询",httpMethod = "GET")
+    @GetMapping("/listWithSearch")
     public TypedApiResponse listWithSearch(){
+        //提取请求中的参数到map中
         SearchRequest searchRequest = new SearchRequest(request);
-        if (searchRequest.getPageInfo().getPage() == null) {
-            return TypedApiResponse.error().message("page can't be null");
-        } else {
-            IPage<User> pages = iUserService.search(searchRequest);
-            CollectionResponse response = new CollectionResponse<>(pages,new User());
-            return TypedApiResponse.ok().message("listWithSearch-success").data(response);
-        }
+        //将分页信息和筛选查询到的用户列表信息引入pages
+        IPage<User> pages = iUserService.listWithSearch(searchRequest);
+        //构造响应体pageInfo+tbody形式
+        CollectionResponse response = new CollectionResponse<>(pages, new User());
+        return TypedApiResponse.ok().message("listWithSearch-success").data(response);
     }
 
     @ApiOperation(value="创建/编辑账号", httpMethod = "POST")
@@ -78,25 +62,27 @@ public class UserControl {
         return TypedApiResponse.ok().message("createOrEdit-success");
     }
 
-    @ApiOperation(value="删除账号",httpMethod = "POST")
+    //不做userIds判空了
+
+    @ApiOperation(value="(批量)删除账号",httpMethod = "POST")
     @PostMapping("/delete")
-    public String deleteBatch(@RequestBody BatchDTO batchDTO){
+    public @ResponseBody TypedApiResponse deleteBatch(@RequestBody BatchDTO batchDTO){
         iUserService.deleteBatch(batchDTO.getUserIds());
-        return "删除成功";
+        return TypedApiResponse.ok().message("delete-success");
     }
 
-    @ApiOperation(value="批量禁用账号",httpMethod = "POST")
+    @ApiOperation(value="(批量)禁用账号",httpMethod = "POST")
     @PostMapping("/disable")
-    public String disableBatch(@RequestBody BatchDTO batchDTO){
+    public @ResponseBody TypedApiResponse disableBatch(@RequestBody BatchDTO batchDTO){
         iUserService.disableBatch(batchDTO.getUserIds());
-        return "禁用成功";
+        return TypedApiResponse.ok().message("disable-success");
     }
 
-    @ApiOperation(value="批量启用账号",httpMethod = "POST")
+    @ApiOperation(value="(批量)启用账号",httpMethod = "POST")
     @PostMapping("/enable")
-    public String enableBatch(@RequestBody BatchDTO batchDTO){
+    public @ResponseBody TypedApiResponse enableBatch(@RequestBody BatchDTO batchDTO){
         iUserService.enableBatch(batchDTO.getUserIds());
-        return "恢复成功";
+        return TypedApiResponse.ok().message("enable-success");
     }
 
     @ApiOperation(value="上传暂时放在这里",httpMethod = "POST")
