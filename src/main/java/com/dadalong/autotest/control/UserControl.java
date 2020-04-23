@@ -1,7 +1,10 @@
 package com.dadalong.autotest.control;
 
 
+import cn.com.dbapp.slab.common.model.dto.CollectionResponse;
+import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.user.*;
@@ -14,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Collection;
 
 @Api(value="/", description = "这是用户管理下的全部接口")
 @RestController
@@ -43,14 +47,27 @@ public class UserControl {
         }
     }
 
-    @ApiOperation(value="显示用户列表",httpMethod = "GET")
-    @GetMapping("/listWithSearch")
-    public @ResponseBody TypedApiResponse listWithSearch(ListWithSearchDTO listWithSearchDTO){
-        if (listWithSearchDTO.getPage() == null) {
+//    @ApiOperation(value="显示用户列表",httpMethod = "GET")
+//    @GetMapping("/listWithSearch")
+//    public @ResponseBody TypedApiResponse listWithSearch(ListWithSearchDTO listWithSearchDTO){
+//        if (listWithSearchDTO.getPage() == null) {
+//            return TypedApiResponse.error().message("page can't be null");
+//        } else {
+//            Page<User> pages = iUserService.listWithSearch(listWithSearchDTO);
+//            return TypedApiResponse.ok().message("listWithSearch-success").data(pages);
+//        }
+//    }
+
+    @ApiOperation(value="显示用户列表",httpMethod = "POST")
+    @GetMapping("/search")
+    public TypedApiResponse listWithSearch(){
+        SearchRequest searchRequest = new SearchRequest(request);
+        if (searchRequest.getPageInfo().getPage() == null) {
             return TypedApiResponse.error().message("page can't be null");
         } else {
-            Page<User> pages = iUserService.listWithSearch(listWithSearchDTO);
-            return TypedApiResponse.ok().message("listWithSearch-success").data(pages);
+            IPage<User> pages = iUserService.search(searchRequest);
+            CollectionResponse response = new CollectionResponse<>(pages,new User());
+            return TypedApiResponse.ok().message("listWithSearch-success").data(response);
         }
     }
 

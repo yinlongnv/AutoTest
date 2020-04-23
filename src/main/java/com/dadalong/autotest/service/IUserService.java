@@ -1,6 +1,8 @@
 package com.dadalong.autotest.service;
 
 
+import cn.com.dbapp.slab.common.model.dto.SearchRequest;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
@@ -59,4 +61,6 @@ public interface IUserService {
      * @throws IOException
      */
     public String handleUploadedFile(MultipartFile file) throws IOException;
+
+    public IPage<User> search(SearchRequest searchRequest);
 }

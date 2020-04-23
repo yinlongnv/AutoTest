@@ -2,6 +2,7 @@ package com.dadalong.autotest.bean.v1.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -61,6 +62,7 @@ public class User extends Datetime{
     /**
      * 最后登录时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date lastLogin;
     /**
      * 总登录次数：默认为0
@@ -69,6 +71,6 @@ public class User extends Datetime{
     /**
      * 创建该账号的用户id
      */
-    private Integer userId;
+    private Integer created_by;
 
 }
