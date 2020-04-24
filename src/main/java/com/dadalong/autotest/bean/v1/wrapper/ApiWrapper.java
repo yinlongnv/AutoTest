@@ -45,7 +45,7 @@ public class ApiWrapper extends QueryWrapper<Api> {
     }
 
     public ApiWrapper getProjectName(){
-        this.select("project_name");
+        this.groupBy("project_name");
         return this;
     }
 

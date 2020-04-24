@@ -7,6 +7,7 @@ import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.pojo.User;
+import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.user.*;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.service.IUserService;
@@ -18,7 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Api(value="/", description = "这是接口管理下的全部接口")
 @RestController
@@ -38,23 +41,18 @@ public class ApiControl {
     public TypedApiResponse listWithSearch(){
         //提取请求中的参数到map中
         SearchRequest searchRequest = new SearchRequest(request);
-        //将分页信息和筛选查询到的用户列表信息引入pages
-        IPage<com.dadalong.autotest.bean.v1.pojo.Api> pages = iApiService.listWithSearch(searchRequest);
+        //将分页信息和筛选查询到的接口列表信息引入pages
+        IPage<ApiListResponse> pages = iApiService.listWithSearch(searchRequest);
         //构造响应体pageInfo+tbody形式
-        CollectionResponse response = new CollectionResponse<>(pages, new com.dadalong.autotest.bean.v1.pojo.Api());
+        CollectionResponse response = new CollectionResponse<>(pages, new ApiListResponse());
         return TypedApiResponse.ok().message("listWithSearch-success").data(response);
     }
 
     @ApiOperation(value="获取所有接口业务筛选项列表",httpMethod = "GET")
     @GetMapping("/getProjectNameList")
     public TypedApiResponse getProjectNameList(){
-        //提取请求中的参数到map中
-        SearchRequest searchRequest = new SearchRequest(request);
-        //将分页信息和筛选查询到的用户列表信息引入pages
-        IPage<com.dadalong.autotest.bean.v1.pojo.Api> pages = iApiService.listWithSearch(searchRequest);
-        //构造响应体pageInfo+tbody形式
-        CollectionResponse response = new CollectionResponse<>(pages, new com.dadalong.autotest.bean.v1.pojo.Api());
-        return TypedApiResponse.ok().message("listWithSearch-success").data(response);
+        List<String> projectNameList = iApiService.getProjectNameList();
+        return TypedApiResponse.ok().message("listWithSearch-success").data(projectNameList);
     }
 
 
@@ -81,7 +79,7 @@ public class ApiControl {
         //提取请求中的参数到map中
         SearchRequest searchRequest = new SearchRequest(request);
         //将分页信息和筛选查询到的用户列表信息引入pages
-        IPage<com.dadalong.autotest.bean.v1.pojo.Api> pages = iApiService.listWithSearch(searchRequest);
+        IPage<ApiListResponse> pages = iApiService.listWithSearch(searchRequest);
         //构造响应体pageInfo+tbody形式
         CollectionResponse response = new CollectionResponse<>(pages, new User());
         return TypedApiResponse.ok().message("listWithSearch-success").data(response);
