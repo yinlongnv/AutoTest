@@ -18,7 +18,7 @@ public class ApiWrapper extends QueryWrapper<Api> {
      */
     public ApiWrapper ofListWithSearch(SearchRequest request){
         Map<String,Object> map = request.getSearch();
-        Object search = map.get("search");
+        Object search = map.get("apiName");
         if (search != null && StringUtils.isNotBlank(search.toString())) {
             this.like("api_name", search.toString());
         }

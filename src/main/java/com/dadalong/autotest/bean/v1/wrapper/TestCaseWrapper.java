@@ -16,7 +16,7 @@ public class TestCaseWrapper extends QueryWrapper<TestCase> {
      */
     public TestCaseWrapper ofListWithSearch(SearchRequest request){
         Map<String,Object> map = request.getSearch();
-        Object search = map.get("search");
+        Object search = map.get("caseDescription");
         if (search != null && StringUtils.isNotBlank(search.toString())) {
             this.like("case_description", search.toString());
         }

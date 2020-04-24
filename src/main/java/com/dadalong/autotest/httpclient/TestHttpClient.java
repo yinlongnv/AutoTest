@@ -54,10 +54,8 @@ public class TestHttpClient {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("page", "1");
         HashMap<String, String> headers = new HashMap<String, String>();
-//        headers.put("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC91c2VyXC9yYW5nZS11c2VyXC9hcGlcL2lubmVyXC9hdXRoIiwiaWF0IjoxNTg2MzE1NDMxLCJleHAiOjE1ODY1NjAwOTAsIm5iZiI6MTU4NjM0NDA5MCwianRpIjoiUHdNaXRieFRMc3dKSWNwNCIsInN1YiI6NzIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJsb2dpbl90b2tlbiI6IjllYmUzODdhZjY0MjFhNjFmMzI1ZTgzNjdkMjg1ZTEyIn0.WoLFvyoOr9KXbijj30G8BAyaCIdc9hhnZ1fYOaGbVVc");
         HttpClientUtils httpClientUtils = new HttpClientUtils();
         String result = httpClientUtils.doGet(u, map, headers);
-        System.out.println(result);
         //将返回的响应结果字符串转化成json对象
         JSONObject resultJSON = new JSONObject(result);
         //获取到结果值

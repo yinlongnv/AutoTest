@@ -27,7 +27,7 @@ public class UserWrapper extends QueryWrapper<User> {
      */
     public UserWrapper ofListWithSearch(SearchRequest request){
         Map<String,Object> map = request.getSearch();
-        Object search = map.get("search");
+        Object search = map.get("userInfo");
         if (search != null && StringUtils.isNotBlank(search.toString())) {
             this.like("username", search.toString()).or().like("user_number", search.toString());
         }
