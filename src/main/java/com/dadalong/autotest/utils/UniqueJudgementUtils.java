@@ -3,6 +3,7 @@ package com.dadalong.autotest.utils;
 import com.dadalong.autotest.bean.v1.mapper.ApiMapper;
 import com.dadalong.autotest.bean.v1.mapper.TestCaseMapper;
 import com.dadalong.autotest.bean.v1.mapper.UserMapper;
+import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 
 import javax.annotation.Resource;
@@ -29,7 +30,16 @@ public class UniqueJudgementUtils {
         } else {
             return true;
         }
+    }
 
+    public Boolean ifApiNameExist(String apiName) {
+
+        ApiWrapper apiWrapper = new ApiWrapper();
+        if (apiMapper.selectOne(apiWrapper.ofApiName(apiName)) == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 

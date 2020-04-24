@@ -22,6 +22,7 @@ import com.google.gson.JsonParser;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -95,7 +96,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     public void createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO) {
         UniqueJudgementUtils uniqueJudgementUtils = new UniqueJudgementUtils();
 //        UserWrapper userWrapper = new UserWrapper();
-        User user;
+        User user = new User();
         //随机生成用户编号
         CreateUserNumberUtils createUserNumberUtils = new CreateUserNumberUtils();
 //        user.setUsername(createOrEditUserDTO.getUsername());
@@ -104,7 +105,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 //        user.setPhoneNumber(createOrEditUserDTO.getPhoneNumber());
 //        user.setEmail(createOrEditUserDTO.getEmail());
 //        user.setPassword(createOrEditUserDTO.getPassword());
-         user = ConverterUtil.getTranslate(createOrEditUserDTO, new User());
+        BeanUtils.copyProperties(createOrEditUserDTO, user);
+//         user = ConverterUtil.getTranslate(createOrEditUserDTO, new User());
 //        if (!uniqueJudgementUtils.ifUsernameExist(createOrEditUserDTO.getUsername())) {
 //            saveOrUpdate(user);
 //        } else {

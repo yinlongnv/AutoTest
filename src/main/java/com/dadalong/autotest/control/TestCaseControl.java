@@ -61,4 +61,10 @@ public class TestCaseControl {
         return TypedApiResponse.ok().message("delete-success");
     }
 
+    @ApiOperation(value="查看用例详情",httpMethod = "GET")
+    @GetMapping("/detail")
+    public TypedApiResponse detail(Integer id){
+        return TypedApiResponse.ok().message("detail-success").data(iTestCaseService.detail(id));
+    }
+
 }

@@ -27,4 +27,10 @@ public interface ITestCaseService {
      */
     public void deleteBatch(List<Integer> caseIds);
 
+    /**
+     * 查看用例详情
+     * @param id
+     */
+    public TestCaseListResponse detail(Integer id);
+
 }

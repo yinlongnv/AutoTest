@@ -71,12 +71,12 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 User createdBy = userMapper.selectById(record.getUserId());
                 User username = userMapper.selectById(record.getExecuteByUserId());
                 Api api = apiMapper.selectById(record.getApiId());
-//                TestCaseListResponse testCaseListResponse = ConverterUtil.getTranslate(record, new TestCaseListResponse());\
+//                TestCaseListResponse testCaseListResponse = ConverterUtil.getTranslate(record, new TestCaseListResponse());
                 TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
                 BeanUtils.copyProperties(record, testCaseListResponse);
                 testCaseListResponse.setCreatedBy(createdBy.getUsername());
                 testCaseListResponse.setUsername(username.getUsername());
-                testCaseListResponse.setLastExecuteTime(record.getUpdatedAt());
+                testCaseListResponse.setLastExecuteTime(record.getUpdatedAt());//时间未格式化
                 testCaseListResponse.setApiName(api.getApiName());
                 testCaseListResponseList.add(testCaseListResponse);
             }
@@ -102,6 +102,18 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public TestCaseListResponse detail(Integer id) {
+        return null;
+//        TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
+//
+//        Api api = apiMapper.selectById(id);
+//        BeanUtils.copyProperties(api, apiListResponse);
+//        String username = userMapper.selectById(api.getUserId()).getUsername();
+//        apiListResponse.setCreatedBy(username);
+//        return apiListResponse;
     }
 
 }

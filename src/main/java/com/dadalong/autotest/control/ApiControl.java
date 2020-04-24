@@ -83,17 +83,10 @@ public class ApiControl {
         return TypedApiResponse.ok().message("delete-success");
     }
 
-
     @ApiOperation(value="查看接口详情",httpMethod = "GET")
     @GetMapping("/detail")
-    public TypedApiResponse detail(){
-        //提取请求中的参数到map中
-        SearchRequest searchRequest = new SearchRequest(request);
-        //将分页信息和筛选查询到的用户列表信息引入pages
-        IPage<ApiListResponse> pages = iApiService.listWithSearch(searchRequest);
-        //构造响应体pageInfo+tbody形式
-        CollectionResponse response = new CollectionResponse<>(pages, new User());
-        return TypedApiResponse.ok().message("listWithSearch-success").data(response);
+    public TypedApiResponse detail(Integer id){
+        return TypedApiResponse.ok().message("detail-success").data(iApiService.detail(id));
     }
 
     @ApiOperation(value="上传json文件",httpMethod = "POST")

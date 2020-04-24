@@ -11,7 +11,18 @@ import java.util.Date;
 public class TestCaseListResponse {
 
     private Integer id;
+
+    private String projectName;
+    private String apiGroup;
+    private String baseUrl;
+    private String reqMethod;
+    private String reqHeaders;
+    private String reqBody;
+    private String apiResponse;
+    private String apiPath;
     private String apiName;//1 + api_id
+    private String apiDescription;
+
     private String caseDescription;//2
     private String createdBy;//3创建人用户名 + user_id
     private String username;//4执行人用户名 + execute_by_user_id

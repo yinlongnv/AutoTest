@@ -32,7 +32,7 @@ public class ApiWrapper extends QueryWrapper<Api> {
     }
 
     /**
-     * 获取所有接口业务筛选项列表
+     * 筛选接口业务
      * @param projectName
      * @return
      */
@@ -45,7 +45,7 @@ public class ApiWrapper extends QueryWrapper<Api> {
     }
 
     /**
-     * 获取所有所属分组筛选项列表
+     * 筛选所属分组
      * @param apiGroup
      * @return
      */
@@ -53,6 +53,19 @@ public class ApiWrapper extends QueryWrapper<Api> {
         if(apiGroup != null && StringUtils.isNotBlank(apiGroup.toString())){
             System.out.println(apiGroup.toString());
             this.eq("api_group",apiGroup.toString());
+        }
+        return this;
+    }
+
+    /**
+     * 筛选接口名称
+     * @param apiName
+     * @return
+     */
+    public ApiWrapper ofApiName(Object apiName){
+        if(apiName != null && StringUtils.isNotBlank(apiName.toString())){
+            System.out.println(apiName.toString());
+            this.eq("api_name",apiName.toString());
         }
         return this;
     }

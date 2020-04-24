@@ -56,13 +56,12 @@ public class User extends Datetime{
      */
     private String password;
     /**
-     * 最近登陆ip
+     * 最近登录ip
      */
     private String lastIp;
     /**
      * 最后登录时间
      */
-
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date lastLogin;
     /**

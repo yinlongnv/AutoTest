@@ -19,6 +19,7 @@ import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 import com.dadalong.autotest.model.api.CreateOrEditApiDTO;
 import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.response.ApiNameListResponse;
+import com.dadalong.autotest.model.response.FilterMapResponse;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.model.user.LoginDTO;
 import com.dadalong.autotest.service.IApiService;
@@ -148,9 +149,28 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
         return apiNameListResponses;
     }
 
+    /**
+     * 创建/编辑接口
+     * @param createOrEditApiDTO 从前端传回来的json格式数据转换的对象
+     */
     @Override
     public void createOrEditApi(CreateOrEditApiDTO createOrEditApiDTO) {
-
+        UniqueJudgementUtils uniqueJudgementUtils = new UniqueJudgementUtils();
+        Api api = new Api();
+        BeanUtils.copyProperties(createOrEditApiDTO, api);
+        if(createOrEditApiDTO.getId() == null) {
+            if (!uniqueJudgementUtils.ifApiNameExist(api.getApiName())) {
+                api.setUserId(createOrEditApiDTO.getUserId());
+                apiMapper.insert(api);
+            } else {
+                throw new ConflictException("接口名称已存在");
+            }
+        } else if (!uniqueJudgementUtils.ifApiNameExist(api.getApiName())){
+            api.setId(createOrEditApiDTO.getId());
+            apiMapper.updateById(api);
+        } else {
+            throw new ConflictException("接口名称已存在");
+        }
     }
 
     /**
@@ -166,11 +186,80 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
         }
     }
 
+    /**
+     * 获取接口详情
+     * @param id
+     * @return
+     */
+    @Override
+    public ApiListResponse detail(Integer id) {
+        ApiListResponse apiListResponse = new ApiListResponse();
+        Api api = apiMapper.selectById(id);
+        BeanUtils.copyProperties(api, apiListResponse);
+        String username = userMapper.selectById(api.getUserId()).getUsername();
+        apiListResponse.setCreatedBy(username);
+        return apiListResponse;
+    }
+
+    @Override
+    public FilterMapResponse filterMap() {
+        FilterMapResponse filterMapResponse = new FilterMapResponse();
+        Map<Map<String,String>,Map<String,String>> result = new HashMap<>();
+        List<Api> apiList = apiMapper.selectList(new ApiWrapper().groupBy("project_name").groupBy("api_group"));
+        apiList.forEach(api -> {
+            System.out.println(api);
+        });
+        String projectName = null;
+        String baseUrl = null;
+        Map<String,String> key = new HashMap<>();
+        Map<String,String> value = new HashMap<>();
+        String oldProjectName = apiList.get(0).getProjectName();
+        String oldBaseUrl = apiList.get(0).getBaseUrl();
+        for (Api api : apiList) {
+            projectName = api.getProjectName();
+            baseUrl = api.getBaseUrl();
+            if(api.getProjectName().equals(oldProjectName)){
+                String merge = api.getApiName() + " " + api.getApiPath();
+                value.put(api.getApiGroup(),merge);
+            }else{
+                key.put(oldProjectName,oldBaseUrl);
+                result.put(key,value);
+                oldProjectName = api.getProjectName();
+                oldBaseUrl = api.getBaseUrl();
+                key = new HashMap<>();
+                value = new HashMap<>();
+                String merge = api.getApiName() + " " + api.getApiPath();
+                value.put(api.getApiGroup(),merge);
+            }
+        }
+        key.put(projectName,baseUrl);
+        result.put(key,value);
+        filterMapResponse.setFilterMap(result);
+        return filterMapResponse;
+    }
 
     @Override
     public String handleUploadedFile(MultipartFile file) throws IOException {
+        String content = new String(file.getBytes());
+//        JsonArray jsonArry = new JsonParser().parse(content).getAsJsonArray();
+//        System.out.println(jsonArry.get(0).getAsJsonObject().get("name").toString());
+        List<ApiData> apiDatas = toDatabaseFromJson(content);
+        System.out.println(apiDatas.get(0).getList().get(0).getReq_body_type());
+        System.out.println(apiDatas.get(0).getList().get(0).getReq_body_type());
+        System.out.println(apiDatas.get(1).getName());
         return null;
     }
 
+    private List<ApiData> toDatabaseFromJson(String content){
+        JsonArray jsonArray = new JsonParser().parse(content).getAsJsonArray();
+        List<ApiData> apis = new LinkedList<>();
+        ApiData apiData;
+        for(int i = 0 ; i < jsonArray.size();i++){
+            JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
+            apiData = JSONObject.parseObject(jsonObject.toString(),ApiData.class);
+            apis.add(apiData);
+        }
+        return apis;
+    }
 
 }
