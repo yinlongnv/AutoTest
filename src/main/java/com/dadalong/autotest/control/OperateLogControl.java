@@ -1,7 +1,13 @@
 package com.dadalong.autotest.control;
 
 
+import cn.com.dbapp.slab.common.model.dto.CollectionResponse;
+import cn.com.dbapp.slab.common.model.dto.SearchRequest;
+import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dadalong.autotest.model.response.LogListResponse;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
+import com.dadalong.autotest.service.IOperateLogService;
 import com.dadalong.autotest.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,53 +20,24 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/operateLog")
 public class OperateLogControl {
 
-    /**
-     * 为方便都是如此定义 到时候再进行优化  所有异常判定都没有进行捕获，逻辑存在缺陷
-     * 但是正常的CRUD操作没有问题
-     */
-    private final IUserService iUserService;
+    private final IOperateLogService iOperateLogService;
     private final HttpServletRequest request;
 
-    public OperateLogControl(IUserService iUserService, HttpServletRequest request){
-        this.iUserService = iUserService;
+    public OperateLogControl(IOperateLogService iOperateLogService, HttpServletRequest request){
+        this.iOperateLogService = iOperateLogService;
         this.request = request;
     }
 
-    @ApiOperation(value="创建账号",httpMethod = "POST")
-    @PostMapping("/create")
-    public String create(@RequestBody CreateOrEditUserDTO createOrEditUserDTO){
-        iUserService.createOrEditUser(createOrEditUserDTO);
-        return "创建成功";
+    @ApiOperation(value="显示日志列表，包含筛选查询",httpMethod = "GET")
+    @GetMapping("/listWithSearch")
+    public TypedApiResponse listWithSearch(){
+        //提取请求中的参数到map中
+        SearchRequest searchRequest = new SearchRequest(request);
+        //将分页信息和筛选查询到的操作日志列表信息引入pages
+        IPage<LogListResponse> pages = iOperateLogService.listWithSearch(searchRequest);
+        //构造响应体pageInfo+tbody形式
+        CollectionResponse response = new CollectionResponse<>(pages, new LogListResponse());
+        return TypedApiResponse.ok().message("listWithSearch-success").data(response);
     }
-
-//    @ApiOperation(value="删除账号",httpMethod = "POST")
-//    @PostMapping("/delete")
-//    public String deleteBatch(@RequestBody BatchDTO batchDTO){
-//        iUserService.deleteBatch(batchDTO.getUserNumbers());
-//        return "删除成功";
-//    }
-//
-//    @ApiOperation(value="批量禁用账号",httpMethod = "POST")
-//    @PostMapping("/disable")
-//    public String disableBatch(@RequestBody BatchDTO batchDTO){
-//        iUserService.disableBatch(batchDTO.getUserNumbers());
-//        return "禁用成功";
-//    }
-//
-//    @PostMapping("/enable")
-//    public String enableBatch(@RequestBody BatchDTO batchDTO){
-//        iUserService.enableBatch(batchDTO.getUserNumbers());
-//        return "恢复成功";
-//    }
-//
-//    @GetMapping("/filter-role")
-//    public @ResponseBody List filterRole(String role){
-//        return iUserService.filterRole(role);
-//    }
-//
-//    @GetMapping("/filter-name")
-//    public @ResponseBody List searchByName(String name){
-//        return iUserService.searchByName(name);
-//    }
 
 }
