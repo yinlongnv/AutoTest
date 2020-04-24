@@ -2,6 +2,7 @@ package com.dadalong.autotest.model.response;
 
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,6 +11,6 @@ import java.util.Map;
 @Data
 public class FilterMapResponse {
 
-    private Map<Map<String, String>, Map<String, String>> filterMap;
+    private List<LevelOne> options;
 
 }

@@ -106,14 +106,11 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
 
     @Override
     public TestCaseListResponse detail(Integer id) {
-        return null;
-//        TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
-//
-//        Api api = apiMapper.selectById(id);
-//        BeanUtils.copyProperties(api, apiListResponse);
-//        String username = userMapper.selectById(api.getUserId()).getUsername();
-//        apiListResponse.setCreatedBy(username);
-//        return apiListResponse;
+        TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
+        TestCase testCase = testCaseMapper.selectById(id);
+        BeanUtils.copyProperties(testCase, testCaseListResponse);
+
+        return testCaseListResponse;
     }
 
 }

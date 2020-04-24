@@ -1,33 +1,21 @@
 package com.dadalong.autotest.service.impl;
 
-import cn.com.dbapp.slab.common.lang.LangUtil;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.common.model.dto.SlabPage;
 import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
-import cn.com.dbapp.slab.java.commons.utils.ConverterUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dadalong.autotest.bean.v1.mapper.ApiMapper;
-import com.dadalong.autotest.bean.v1.mapper.TestCaseMapper;
 import com.dadalong.autotest.bean.v1.mapper.UserMapper;
 import com.dadalong.autotest.bean.v1.model.ApiData;
 import com.dadalong.autotest.bean.v1.pojo.Api;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
-import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 import com.dadalong.autotest.model.api.CreateOrEditApiDTO;
-import com.dadalong.autotest.model.response.ApiListResponse;
-import com.dadalong.autotest.model.response.ApiNameListResponse;
-import com.dadalong.autotest.model.response.FilterMapResponse;
-import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
-import com.dadalong.autotest.model.user.LoginDTO;
+import com.dadalong.autotest.model.response.*;
 import com.dadalong.autotest.service.IApiService;
-import com.dadalong.autotest.service.ITestCaseService;
-import com.dadalong.autotest.service.IUserService;
-import com.dadalong.autotest.utils.CreateUserNumberUtils;
 import com.dadalong.autotest.utils.UniqueJudgementUtils;
-import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -40,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.sql.Date;
 import java.util.*;
 
 @Service
@@ -52,6 +39,9 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    UniqueJudgementUtils uniqueJudgementUtils;
 
     /**
      * 设置每页10条记录
@@ -155,7 +145,7 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
      */
     @Override
     public void createOrEditApi(CreateOrEditApiDTO createOrEditApiDTO) {
-        UniqueJudgementUtils uniqueJudgementUtils = new UniqueJudgementUtils();
+//        UniqueJudgementUtils uniqueJudgementUtils = new UniqueJudgementUtils();
         Api api = new Api();
         BeanUtils.copyProperties(createOrEditApiDTO, api);
         if(createOrEditApiDTO.getId() == null) {
@@ -204,37 +194,53 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
     @Override
     public FilterMapResponse filterMap() {
         FilterMapResponse filterMapResponse = new FilterMapResponse();
-        Map<Map<String,String>,Map<String,String>> result = new HashMap<>();
         List<Api> apiList = apiMapper.selectList(new ApiWrapper().groupBy("project_name").groupBy("api_group"));
-        apiList.forEach(api -> {
-            System.out.println(api);
-        });
-        String projectName = null;
-        String baseUrl = null;
-        Map<String,String> key = new HashMap<>();
-        Map<String,String> value = new HashMap<>();
-        String oldProjectName = apiList.get(0).getProjectName();
-        String oldBaseUrl = apiList.get(0).getBaseUrl();
+        String projectName = apiList.get(0).getProjectName();
+        //预处理
+        Map<String,List<Api>> map = new HashMap<>();
+        List<Api> apis = new ArrayList<>();
+
         for (Api api : apiList) {
-            projectName = api.getProjectName();
-            baseUrl = api.getBaseUrl();
-            if(api.getProjectName().equals(oldProjectName)){
-                String merge = api.getApiName() + " " + api.getApiPath();
-                value.put(api.getApiGroup(),merge);
+            if(api.getProjectName().equals(projectName)){
+                apis.add(api);
             }else{
-                key.put(oldProjectName,oldBaseUrl);
-                result.put(key,value);
-                oldProjectName = api.getProjectName();
-                oldBaseUrl = api.getBaseUrl();
-                key = new HashMap<>();
-                value = new HashMap<>();
-                String merge = api.getApiName() + " " + api.getApiPath();
-                value.put(api.getApiGroup(),merge);
+                map.put(projectName,apis);
+                projectName = api.getProjectName();
+                apis = new ArrayList<>();
+                apis.add(api);
             }
         }
-        key.put(projectName,baseUrl);
-        result.put(key,value);
-        filterMapResponse.setFilterMap(result);
+        map.put(projectName,apis);
+
+        List<LevelOne> options = new ArrayList<>();
+        for(String pn : map.keySet()){
+            List<Api> record = map.get(pn);
+            LevelOne levelOne = new LevelOne();
+            levelOne.setLabel(pn);
+            levelOne.setValue(pn);
+            List<LevelTwo> listTwo = new ArrayList<>();
+            for (Api api : record) {
+                List<Api> groupApi = apiMapper.selectList(new ApiWrapper().eq("project_name",pn).eq("api_group",api.getApiGroup()));
+                LevelTwo levelTwo = new LevelTwo();
+                levelTwo.setLabel(api.getApiGroup());
+                levelTwo.setValue(api.getApiGroup());
+                List<LevelThree> listThree = new ArrayList<>();
+                for (Api two : groupApi) {
+                    Api last = apiMapper.selectOne(new ApiWrapper().eq("project_name",pn).eq("api_group",two.getApiGroup()).eq("api_path",two.getApiPath()));
+                    String merge = last.getApiName() + " " + last.getApiPath();
+                    LevelThree levelThree = new LevelThree();
+                    levelThree.setValue(merge);
+                    levelThree.setLabel(merge);
+                    listThree.add(levelThree);
+                }
+                listTwo.add(levelTwo);
+                levelTwo.setChildren(listThree);
+            }
+            levelOne.setChildren(listTwo);
+            options.add(levelOne);
+        }
+        FilterMapResponse filterMapResponse1 = new FilterMapResponse();
+        filterMapResponse.setOptions(options);
         return filterMapResponse;
     }
 

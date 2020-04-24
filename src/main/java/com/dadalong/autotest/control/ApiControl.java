@@ -5,12 +5,10 @@ import cn.com.dbapp.slab.common.model.dto.CollectionResponse;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.api.*;
+import com.dadalong.autotest.model.response.FilterMapResponse;
 import com.dadalong.autotest.service.IApiService;
-import com.dadalong.autotest.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -19,8 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Api(value="/", description = "这是接口管理下的全部接口")
@@ -96,5 +92,9 @@ public class ApiControl {
 
     }
 
-
+    @ApiOperation(value="filterMap",httpMethod = "GET")
+    @GetMapping("/filterMap")
+    public FilterMapResponse filterMap() {
+        return iApiService.filterMap();
+    }
 }

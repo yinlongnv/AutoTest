@@ -38,6 +38,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Resource
     private UserMapper userMapper;
 
+    @Resource
+    UniqueJudgementUtils uniqueJudgementUtils;
+
     /**
      * 设置每页10条记录
      */
@@ -94,33 +97,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
      */
     @Override
     public void createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO) {
-        UniqueJudgementUtils uniqueJudgementUtils = new UniqueJudgementUtils();
-//        UserWrapper userWrapper = new UserWrapper();
+//        UniqueJudgementUtils uniqueJudgementUtils = new UniqueJudgementUtils();
         User user = new User();
-        //随机生成用户编号
-        CreateUserNumberUtils createUserNumberUtils = new CreateUserNumberUtils();
-//        user.setUsername(createOrEditUserDTO.getUsername());
-//        user.setRole(createOrEditUserDTO.getRole());
-//        user.setIdNumber(createOrEditUserDTO.getIdNumber());
-//        user.setPhoneNumber(createOrEditUserDTO.getPhoneNumber());
-//        user.setEmail(createOrEditUserDTO.getEmail());
-//        user.setPassword(createOrEditUserDTO.getPassword());
+        System.out.println("+++++++++++++变身前username" + createOrEditUserDTO.getUsername());
+        System.out.println("+++++++++++++变身前id" + createOrEditUserDTO.getId());
         BeanUtils.copyProperties(createOrEditUserDTO, user);
-//         user = ConverterUtil.getTranslate(createOrEditUserDTO, new User());
-//        if (!uniqueJudgementUtils.ifUsernameExist(createOrEditUserDTO.getUsername())) {
-//            saveOrUpdate(user);
-//        } else {
-//            throw new ConflictException("用户名已存在");
-//        }
+        System.out.println("+++++++++++++变身后username" + user.getUsername());
+        System.out.println("+++++++++++++变身后id" + user.getId());
         if(createOrEditUserDTO.getId() == null) {
+            System.out.println("+++++++++++++判断前" + user.getUsername());
             if (!uniqueJudgementUtils.ifUsernameExist(user.getUsername())) {
+                //随机生成用户编号
+                System.out.println("------------------" + user.getUsername());
+                CreateUserNumberUtils createUserNumberUtils = new CreateUserNumberUtils();
+                System.out.println("------------------" + createUserNumberUtils.createUserNumber());
                 user.setUserNumber(createUserNumberUtils.createUserNumber());
+                System.out.println("+++++++++++++++++++" + user.getUserNumber());
                 user.setUserId(createOrEditUserDTO.getUserId());
                 userMapper.insert(user);
             } else {
                 throw new ConflictException("用户名已存在");
             }
         } else if (!uniqueJudgementUtils.ifUsernameExist(user.getUsername())){
+            System.out.println("+++++++++++++++++++判断后" + user.getId());
             user.setId(createOrEditUserDTO.getId());
             userMapper.updateById(user);
         } else {
