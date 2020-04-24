@@ -16,7 +16,7 @@ public class TestCaseListResponse {
     private String createdBy;//3创建人用户名 + user_id
     private String username;//4执行人用户名 + execute_by_user_id
     private Date lastExecuteTime;//5最近一次执行时间 updated_at
-    private String executeStatus;//6执行状态
-    private String executeCount;//7执行次数
+    private Integer executeStatus;//6执行状态
+    private Integer executeCount;//7执行次数
 
 }

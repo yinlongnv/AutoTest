@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.response.ApiListResponse;
-import com.dadalong.autotest.model.user.*;
+import com.dadalong.autotest.model.api.*;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.service.IUserService;
 import io.swagger.annotations.Api;
@@ -52,23 +52,34 @@ public class ApiControl {
     @GetMapping("/getProjectNameList")
     public TypedApiResponse getProjectNameList(){
         List<String> projectNameList = iApiService.getProjectNameList();
-        return TypedApiResponse.ok().message("listWithSearch-success").data(projectNameList);
+        return TypedApiResponse.ok().message("projectNameList-success").data(projectNameList);
     }
 
+    @ApiOperation(value="获取所有所属分组筛选项列表",httpMethod = "GET")
+    @GetMapping("/getApiGroupList")
+    public TypedApiResponse getApiGroupList(){
+        List<String> apiGroupList = iApiService.getApiGroupList();
+        return TypedApiResponse.ok().message("apiGroupList-success").data(apiGroupList);
+    }
 
-    @ApiOperation(value="创建/编辑账号", httpMethod = "POST")
+    @ApiOperation(value="获取所有请求方法筛选项列表",httpMethod = "GET")
+    @GetMapping("/getReqMethodList")
+    public TypedApiResponse getReqMethodList(){
+        List<String> reqMethodList = iApiService.getProjectNameList();
+        return TypedApiResponse.ok().message("reqMethodList-success").data(reqMethodList);
+    }
+
+    @ApiOperation(value="创建/编辑接口", httpMethod = "POST")
     @PostMapping("/createOrEdit")
-    public @ResponseBody TypedApiResponse createOrEditUser(@RequestBody CreateOrEditUserDTO createOrEditUserDTO){
-        iApiService.createOrEditApi(createOrEditUserDTO);
+    public @ResponseBody TypedApiResponse createOrEditApi(@RequestBody CreateOrEditApiDTO createOrEditApiDTO){
+        iApiService.createOrEditApi(createOrEditApiDTO);
         return TypedApiResponse.ok().message("createOrEdit-success");
     }
 
-    //不做userIds判空了
-
-    @ApiOperation(value="(批量)删除账号",httpMethod = "POST")
+    @ApiOperation(value="(批量)删除接口",httpMethod = "POST")
     @PostMapping("/delete")
     public @ResponseBody TypedApiResponse delete(@RequestBody BatchDTO batchDTO){
-        iApiService.deleteBatch(batchDTO.getUserIds());
+        iApiService.deleteBatch(batchDTO.getApiIds());
         return TypedApiResponse.ok().message("delete-success");
     }
 

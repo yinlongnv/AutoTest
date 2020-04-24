@@ -16,7 +16,9 @@ import com.dadalong.autotest.bean.v1.pojo.Api;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
+import com.dadalong.autotest.model.api.CreateOrEditApiDTO;
 import com.dadalong.autotest.model.response.ApiListResponse;
+import com.dadalong.autotest.model.response.ApiNameListResponse;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.model.user.LoginDTO;
 import com.dadalong.autotest.service.IApiService;
@@ -58,7 +60,7 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiServiceImpl.class);
 
     /**
-     * 获取用户列表，包含筛选查询
+     * 获取接口列表，包含筛选查询
      * @param searchRequest
      * @return
      */
@@ -95,6 +97,10 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
         }
     }
 
+    /**
+     * 获取所有接口业务筛选项列表
+     * @return
+     */
     @Override
     public List<String> getProjectNameList() {
         ApiWrapper wrapper = new ApiWrapper();
@@ -106,14 +112,60 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
     }
 
     @Override
-    public void createOrEditApi(CreateOrEditUserDTO createOrEditUserDTO) {
+    public List<String> getApiGroupList() {
+        ApiWrapper wrapper = new ApiWrapper();
+        List<String> apiGroupList = new ArrayList<>();
+        apiMapper.selectList(wrapper.getApiGroup()).forEach(api -> {
+            apiGroupList.add(api.getApiGroup());
+        });
+        return apiGroupList;
+    }
 
+    /**
+     * 获取所有请求方法筛选项列表
+     * @return
+     */
+    @Override
+    public List<String> getReqMethodList() {
+        ApiWrapper wrapper = new ApiWrapper();
+        List<String> reqMethodList = new ArrayList<>();
+        apiMapper.selectList(wrapper.getReqMethod()).forEach(api -> {
+            reqMethodList.add(api.getReqMethod());
+        });
+        return reqMethodList;
     }
 
     @Override
-    public void deleteBatch(List<Integer> userIds) {
+    public List<ApiNameListResponse> getApiNameList() {
+        ApiWrapper wrapper = new ApiWrapper();
+        List<ApiNameListResponse> apiNameListResponses = new ArrayList<>();
+        apiMapper.selectList(wrapper.getApiName()).forEach(api -> {
+            ApiNameListResponse apiNameListResponse = new ApiNameListResponse();
+            apiNameListResponse.setApiId(api.getId());
+            apiNameListResponse.setApiName(api.getApiName());
+            apiNameListResponses.add(apiNameListResponse);
+        });
+        return apiNameListResponses;
+    }
+
+    @Override
+    public void createOrEditApi(CreateOrEditApiDTO createOrEditApiDTO) {
 
     }
+
+    /**
+     * (批量)删除接口
+     * @param apiIds
+     */
+    @Override
+    public void deleteBatch(List<Integer> apiIds) {
+        try {
+            removeByIds(apiIds);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public String handleUploadedFile(MultipartFile file) throws IOException {

@@ -52,6 +52,11 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiServiceImpl.class);
 
+    /**
+     * 获取用例列表，包含筛选查询
+     * @param searchRequest
+     * @return
+     */
     @Override
     public IPage<TestCaseListResponse> listWithSearch(SearchRequest searchRequest) {
         try {
@@ -83,6 +88,19 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         }catch (Exception e){
             LOGGER.error("listWithSearchError",e);
             throw new ConflictException("listWithSearchError");//暂时没啥用
+        }
+    }
+
+    /**
+     * (批量)删除用例
+     * @param caseIds
+     */
+    @Override
+    public void deleteBatch(List<Integer> caseIds) {
+        try {
+            removeByIds(caseIds);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

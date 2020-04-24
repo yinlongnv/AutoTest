@@ -6,8 +6,11 @@ import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dadalong.autotest.model.response.ApiListResponse;
+import com.dadalong.autotest.model.response.ApiNameListResponse;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
+import com.dadalong.autotest.model.testCase.BatchDTO;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
+import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.service.ITestCaseService;
 import com.dadalong.autotest.service.IUserService;
 import io.swagger.annotations.Api;
@@ -15,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Api(value="/", description = "这是用例管理下的全部接口")
 @RestController
@@ -22,10 +26,12 @@ import javax.servlet.http.HttpServletRequest;
 public class TestCaseControl {
 
     private final ITestCaseService iTestCaseService;
+    private final IApiService iApiService;
     private final HttpServletRequest request;
 
-    public TestCaseControl(ITestCaseService iTestCaseService, HttpServletRequest request){
+    public TestCaseControl(ITestCaseService iTestCaseService, IApiService iApiService, HttpServletRequest request){
         this.iTestCaseService = iTestCaseService;
+        this.iApiService = iApiService;
         this.request = request;
     }
 
@@ -41,34 +47,18 @@ public class TestCaseControl {
         return TypedApiResponse.ok().message("listWithSearch-success").data(response);
     }
 
-//    @ApiOperation(value="删除账号",httpMethod = "POST")
-//    @PostMapping("/delete")
-//    public String deleteBatch(@RequestBody BatchDTO batchDTO){
-//        iUserService.deleteBatch(batchDTO.getUserNumbers());
-//        return "删除成功";
-//    }
-//
-//    @ApiOperation(value="批量禁用账号",httpMethod = "POST")
-//    @PostMapping("/disable")
-//    public String disableBatch(@RequestBody BatchDTO batchDTO){
-//        iUserService.disableBatch(batchDTO.getUserNumbers());
-//        return "禁用成功";
-//    }
-//
-//    @PostMapping("/enable")
-//    public String enableBatch(@RequestBody BatchDTO batchDTO){
-//        iUserService.enableBatch(batchDTO.getUserNumbers());
-//        return "恢复成功";
-//    }
+    @ApiOperation(value="获取所有关联接口筛选项列表",httpMethod = "GET")
+    @GetMapping("/getApiNameList")
+    public TypedApiResponse getApiNameList(){
+        List<ApiNameListResponse> apiNameListResponses = iApiService.getApiNameList();
+        return TypedApiResponse.ok().message("apiNameList-success").data(apiNameListResponses);
+    }
 
-//    @GetMapping("/filter-role")
-//    public @ResponseBody List filterRole(String role){
-//        return iUserService.filterRole(role);
-//    }
-//
-//    @GetMapping("/filter-name")
-//    public @ResponseBody List searchByName(String name){
-//        return iUserService.searchByName(name);
-//    }
+    @ApiOperation(value="(批量)删除用例",httpMethod = "POST")
+    @PostMapping("/delete")
+    public @ResponseBody TypedApiResponse delete(@RequestBody BatchDTO batchDTO){
+        iTestCaseService.deleteBatch(batchDTO.getCaseIds());
+        return TypedApiResponse.ok().message("delete-success");
+    }
 
 }

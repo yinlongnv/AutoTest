@@ -21,5 +21,10 @@ public interface ITestCaseService {
      */
     public IPage<TestCaseListResponse> listWithSearch(SearchRequest searchRequest);
 
+    /**
+     * (批量)删除用例
+     * @param caseIds
+     */
+    public void deleteBatch(List<Integer> caseIds);
 
 }

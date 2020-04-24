@@ -34,7 +34,7 @@ public class TestCase extends Datetime {
     /**
      * 执行状态
      */
-    private Boolean executeStatus;
+    private Integer executeStatus;
 
     /**
      * 用例内容

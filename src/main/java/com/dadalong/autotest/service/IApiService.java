@@ -1,11 +1,12 @@
 package com.dadalong.autotest.service;
 
-
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dadalong.autotest.bean.v1.pojo.Api;
 import com.dadalong.autotest.bean.v1.pojo.User;
+import com.dadalong.autotest.model.api.CreateOrEditApiDTO;
 import com.dadalong.autotest.model.response.ApiListResponse;
+import com.dadalong.autotest.model.response.ApiNameListResponse;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.model.user.LoginDTO;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,16 +33,34 @@ public interface IApiService {
     public List<String> getProjectNameList();
 
     /**
-     * 创建/编辑接口，以Id区分是创建还是编辑
-     * @param createOrEditUserDTO 从前端传回来的json格式数据转换的对象
+     * 获取所有所属分组筛选项列表
+     * @return
      */
-    public void createOrEditApi(CreateOrEditUserDTO createOrEditUserDTO);
+    public List<String> getApiGroupList();
 
     /**
-     * (批量)删除用户
-     * @param userIds
+     * 获取所有请求方法筛选项列表
+     * @return
      */
-    public void deleteBatch(List<Integer> userIds);
+    public List<String> getReqMethodList();
+
+    /**
+     * 获取所有接口名称筛选项列表
+     * @return
+     */
+    public List<ApiNameListResponse> getApiNameList();
+
+    /**
+     * 创建/编辑接口，以Id区分是创建还是编辑
+     * @param createOrEditApiDTO 从前端传回来的json格式数据转换的对象
+     */
+    public void createOrEditApi(CreateOrEditApiDTO createOrEditApiDTO);
+
+    /**
+     * (批量)删除接口
+     * @param apiIds
+     */
+    public void deleteBatch(List<Integer> apiIds);
 
     /**
      * 接收上传的json文件
