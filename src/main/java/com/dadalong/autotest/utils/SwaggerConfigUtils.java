@@ -1,4 +1,4 @@
-package com.dadalong.autotest.config;
+package com.dadalong.autotest.utils;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @Configuration
 @EnableSwagger2
-public class SwaggerConfig {
+public class SwaggerConfigUtils {
 
     @Bean
     public Docket api() {
@@ -41,9 +41,9 @@ public class SwaggerConfig {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("我的接口文档")//接口文档标题
+        return new ApiInfoBuilder().title("演训产品中心API文档")//接口文档标题
                 .contact(new Contact("dadalong","","yinlongnv@foxmail.com"))//创建者信息
-                .description("这是大大龙的接口文档")//接口文档描述
+                .description("包含演训产品中心API自动化测试平台涉及到的所有接口信息")//接口文档描述
                 .version("1.0.0.0")//接口文档版本号
                 .build();
     }

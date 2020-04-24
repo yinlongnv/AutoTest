@@ -58,7 +58,6 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
     public IPage<ApiListResponse> listWithSearch(SearchRequest searchRequest){
         try {
             ApiWrapper wrapper = new ApiWrapper();
-//            UserWrapper userWrapper = new UserWrapper();
             wrapper.ofListWithSearch(searchRequest);
             List<ApiListResponse> apiListResponseList = new ArrayList<>();
 
@@ -66,14 +65,7 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
             IPage<Api> apiResults = apiMapper.selectPage(apiSlabPage,wrapper);
             for (Api record : apiResults.getRecords()) {
                 User user = userMapper.selectById(record.getUserId());
-//                ApiListResponse apiListResponse = ConverterUtil.getTranslate(record, new ApiListResponse());
                 ApiListResponse apiListResponse = new ApiListResponse();
-//                apiListResponse.setId(record.getId());
-//                apiListResponse.setApiPath(record.getApiPath());
-//                apiListResponse.setApiName(record.getApiName());
-//                apiListResponse.setReqMethod(record.getReqMethod());
-//                apiListResponse.setProjectName(record.getProjectName());
-//                apiListResponse.setApiGroup(record.getApiGroup());
                 BeanUtils.copyProperties(record, apiListResponse);
                 apiListResponse.setCreatedBy(user.getUsername());
                 apiListResponseList.add(apiListResponse);
@@ -86,57 +78,6 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
             LOGGER.error("listWithSearchError",e);
             throw new ConflictException("listWithSearchError");//暂时没啥用
         }
-    }
-
-    /**
-     * 获取所有接口业务筛选项列表
-     * @return
-     */
-    @Override
-    public List<String> getProjectNameList() {
-        ApiWrapper wrapper = new ApiWrapper();
-        List<String> projectNameList = new ArrayList<>();
-        apiMapper.selectList(wrapper.getProjectName()).forEach(api -> {
-            projectNameList.add(api.getProjectName());
-        });
-        return projectNameList;
-    }
-
-    @Override
-    public List<String> getApiGroupList() {
-        ApiWrapper wrapper = new ApiWrapper();
-        List<String> apiGroupList = new ArrayList<>();
-        apiMapper.selectList(wrapper.getApiGroup()).forEach(api -> {
-            apiGroupList.add(api.getApiGroup());
-        });
-        return apiGroupList;
-    }
-
-    /**
-     * 获取所有请求方法筛选项列表
-     * @return
-     */
-    @Override
-    public List<String> getReqMethodList() {
-        ApiWrapper wrapper = new ApiWrapper();
-        List<String> reqMethodList = new ArrayList<>();
-        apiMapper.selectList(wrapper.getReqMethod()).forEach(api -> {
-            reqMethodList.add(api.getReqMethod());
-        });
-        return reqMethodList;
-    }
-
-    @Override
-    public List<ApiNameListResponse> getApiNameList() {
-        ApiWrapper wrapper = new ApiWrapper();
-        List<ApiNameListResponse> apiNameListResponses = new ArrayList<>();
-        apiMapper.selectList(wrapper.getApiName()).forEach(api -> {
-            ApiNameListResponse apiNameListResponse = new ApiNameListResponse();
-            apiNameListResponse.setApiId(api.getId());
-            apiNameListResponse.setApiName(api.getApiName());
-            apiNameListResponses.add(apiNameListResponse);
-        });
-        return apiNameListResponses;
     }
 
     /**
@@ -191,6 +132,10 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
         return apiListResponse;
     }
 
+    /**
+     * 提取“所属业务+环境域名-所属分组-接口名称+接口路径”级联筛选
+     * @return
+     */
     @Override
     public FilterMapResponse filterMap() {
         FilterMapResponse filterMapResponse = new FilterMapResponse();
@@ -239,7 +184,6 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
             levelOne.setChildren(listTwo);
             options.add(levelOne);
         }
-        FilterMapResponse filterMapResponse1 = new FilterMapResponse();
         filterMapResponse.setOptions(options);
         return filterMapResponse;
     }

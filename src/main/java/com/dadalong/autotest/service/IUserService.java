@@ -4,6 +4,7 @@ package com.dadalong.autotest.service;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dadalong.autotest.bean.v1.pojo.User;
+import com.dadalong.autotest.model.response.UserListResponse;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.model.user.LoginDTO;
 import io.swagger.models.auth.In;
@@ -25,7 +26,7 @@ public interface IUserService {
      * @param searchRequest
      * @return
      */
-    public IPage<User> listWithSearch(SearchRequest searchRequest);
+    public IPage<UserListResponse> listWithSearch(SearchRequest searchRequest);
 
     /**
      * 创建/编辑用户，以Id区分是创建还是编辑

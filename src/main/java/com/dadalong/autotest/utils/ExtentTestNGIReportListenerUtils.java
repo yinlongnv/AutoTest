@@ -1,4 +1,4 @@
-package com.dadalong.autotest.testng;
+package com.dadalong.autotest.utils;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
@@ -15,10 +15,10 @@ import java.io.File;
 import java.util.*;
 
 //更改设置显示必须翻墙才能显示的ExtentReports测试报告页面
-public class ExtentTestNGIReportListener implements IReporter {
+public class ExtentTestNGIReportListenerUtils implements IReporter {
     //生成的路径以及文件名
     private static final String OUTPUT_FOLDER = "test-output/";
-    private static final String FILE_NAME = "index.html";
+    private static final String FILE_NAME = "extent-reports.html";
 
     private ExtentReports extent;
 
@@ -113,8 +113,8 @@ public class ExtentTestNGIReportListener implements IReporter {
         //怎么样解决cdn.rawgit.com访问不了的情况
         htmlReporter.config().setResourceCDN(ResourceCDN.EXTENTREPORTS);
 
-        htmlReporter.config().setDocumentTitle("api自动化测试报告");
-        htmlReporter.config().setReportName("api自动化测试报告");
+        htmlReporter.config().setDocumentTitle("演训产品中心API");
+        htmlReporter.config().setReportName("演训API自动化测试报告");
         htmlReporter.config().setChartVisibilityOnOpen(true);
         htmlReporter.config().setTestViewChartLocation(ChartLocation.TOP);
         htmlReporter.config().setTheme(Theme.STANDARD);

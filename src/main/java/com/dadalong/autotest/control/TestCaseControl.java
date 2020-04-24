@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@Api(value="/", description = "这是用例管理下的全部接口")
+@Api(value="/", description = "用例管理下的全部接口")
 @RestController
 @RequestMapping("/case")
 public class TestCaseControl {
@@ -45,13 +45,6 @@ public class TestCaseControl {
         //构造响应体pageInfo+tbody形式
         CollectionResponse response = new CollectionResponse<>(pages, new TestCaseListResponse());
         return TypedApiResponse.ok().message("listWithSearch-success").data(response);
-    }
-
-    @ApiOperation(value="获取所有关联接口筛选项列表",httpMethod = "GET")
-    @GetMapping("/getApiNameList")
-    public TypedApiResponse getApiNameList(){
-        List<ApiNameListResponse> apiNameListResponses = iApiService.getApiNameList();
-        return TypedApiResponse.ok().message("apiNameList-success").data(apiNameListResponses);
     }
 
     @ApiOperation(value="(批量)删除用例",httpMethod = "POST")

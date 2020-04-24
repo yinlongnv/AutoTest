@@ -11,6 +11,7 @@ import com.dadalong.autotest.bean.v1.mapper.UserMapper;
 import com.dadalong.autotest.bean.v1.model.ApiData;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
+import com.dadalong.autotest.model.response.UserListResponse;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.model.user.LoginDTO;
 import com.dadalong.autotest.service.IUserService;
@@ -79,16 +80,38 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
      * @param searchRequest
      * @return
      */
-    public IPage<User> listWithSearch(SearchRequest searchRequest){
+    public IPage<UserListResponse> listWithSearch(SearchRequest searchRequest){
         try {
             UserWrapper wrapper = new UserWrapper();
             wrapper.ofListWithSearch(searchRequest);
-            SlabPage<User> userSlabPage = new SlabPage<>(searchRequest);
-            return page(userSlabPage, wrapper);
+            List<UserListResponse> userListResponseList = new ArrayList<>();
+
+            SlabPage<User> apiSlabPage = new SlabPage<>(searchRequest);
+            IPage<User> userResults = userMapper.selectPage(apiSlabPage,wrapper);
+            for (User record : userResults.getRecords()) {
+                User user = userMapper.selectById(record.getUserId());
+                UserListResponse userListResponse = new UserListResponse();
+                BeanUtils.copyProperties(record, userListResponse);
+                userListResponse.setCreatedBy(user.getUsername());
+                userListResponseList.add(userListResponse);
+            }
+            SlabPage<UserListResponse> userListResponseSlabPage = new SlabPage<>(searchRequest);
+            userListResponseSlabPage.setRecords(userListResponseList);
+            userListResponseSlabPage.setTotal(userResults.getTotal());
+            return userListResponseSlabPage;
         }catch (Exception e){
             LOGGER.error("listWithSearchError",e);
             throw new ConflictException("listWithSearchError");//暂时没啥用
         }
+//        try {
+//            UserWrapper wrapper = new UserWrapper();
+//            wrapper.ofListWithSearch(searchRequest);
+//            SlabPage<UserListResponse> userSlabPage = new SlabPage<>(searchRequest);
+//            return page(userSlabPage, wrapper);
+//        }catch (Exception e){
+//            LOGGER.error("listWithSearchError",e);
+//            throw new ConflictException("listWithSearchError");//暂时没啥用
+//        }
     }
 
     /**

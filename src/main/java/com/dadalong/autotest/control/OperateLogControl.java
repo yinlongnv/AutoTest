@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Api(value="/", description = "这是操作日志管理下的全部接口")
+@Api(value="/", description = "操作日志管理下的全部接口")
 @RestController
 @RequestMapping("/operateLog")
 public class OperateLogControl {

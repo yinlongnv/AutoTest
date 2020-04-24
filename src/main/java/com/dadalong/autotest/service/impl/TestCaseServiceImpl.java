@@ -76,7 +76,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 BeanUtils.copyProperties(record, testCaseListResponse);
                 testCaseListResponse.setCreatedBy(createdBy.getUsername());
                 testCaseListResponse.setUsername(username.getUsername());
-                testCaseListResponse.setLastExecuteTime(record.getUpdatedAt());//时间未格式化
+                testCaseListResponse.setLastExecuteTime(record.getUpdatedAt());
                 testCaseListResponse.setApiName(api.getApiName());
                 testCaseListResponseList.add(testCaseListResponse);
             }
@@ -109,7 +109,9 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
         TestCase testCase = testCaseMapper.selectById(id);
         BeanUtils.copyProperties(testCase, testCaseListResponse);
-
+        Api api = apiMapper.selectById(testCase.getApiId());
+        BeanUtils.copyProperties(api, testCaseListResponse);
+        System.out.println("+++++++++++++++++++++用例描述"+ testCaseListResponse.getCaseDescription());
         return testCaseListResponse;
     }
 

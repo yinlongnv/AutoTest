@@ -20,7 +20,7 @@
     <!--添加监听器-->
     <listeners>
         <!--<listener class-name="com.vimalselvam.testng.listener.ExtentTestNgFormatter"></listener>-->
-        <listener class-name="com.dadalong.autotest.testng.ExtentTestNGIReportListener" />
+        <listener class-name="com.dadalong.autotest.utils.ExtentTestNGIReportListenerUtils" />
     </listeners>
 
 </suite>

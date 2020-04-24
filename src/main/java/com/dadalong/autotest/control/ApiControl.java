@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
-@Api(value="/", description = "这是接口管理下的全部接口")
+@Api(value="/", description = "接口管理下的全部接口")
 @RestController
 @RequestMapping("/api")
 public class ApiControl {
@@ -42,27 +42,6 @@ public class ApiControl {
         //构造响应体pageInfo+tbody形式
         CollectionResponse response = new CollectionResponse<>(pages, new ApiListResponse());
         return TypedApiResponse.ok().message("listWithSearch-success").data(response);
-    }
-
-    @ApiOperation(value="获取所有接口业务筛选项列表",httpMethod = "GET")
-    @GetMapping("/getProjectNameList")
-    public TypedApiResponse getProjectNameList(){
-        List<String> projectNameList = iApiService.getProjectNameList();
-        return TypedApiResponse.ok().message("projectNameList-success").data(projectNameList);
-    }
-
-    @ApiOperation(value="获取所有所属分组筛选项列表",httpMethod = "GET")
-    @GetMapping("/getApiGroupList")
-    public TypedApiResponse getApiGroupList(){
-        List<String> apiGroupList = iApiService.getApiGroupList();
-        return TypedApiResponse.ok().message("apiGroupList-success").data(apiGroupList);
-    }
-
-    @ApiOperation(value="获取所有请求方法筛选项列表",httpMethod = "GET")
-    @GetMapping("/getReqMethodList")
-    public TypedApiResponse getReqMethodList(){
-        List<String> reqMethodList = iApiService.getProjectNameList();
-        return TypedApiResponse.ok().message("reqMethodList-success").data(reqMethodList);
     }
 
     @ApiOperation(value="创建/编辑接口", httpMethod = "POST")

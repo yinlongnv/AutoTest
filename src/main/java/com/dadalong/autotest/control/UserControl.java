@@ -7,6 +7,7 @@ import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.pojo.User;
+import com.dadalong.autotest.model.response.UserListResponse;
 import com.dadalong.autotest.model.user.*;
 import com.dadalong.autotest.service.IUserService;
 import io.swagger.annotations.Api;
@@ -19,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Collection;
 
-@Api(value="/", description = "这是用户管理下的全部接口")
+@Api(value="/", description = "用户管理下的全部接口")
 @RestController
 @RequestMapping("/user")
 public class UserControl {
@@ -49,9 +50,9 @@ public class UserControl {
         //提取请求中的参数到map中
         SearchRequest searchRequest = new SearchRequest(request);
         //将分页信息和筛选查询到的用户列表信息引入pages
-        IPage<User> pages = iUserService.listWithSearch(searchRequest);
+        IPage<UserListResponse> pages = iUserService.listWithSearch(searchRequest);
         //构造响应体pageInfo+tbody形式
-        CollectionResponse response = new CollectionResponse<>(pages, new User());
+        CollectionResponse response = new CollectionResponse<>(pages, new UserListResponse());
         return TypedApiResponse.ok().message("listWithSearch-success").data(response);
     }
 
