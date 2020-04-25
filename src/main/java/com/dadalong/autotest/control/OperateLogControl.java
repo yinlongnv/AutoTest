@@ -5,6 +5,7 @@ import cn.com.dbapp.slab.common.model.dto.CollectionResponse;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.response.LogListResponse;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.service.IOperateLogService;
@@ -14,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Api(value="/", description = "操作日志管理下的全部接口")
 @RestController
@@ -40,4 +42,9 @@ public class OperateLogControl {
         return TypedApiResponse.ok().message("listWithSearch-success").data(response);
     }
 
+    @ApiOperation(value="获取用户名筛选列表",httpMethod = "GET")
+    @GetMapping("/getUserList")
+    public List<User> getUserList() {
+        return iOperateLogService.getUserList();
+    }
 }

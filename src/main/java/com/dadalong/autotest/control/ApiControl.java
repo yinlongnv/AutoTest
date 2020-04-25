@@ -71,7 +71,7 @@ public class ApiControl {
 
     }
 
-    @ApiOperation(value="filterMap",httpMethod = "GET")
+    @ApiOperation(value="获取三级级联",httpMethod = "GET")
     @GetMapping("/filterMap")
     public FilterMapResponse filterMap() {
         return iApiService.filterMap();

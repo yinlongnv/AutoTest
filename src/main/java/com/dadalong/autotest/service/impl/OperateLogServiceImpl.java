@@ -37,6 +37,7 @@ public class OperateLogServiceImpl implements IOperateLogService {
     private OperateLogMapper operateLogMapper;
     @Resource
     private UserMapper userMapper;
+
     /**
      * 设置每页10条记录
      */
@@ -67,5 +68,12 @@ public class OperateLogServiceImpl implements IOperateLogService {
             LOGGER.error("listWithSearchError",e);
             throw new ConflictException("listWithSearchError");//暂时没啥用
         }
+    }
+
+    @Override
+    public List<User> getUserList() {
+        UserWrapper userWrapper = new UserWrapper();
+        userWrapper.getUserList();
+       return userMapper.selectList(userWrapper);
     }
 }

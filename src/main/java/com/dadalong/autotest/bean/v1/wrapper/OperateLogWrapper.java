@@ -20,10 +20,10 @@ public class OperateLogWrapper extends QueryWrapper<OperateLog> {
         Map<String,Object> map = request.getSearch();
         Object search = map.get("logInfo");
         if (search != null && StringUtils.isNotBlank(search.toString())) {
-            this.like("log_content", search.toString());
+            this.like("log_content", search.toString()).or().like("operate_path", search.toString());
         }
-//        Object projectName = map.get("projectName");
-//        this.ofProjectName(projectName);
+        Object userId = map.get("userId");
+        this.ofUserId(userId);
 //        Object apiGroup = map.get("apiGroup");
 //        this.ofApiGroup(apiGroup);
 //        Object reqMethod = map.get("reqMethod");
@@ -31,6 +31,17 @@ public class OperateLogWrapper extends QueryWrapper<OperateLog> {
         return this;
     }
 
-
+    /**
+     * 筛选用户id
+     * @param userId
+     * @return
+     */
+    public OperateLogWrapper ofUserId(Object userId){
+        if(userId != null && StringUtils.isNotBlank(userId.toString())){
+            System.out.println(userId.toString());
+            this.eq("user_id",Integer.parseInt(userId.toString()));
+        }
+        return this;
+    }
 
 }

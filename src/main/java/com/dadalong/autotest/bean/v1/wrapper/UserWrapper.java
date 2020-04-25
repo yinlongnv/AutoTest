@@ -45,7 +45,7 @@ public class UserWrapper extends QueryWrapper<User> {
      */
     public UserWrapper ofRole(Object role){
         if(role != null && StringUtils.isNotBlank(role.toString())){
-            System.out.println(Integer.parseInt(role.toString()));
+//            System.out.println(Integer.parseInt(role.toString()));
             this.eq("role",Integer.parseInt(role.toString()));
         }
         return this;
@@ -72,6 +72,15 @@ public class UserWrapper extends QueryWrapper<User> {
      */
     public UserWrapper ofUsername(String username) {
         this.eq("username", username);
+        return this;
+    }
+
+    /**
+     * 获取用户筛选列表，根据username去重分组
+     * @return
+     */
+    public UserWrapper getUserList() {
+        this.groupBy("username");
         return this;
     }
 

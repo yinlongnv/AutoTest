@@ -108,10 +108,16 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     public TestCaseListResponse detail(Integer id) {
         TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
         TestCase testCase = testCaseMapper.selectById(id);
+        System.out.println("+++++++++++++++++++++1用例内容："+ testCase.getCaseBody());
         BeanUtils.copyProperties(testCase, testCaseListResponse);
         Api api = apiMapper.selectById(testCase.getApiId());
         BeanUtils.copyProperties(api, testCaseListResponse);
-        System.out.println("+++++++++++++++++++++用例描述"+ testCaseListResponse.getCaseDescription());
+        User createdBy = userMapper.selectById(testCase.getUserId());
+        User username = userMapper.selectById(testCase.getExecuteByUserId());
+        testCaseListResponse.setCreatedBy(createdBy.getUsername());
+        testCaseListResponse.setUsername(username.getUsername());
+        testCaseListResponse.setLastExecuteTime(testCase.getUpdatedAt());
+        System.out.println("+++++++++++++++++++++3用例内容："+ testCaseListResponse.getCaseBody());
         return testCaseListResponse;
     }
 

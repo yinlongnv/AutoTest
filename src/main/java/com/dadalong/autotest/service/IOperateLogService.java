@@ -20,4 +20,10 @@ public interface IOperateLogService {
      * @return
      */
     public IPage<LogListResponse> listWithSearch(SearchRequest searchRequest);
+
+    /**
+     * 获取用户筛选列表
+     * @return
+     */
+    public List<User> getUserList();
 }

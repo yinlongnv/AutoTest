@@ -24,6 +24,7 @@ public class TestCaseListResponse {
     private String apiName;//1 + api_id
     private String apiDescription;
 
+    private String caseBody;
     private String caseDescription;//2
     private String createdBy;//3创建人用户名 + user_id
     private String username;//4执行人用户名 + execute_by_user_id

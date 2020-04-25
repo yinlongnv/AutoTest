@@ -1,7 +1,10 @@
 package com.dadalong.autotest.model.response;
 
+import com.dadalong.autotest.bean.v1.pojo.TestCase;
 import com.dadalong.autotest.model.api.CreateOrEditApiDTO;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * Created by 78089 on 2020/4/24.
@@ -22,5 +25,7 @@ public class ApiListResponse {
     private String apiName;
     private String apiDescription;
     private String createdBy;//创建人用户名 + user_id
+
+    private List<TestCaseListResponse> testCaseList;
 
 }
