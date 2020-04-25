@@ -103,15 +103,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             LOGGER.error("listWithSearchError",e);
             throw new ConflictException("listWithSearchError");//暂时没啥用
         }
-//        try {
-//            UserWrapper wrapper = new UserWrapper();
-//            wrapper.ofListWithSearch(searchRequest);
-//            SlabPage<UserListResponse> userSlabPage = new SlabPage<>(searchRequest);
-//            return page(userSlabPage, wrapper);
-//        }catch (Exception e){
-//            LOGGER.error("listWithSearchError",e);
-//            throw new ConflictException("listWithSearchError");//暂时没啥用
-//        }
     }
 
     /**
@@ -120,30 +111,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
      */
     @Override
     public void createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO) {
-//        UniqueJudgementUtils uniqueJudgementUtils = new UniqueJudgementUtils();
         User user = new User();
-        System.out.println("+++++++++++++变身前username" + createOrEditUserDTO.getUsername());
-        System.out.println("+++++++++++++变身前id" + createOrEditUserDTO.getId());
         BeanUtils.copyProperties(createOrEditUserDTO, user);
-        System.out.println("+++++++++++++变身后username" + user.getUsername());
-        System.out.println("+++++++++++++变身后id" + user.getId());
         if(createOrEditUserDTO.getId() == null) {
-            System.out.println("+++++++++++++判断前" + user.getUsername());
             if (!uniqueJudgementUtils.ifUsernameExist(user.getUsername())) {
                 //随机生成用户编号
-                System.out.println("------------------" + user.getUsername());
                 CreateUserNumberUtils createUserNumberUtils = new CreateUserNumberUtils();
-                System.out.println("------------------" + createUserNumberUtils.createUserNumber());
                 user.setUserNumber(createUserNumberUtils.createUserNumber());
-                System.out.println("+++++++++++++++++++" + user.getUserNumber());
                 user.setUserId(createOrEditUserDTO.getUserId());
                 userMapper.insert(user);
             } else {
                 throw new ConflictException("用户名已存在");
             }
-        } else if (!uniqueJudgementUtils.ifUsernameExist(user.getUsername())){
-            System.out.println("+++++++++++++++++++判断后" + user.getId());
-            user.setId(createOrEditUserDTO.getId());
+        } else if (userMapper.selectById(user.getId()).getUsername().equals(user.getUsername())){
+            userMapper.updateById(user);
+        } else if (!uniqueJudgementUtils.ifUsernameExist(user.getUsername())) {
             userMapper.updateById(user);
         } else {
             throw new ConflictException("用户名已存在");

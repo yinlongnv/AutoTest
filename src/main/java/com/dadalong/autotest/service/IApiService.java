@@ -40,12 +40,6 @@ public interface IApiService {
     public ApiListResponse detail(Integer id);
 
     /**
-     * 提取“所属业务+环境域名-所属分组-接口名称+接口路径”级联筛选
-     * @return
-     */
-    public FilterMapResponse filterMap();
-
-    /**
      * 接收上传的json文件
      * @param file
      * @return

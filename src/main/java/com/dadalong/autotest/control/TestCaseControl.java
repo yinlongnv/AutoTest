@@ -7,16 +7,19 @@ import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.response.ApiNameListResponse;
+import com.dadalong.autotest.model.response.FilterMapResponse;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
 import com.dadalong.autotest.model.testCase.BatchDTO;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.service.ITestCaseService;
 import com.dadalong.autotest.service.IUserService;
+import com.dadalong.autotest.utils.FilterMapUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -24,6 +27,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/case")
 public class TestCaseControl {
+
+    @Resource
+    FilterMapUtils filterMapUtils;
 
     private final ITestCaseService iTestCaseService;
     private final IApiService iApiService;
@@ -58,6 +64,13 @@ public class TestCaseControl {
     @GetMapping("/detail")
     public TypedApiResponse detail(Integer id){
         return TypedApiResponse.ok().message("detail-success").data(iTestCaseService.detail(id));
+    }
+
+    @ApiOperation(value="获取三级级联",httpMethod = "GET")
+    @GetMapping("/filterMap")
+    public FilterMapResponse filterMap() {
+
+        return filterMapUtils.filterMap();
     }
 
 }

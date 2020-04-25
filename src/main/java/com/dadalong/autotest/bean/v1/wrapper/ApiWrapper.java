@@ -83,39 +83,11 @@ public class ApiWrapper extends QueryWrapper<Api> {
         return this;
     }
 
-    /**
-     * 获取所有project_name并去重
-     * @return
-     */
-    public ApiWrapper getProjectName(){
-        this.groupBy("project_name");
-        return this;
-    }
-
-    /**
-     * 获取所有api_group并去重
-     * @return
-     */
-    public ApiWrapper getApiGroup(){
-        this.groupBy("api_group");
-        return this;
-    }
-
-    /**
-     * 获取所有req_method并去重
-     * @return
-     */
-    public ApiWrapper getReqMethod(){
-        this.groupBy("req_method");
-        return this;
-    }
-
-    /**
-     * 获取所有api_name并去重
-     * @return
-     */
-    public ApiWrapper getApiName(){
-        this.groupBy("api_name");
+    public ApiWrapper ofApiId(Api api){
+        this.eq("project_name", api.getProjectName())
+                .eq("api_group", api.getApiGroup())
+                .eq("api_name", api.getApiName())
+                .eq("api_path", api.getApiPath());
         return this;
     }
 

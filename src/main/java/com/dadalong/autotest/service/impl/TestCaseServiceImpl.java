@@ -18,6 +18,7 @@ import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.service.ITestCaseService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +29,7 @@ import javax.annotation.Resource;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 78089 on 2020/4/24.
@@ -60,18 +62,31 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     @Override
     public IPage<TestCaseListResponse> listWithSearch(SearchRequest searchRequest) {
         try {
-            TestCaseWrapper wrapper = new TestCaseWrapper();
+            TestCaseWrapper testCaseWrapper = new TestCaseWrapper();
+            ApiWrapper apiWrapper = new ApiWrapper();
 //            UserWrapper userWrapper = new UserWrapper();
-            wrapper.ofListWithSearch(searchRequest);
+
+            Map<String,Object> map = searchRequest.getSearch();
+            if (StringUtils.isNotBlank(map.get("projectName").toString())) {
+                Api a = new Api();
+                a.setProjectName(map.get("projectName").toString());
+                a.setApiGroup(map.get("apiGroup").toString());
+                String s[] = map.get("apiMerge").toString().split(" ");
+                a.setApiName(s[0]);
+                a.setApiPath(s[1]);
+                apiWrapper.ofApiId(a);
+                Integer apiId = apiMapper.selectOne(apiWrapper).getId();
+                searchRequest.setSearch("apiId", apiId);
+            }
+            testCaseWrapper.ofListWithSearch(searchRequest);
             List<TestCaseListResponse> testCaseListResponseList = new ArrayList<>();
 
             SlabPage<TestCase> testCaseSlabPage = new SlabPage<>(searchRequest);
-            IPage<TestCase> testCaseResults = testCaseMapper.selectPage(testCaseSlabPage,wrapper);
+            IPage<TestCase> testCaseResults = testCaseMapper.selectPage(testCaseSlabPage,testCaseWrapper);
             for (TestCase record : testCaseResults.getRecords()) {
                 User createdBy = userMapper.selectById(record.getUserId());
                 User username = userMapper.selectById(record.getExecuteByUserId());
                 Api api = apiMapper.selectById(record.getApiId());
-//                TestCaseListResponse testCaseListResponse = ConverterUtil.getTranslate(record, new TestCaseListResponse());
                 TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
                 BeanUtils.copyProperties(record, testCaseListResponse);
                 testCaseListResponse.setCreatedBy(createdBy.getUsername());

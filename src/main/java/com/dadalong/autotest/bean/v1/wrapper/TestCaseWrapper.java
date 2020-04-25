@@ -16,21 +16,16 @@ public class TestCaseWrapper extends QueryWrapper<TestCase> {
      */
     public TestCaseWrapper ofListWithSearch(SearchRequest request){
         Map<String,Object> map = request.getSearch();
-        Object search = map.get("caseDescription");
-        if (search != null && StringUtils.isNotBlank(search.toString())) {
-            this.like("case_description", search.toString());
+        Object caseDescription = map.get("caseDescription");
+        if (caseDescription != null && StringUtils.isNotBlank(caseDescription.toString())) {
+            this.like("case_description", caseDescription.toString());
         }
-        this.ofApiName(map.get("apiName"));
+        Object apiId = map.get("apiId");
+        if (apiId != null && StringUtils.isNotBlank(apiId.toString())) {
+            this.eq("api_id", Integer.parseInt(apiId.toString()));
+        }
         Object executeStatus = map.get("executeStatus");
         this.ofExecuteStatus(executeStatus);
-        return this;
-    }
-
-    public TestCaseWrapper ofApiName(Object ApiName){
-        if(ApiName != null && StringUtils.isNotBlank(ApiName.toString())){
-            System.out.println(ApiName.toString());
-            this.eq("project_name",ApiName.toString());
-        }
         return this;
     }
 
