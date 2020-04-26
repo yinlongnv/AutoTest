@@ -86,21 +86,14 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
      */
     @Override
     public void createOrEditApi(CreateOrEditApiDTO createOrEditApiDTO) {
-//        UniqueJudgementUtils uniqueJudgementUtils = new UniqueJudgementUtils();
         Api api = new Api();
-        BeanUtils.copyProperties(createOrEditApiDTO, api);
+        BeanUtils.copyProperties(createOrEditApiDTO, api, "userId");
+//        System.out.println("++++++++++userID:"+ api.getUserId());
         if(createOrEditApiDTO.getId() == null) {
-            if (!uniqueJudgementUtils.ifApiNameExist(api.getApiName())) {
-                api.setUserId(createOrEditApiDTO.getUserId());
-                apiMapper.insert(api);
-            } else {
-                throw new ConflictException("接口名称已存在");
-            }
-        } else if (!uniqueJudgementUtils.ifApiNameExist(api.getApiName())){
-            api.setId(createOrEditApiDTO.getId());
-            apiMapper.updateById(api);
+            api.setUserId(createOrEditApiDTO.getUserId());
+            apiMapper.insert(api);
         } else {
-            throw new ConflictException("接口名称已存在");
+            apiMapper.updateById(api);
         }
     }
 

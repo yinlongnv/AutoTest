@@ -59,6 +59,8 @@ public class UserWrapper extends QueryWrapper<User> {
      */
     public UserWrapper ofTime(Object startTime,Object endTime){
         if(startTime != null && endTime != null && StringUtils.isNotBlank(startTime.toString()) && StringUtils.isNotBlank(endTime.toString())){
+//            System.out.println("+++++++++++++++++++++开始时间："+startTime);
+//            System.out.println("+++++++++++++++++++++结束时间："+endTime);
             this.between("created_at",startTime,endTime);
             return this;
         }
@@ -66,7 +68,7 @@ public class UserWrapper extends QueryWrapper<User> {
     }
 
     /**
-     * 通过username查找用户
+     * 通过username查找用户，判断用户名唯一性
      * @param username
      * @return
      */

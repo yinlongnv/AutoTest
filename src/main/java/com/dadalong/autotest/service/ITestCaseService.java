@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
+import com.dadalong.autotest.model.testCase.CreateOrEditCaseDTO;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 
 import java.sql.Date;
@@ -20,6 +21,12 @@ public interface ITestCaseService {
      * @return
      */
     public IPage<TestCaseListResponse> listWithSearch(SearchRequest searchRequest);
+
+    /**
+     * 创建/编辑用例，以Id区分是创建还是编辑
+     * @param createOrEditCaseDTO 从前端传回来的json格式数据转换的对象
+     */
+    public void createOrEditCase(CreateOrEditCaseDTO createOrEditCaseDTO);
 
     /**
      * (批量)删除用例

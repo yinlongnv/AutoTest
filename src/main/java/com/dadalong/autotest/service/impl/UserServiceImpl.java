@@ -112,7 +112,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Override
     public void createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO) {
         User user = new User();
-        BeanUtils.copyProperties(createOrEditUserDTO, user);
+        BeanUtils.copyProperties(createOrEditUserDTO, user, "userId");
         if(createOrEditUserDTO.getId() == null) {
             if (!uniqueJudgementUtils.ifUsernameExist(user.getUsername())) {
                 //随机生成用户编号

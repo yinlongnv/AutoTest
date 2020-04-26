@@ -10,6 +10,7 @@ import com.dadalong.autotest.model.response.ApiNameListResponse;
 import com.dadalong.autotest.model.response.FilterMapResponse;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
 import com.dadalong.autotest.model.testCase.BatchDTO;
+import com.dadalong.autotest.model.testCase.CreateOrEditCaseDTO;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.service.ITestCaseService;
@@ -53,6 +54,13 @@ public class TestCaseControl {
         return TypedApiResponse.ok().message("listWithSearch-success").data(response);
     }
 
+    @ApiOperation(value="创建/编辑用例", httpMethod = "POST")
+    @PostMapping("/createOrEdit")
+    public @ResponseBody TypedApiResponse createOrEditApi(@RequestBody CreateOrEditCaseDTO createOrEditCaseDTO){
+        iTestCaseService.createOrEditCase(createOrEditCaseDTO);
+        return TypedApiResponse.ok().message("createOrEdit-success");
+    }
+
     @ApiOperation(value="(批量)删除用例",httpMethod = "POST")
     @PostMapping("/delete")
     public @ResponseBody TypedApiResponse delete(@RequestBody BatchDTO batchDTO){
@@ -69,7 +77,6 @@ public class TestCaseControl {
     @ApiOperation(value="获取三级级联",httpMethod = "GET")
     @GetMapping("/filterMap")
     public FilterMapResponse filterMap() {
-
         return filterMapUtils.filterMap();
     }
 

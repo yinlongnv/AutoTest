@@ -39,8 +39,10 @@ public class UserControl {
         User user = iUserService.login(loginDTO);
         if (user == null) {
             return TypedApiResponse.error().message("用户名或密码错误！");
-        } else {
+        } else if (user.getStatus() == 0){
             return TypedApiResponse.ok().message("Login Success").data(user);
+        } else {
+            return TypedApiResponse.error().message("该用户已被禁用！");
         }
     }
 

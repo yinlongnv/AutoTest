@@ -16,6 +16,7 @@ import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.TestCaseWrapper;
 import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
+import com.dadalong.autotest.model.testCase.CreateOrEditCaseDTO;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.service.ITestCaseService;
 import org.apache.commons.lang3.StringUtils;
@@ -71,9 +72,9 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 Api a = new Api();
                 a.setProjectName(map.get("projectName").toString());
                 a.setApiGroup(map.get("apiGroup").toString());
-                String s[] = map.get("apiMerge").toString().split(" ");
-                a.setApiName(s[0]);
-                a.setApiPath(s[1]);
+                String apiInfo[] = map.get("apiMerge").toString().split(" ");
+                a.setApiName(apiInfo[0]);
+                a.setApiPath(apiInfo[1]);
                 apiWrapper.ofApiId(a);
                 Integer apiId = apiMapper.selectOne(apiWrapper).getId();
                 searchRequest.setSearch("apiId", apiId);
@@ -103,6 +104,28 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         }catch (Exception e){
             LOGGER.error("listWithSearchError",e);
             throw new ConflictException("listWithSearchError");//暂时没啥用
+        }
+    }
+
+    @Override
+    public void createOrEditCase(CreateOrEditCaseDTO createOrEditCaseDTO) {
+        ApiWrapper apiWrapper = new ApiWrapper();
+        TestCase testCase = new TestCase();
+        BeanUtils.copyProperties(createOrEditCaseDTO, testCase, "userId");
+        Api api = new Api();
+        api.setProjectName(createOrEditCaseDTO.getProjectName());
+        api.setApiGroup(createOrEditCaseDTO.getApiGroup());
+        String apiInfo[] = createOrEditCaseDTO.getApiMerge().split(" ");
+        api.setApiName(apiInfo[0]);
+        api.setApiPath(apiInfo[1]);
+        apiWrapper.ofApiId(api);
+        Integer apiId = apiMapper.selectOne(apiWrapper).getId();
+        testCase.setApiId(apiId);
+        if(createOrEditCaseDTO.getId() == null) {
+            testCase.setUserId(createOrEditCaseDTO.getUserId());
+            testCaseMapper.insert(testCase);
+        } else {
+            testCaseMapper.updateById(testCase);
         }
     }
 
