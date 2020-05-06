@@ -22,7 +22,7 @@ public class OperateLog extends Datetime{
     private Integer id;
 
     /**
-     * 操作致生成该条日志的用户id
+     * 产生该操作日志之的用户id
      */
     private Integer userId;
 
@@ -32,7 +32,7 @@ public class OperateLog extends Datetime{
     private String logContent;
 
     /**
-     * 操作界面
+     * 操作界面路径
      */
     private String operatePath;
 

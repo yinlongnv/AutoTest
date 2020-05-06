@@ -68,16 +68,6 @@ public class UserWrapper extends QueryWrapper<User> {
     }
 
     /**
-     * 通过username查找用户，判断用户名唯一性
-     * @param username
-     * @return
-     */
-    public UserWrapper ofUsername(String username) {
-        this.eq("username", username);
-        return this;
-    }
-
-    /**
      * 获取用户筛选列表，根据username去重分组
      * @return
      */

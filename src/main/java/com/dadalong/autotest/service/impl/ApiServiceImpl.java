@@ -15,7 +15,6 @@ import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.model.api.CreateOrEditApiDTO;
 import com.dadalong.autotest.model.response.*;
 import com.dadalong.autotest.service.IApiService;
-import com.dadalong.autotest.utils.UniqueJudgementUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -39,9 +38,6 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
 
     @Resource
     private UserMapper userMapper;
-
-    @Resource
-    UniqueJudgementUtils uniqueJudgementUtils;
 
     /**
      * 设置每页10条记录
@@ -88,9 +84,10 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
     public void createOrEditApi(CreateOrEditApiDTO createOrEditApiDTO) {
         Api api = new Api();
         BeanUtils.copyProperties(createOrEditApiDTO, api, "userId");
-//        System.out.println("++++++++++userID:"+ api.getUserId());
+        System.out.println("++++++++++复制接口属性不传userID:"+ api.getUserId());
         if(createOrEditApiDTO.getId() == null) {
             api.setUserId(createOrEditApiDTO.getUserId());
+            System.out.println("++++++++++创建接口时给予userID:"+ api.getUserId());
             apiMapper.insert(api);
         } else {
             apiMapper.updateById(api);
