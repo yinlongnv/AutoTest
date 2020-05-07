@@ -14,4 +14,6 @@ public class OperatePathEnumUtils {
     public static final String USERDISABLE = "/user/disable";
     public static final String USERDETAIL = "/user/detail";
 
+    public static final String LOGLIST = "/operateLog/listWithSearch";
+
 }

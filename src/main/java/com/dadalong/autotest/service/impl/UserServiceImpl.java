@@ -14,7 +14,9 @@ import com.dadalong.autotest.bean.v1.pojo.OperateLog;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 import com.dadalong.autotest.model.response.UserListResponse;
+import com.dadalong.autotest.model.user.BatchDTO;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
+import com.dadalong.autotest.model.user.DetailDTO;
 import com.dadalong.autotest.model.user.LoginDTO;
 import com.dadalong.autotest.service.IUserService;
 import com.dadalong.autotest.utils.*;
@@ -58,6 +60,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             Integer loginCount = user.getLoginCount() + 1;
             user.setLoginCount(loginCount);
             userMapper.updateById(user);
+            //插入操作日志
             insertOperateLogUtils.insertOperateLog(user.getId(), LogContentEnumUtils.USERLOGIN, OperatePathEnumUtils.USERLOGIN);
             return user;
         } else {
@@ -73,7 +76,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     public IPage<UserListResponse> listWithSearch(SearchRequest searchRequest){
         try {
             UserWrapper userWrapper = new UserWrapper();
-            userWrapper.ofListWithSearch(searchRequest);
+            userWrapper.ofListWithSearch(searchRequest).orderByDesc("created_at");
             List<UserListResponse> userListResponseList = new ArrayList<>();
 
             SlabPage<User> userSlabPage = new SlabPage<>(searchRequest);
@@ -88,13 +91,41 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             SlabPage<UserListResponse> userListResponseSlabPage = new SlabPage<>(searchRequest);
             userListResponseSlabPage.setRecords(userListResponseList);
             userListResponseSlabPage.setTotal(userResults.getTotal());
-//            insertOperateLogUtils.insertOperateLog(1, LogContentEnumUtils.USERLIST, OperatePathEnumUtils.USERLIST);
             return userListResponseSlabPage;
         }catch (Exception e){
             LOGGER.error("listWithSearchError",e);
             throw new ConflictException("listWithSearchError");
         }
     }
+//    public IPage<UserListResponse> listWithSearch(SearchRequest searchRequest){
+//        try {
+//            UserWrapper userWrapper = new UserWrapper();
+//            userWrapper.ofListWithSearch(searchRequest).orderByDesc("created_at");
+//            List<UserListResponse> userListResponseList = new ArrayList<>();
+//            Map<String,Object> map = searchRequest.getSearch();
+//
+//
+//            SlabPage<User> userSlabPage = new SlabPage<>(searchRequest);
+//            IPage<User> userResults = userMapper.selectPage(userSlabPage, userWrapper);
+//            for (User record : userResults.getRecords()) {
+//                User user = userMapper.selectById(record.getUserId());
+//                UserListResponse userListResponse = new UserListResponse();
+//                BeanUtils.copyProperties(record, userListResponse);
+//                userListResponse.setCreatedBy(user.getUsername());
+//                userListResponseList.add(userListResponse);
+//            }
+//            SlabPage<UserListResponse> userListResponseSlabPage = new SlabPage<>(searchRequest);
+//            userListResponseSlabPage.setRecords(userListResponseList);
+//            userListResponseSlabPage.setTotal(userResults.getTotal());
+//
+//            Object userId = map.get("userId");
+//            //插入操作日志
+//            insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.USERLIST, OperatePathEnumUtils.USERLIST);
+//            return userListResponseSlabPage;
+//        }catch (Exception e){
+//            throw new ConflictException("listWithSearchError");
+//        }
+//    }
 
     /**
      * 创建/编辑用户，以userId区分是创建还是编辑
@@ -111,6 +142,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
                 CreateUserNumberUtils createUserNumberUtils = new CreateUserNumberUtils();
                 user.setUserNumber(createUserNumberUtils.createUserNumber());
                 user.setUserId(createOrEditUserDTO.getUserId());
+                //插入操作日志
                 insertOperateLogUtils.insertOperateLog(createOrEditUserDTO.getUserId(), LogContentEnumUtils.USERCREATE, OperatePathEnumUtils.USERCREATE);
                 userMapper.insert(user);
             } else {
@@ -118,6 +150,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             }
         } else {
             if (userMapper.selectCount(userWrapper.ne("id", createOrEditUserDTO.getId()).eq("username", createOrEditUserDTO.getUsername())) == 0){
+                //插入操作日志
                 insertOperateLogUtils.insertOperateLog(createOrEditUserDTO.getUserId(), LogContentEnumUtils.USEREDIT, OperatePathEnumUtils.USEREDIT);
                 userMapper.updateById(user);
             } else {
@@ -133,11 +166,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Override
     public void deleteBatch(List<Integer> userIds) {
         try {
-//            insertOperateLogUtils.insertOperateLog(1, LogContentEnumUtils.USERDELETE, OperatePathEnumUtils.USERDELETE);
             removeByIds(userIds);
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+    @Override
+    public void deleteBatch(BatchDTO batchDTO) {
+//        try {
+//            //插入操作日志
+//            insertOperateLogUtils.insertOperateLog(batchDTO.getUserId, LogContentEnumUtils.USERDELETE, OperatePathEnumUtils.USERDELETE);
+//            removeByIds(batchDTO.getUserIds());
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 
     /**
@@ -151,9 +193,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             map.put("id",userId);
             List<User> users = userMapper.selectByMap(map);
             users.get(0).setStatus(1);
-//            insertOperateLogUtils.insertOperateLog(1, LogContentEnumUtils.USERDISABLE, OperatePathEnumUtils.USERDISABLE);
             userMapper.updateById(users.get(0));
         }
+    }
+
+    @Override
+    public void disableBatch(BatchDTO batchDTO) {
+//        Map<String,Object> map = new HashMap<>();
+//        for(Integer userId : batchDTO.getUserIds()){
+//            map.put("id",userId);
+//            List<User> users = userMapper.selectByMap(map);
+//            users.get(0).setStatus(1);
+//            //插入操作日志
+//            insertOperateLogUtils.insertOperateLog(batchDTO.getUserId, LogContentEnumUtils.USERDISABLE, OperatePathEnumUtils.USERDISABLE);
+//            userMapper.updateById(users.get(0));
+//        }
     }
 
     /**
@@ -171,13 +225,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             userMapper.updateById(users.get(0));
         }
     }
+    @Override
+    public void enableBatch(BatchDTO batchDTO) {
+//        Map<String,Object> map = new HashMap<>();
+//        for(Integer userId : batchDTO.getUserIds()){
+//            map.put("id",userId);
+//            List<User> users = userMapper.selectByMap(map);
+//            users.get(0).setStatus(0);
+//            //插入操作日志
+//            insertOperateLogUtils.insertOperateLog(batchDTO.getUserId(), LogContentEnumUtils.USERENABLE, OperatePathEnumUtils.USERENABLE);
+//            userMapper.updateById(users.get(0));
+//        }
+    }
 
     @Override
     public User detail(Integer id) {
-//        insertOperateLogUtils.insertOperateLog(1, LogContentEnumUtils.USERDETAIL, OperatePathEnumUtils.USERDETAIL);
         return userMapper.selectById(id);
     }
 
-
-
+    @Override
+    public User detail(DetailDTO detailDTO) {
+//        //插入操作日志
+//        insertOperateLogUtils.insertOperateLog(detailDTO.getUserId(), LogContentEnumUtils.USERDETAIL, OperatePathEnumUtils.USERDETAIL);
+//        return userMapper.selectById(detailDTO.getId());
+        return null;
+    }
 }

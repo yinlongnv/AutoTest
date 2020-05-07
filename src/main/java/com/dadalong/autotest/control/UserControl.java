@@ -1,11 +1,9 @@
 package com.dadalong.autotest.control;
 
-
 import cn.com.dbapp.slab.common.model.dto.CollectionResponse;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.response.UserListResponse;
 import com.dadalong.autotest.model.user.*;
@@ -14,11 +12,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.Collection;
 
 @Api(value="/", description = "用户管理下的全部接口")
 @RestController
@@ -40,9 +35,9 @@ public class UserControl {
         if (user == null) {
             return TypedApiResponse.error().message("用户名或密码错误！");
         } else if (user.getStatus() == 0){
-            return TypedApiResponse.ok().message("Login Success").data(user);
+            return TypedApiResponse.ok().message("登录成功").data(user);
         } else {
-            return TypedApiResponse.error().message("该用户已被禁用！");
+            return TypedApiResponse.error().message("该用户已被禁用！登录失败");
         }
     }
 
@@ -65,27 +60,28 @@ public class UserControl {
         return TypedApiResponse.ok().message("createOrEdit-success");
     }
 
-    //不做userIds判空了
-
     @ApiOperation(value="(批量)删除账号",httpMethod = "POST")
     @PostMapping("/delete")
     public @ResponseBody TypedApiResponse delete(@RequestBody BatchDTO batchDTO){
         iUserService.deleteBatch(batchDTO.getUserIds());
-        return TypedApiResponse.ok().message("delete-success");
+//        iUserService.deleteBatch(batchDTO);
+        return TypedApiResponse.ok().message("删除成功");
     }
 
     @ApiOperation(value="(批量)禁用账号",httpMethod = "POST")
     @PostMapping("/disable")
     public @ResponseBody TypedApiResponse disable(@RequestBody BatchDTO batchDTO){
         iUserService.disableBatch(batchDTO.getUserIds());
-        return TypedApiResponse.ok().message("disable-success");
+//        iUserService.deleteBatch(batchDTO);
+        return TypedApiResponse.ok().message("禁用成功");
     }
 
     @ApiOperation(value="(批量)启用账号",httpMethod = "POST")
     @PostMapping("/enable")
     public @ResponseBody TypedApiResponse enable(@RequestBody BatchDTO batchDTO){
         iUserService.enableBatch(batchDTO.getUserIds());
-        return TypedApiResponse.ok().message("enable-success");
+//        iUserService.deleteBatch(batchDTO);
+        return TypedApiResponse.ok().message("启用成功");
     }
 
     @ApiOperation(value="查看用户详情",httpMethod = "GET")
@@ -93,5 +89,8 @@ public class UserControl {
     public TypedApiResponse detail(Integer id){
         return TypedApiResponse.ok().message("detail-success").data(iUserService.detail(id));
     }
+//    public TypedApiResponse detail(DetailDTO detailDTO){
+//        return TypedApiResponse.ok().message("detail-success").data(iUserService.detail(detailDTO));
+//    }
 
 }

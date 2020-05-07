@@ -34,7 +34,7 @@ public class UserWrapper extends QueryWrapper<User> {
         this.ofRole(map.get("role"));
         Object startTime = map.get("startTime");
         Object endTime = map.get("endTime");
-        this.ofTime(startTime,endTime);
+        this.ofTime(startTime, endTime);
         return this;
     }
 
@@ -52,7 +52,7 @@ public class UserWrapper extends QueryWrapper<User> {
     }
 
     /**
-     * 筛选时间段
+     * 筛选最后登录时间段
      * @param startTime
      * @param endTime
      * @return
@@ -61,7 +61,7 @@ public class UserWrapper extends QueryWrapper<User> {
         if(startTime != null && endTime != null && StringUtils.isNotBlank(startTime.toString()) && StringUtils.isNotBlank(endTime.toString())){
 //            System.out.println("+++++++++++++++++++++开始时间："+startTime);
 //            System.out.println("+++++++++++++++++++++结束时间："+endTime);
-            this.between("created_at",startTime,endTime);
+            this.between("last_login",startTime,endTime);
             return this;
         }
         return this;

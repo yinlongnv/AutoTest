@@ -42,9 +42,4 @@ public class OperateLogControl {
         return TypedApiResponse.ok().message("listWithSearch-success").data(response);
     }
 
-    @ApiOperation(value="获取用户名筛选列表",httpMethod = "GET")
-    @GetMapping("/getUserList")
-    public List<User> getUserList() {
-        return iOperateLogService.getUserList();
-    }
 }

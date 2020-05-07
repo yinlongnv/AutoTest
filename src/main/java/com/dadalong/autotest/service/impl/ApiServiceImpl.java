@@ -15,6 +15,7 @@ import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.model.api.CreateOrEditApiDTO;
 import com.dadalong.autotest.model.response.*;
 import com.dadalong.autotest.service.IApiService;
+import com.dadalong.autotest.utils.InsertOperateLogUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -38,6 +39,9 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    InsertOperateLogUtils insertOperateLogUtils;
 
     /**
      * 设置每页10条记录

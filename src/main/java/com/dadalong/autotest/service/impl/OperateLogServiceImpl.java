@@ -16,6 +16,9 @@ import com.dadalong.autotest.model.response.TestCaseListResponse;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.service.IOperateLogService;
 import com.dadalong.autotest.service.IUserService;
+import com.dadalong.autotest.utils.InsertOperateLogUtils;
+import com.dadalong.autotest.utils.LogContentEnumUtils;
+import com.dadalong.autotest.utils.OperatePathEnumUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +40,8 @@ public class OperateLogServiceImpl implements IOperateLogService {
     private OperateLogMapper operateLogMapper;
     @Resource
     private UserMapper userMapper;
+    @Resource
+    InsertOperateLogUtils insertOperateLogUtils;
 
     /**
      * 设置每页10条记录
@@ -44,20 +49,26 @@ public class OperateLogServiceImpl implements IOperateLogService {
     private static final Integer size = 10;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiServiceImpl.class);
+
+    /**
+     * 获取操作日志列表，包含筛选查询
+     * @param searchRequest
+     * @return
+     */
     @Override
     public IPage<LogListResponse> listWithSearch(SearchRequest searchRequest) {
         try {
-            OperateLogWrapper wrapper = new OperateLogWrapper();
-            wrapper.ofListWithSearch(searchRequest);
+            OperateLogWrapper operateLogWrapper = new OperateLogWrapper();
+            operateLogWrapper.ofListWithSearch(searchRequest).orderByDesc("created_at");
             List<LogListResponse> logListResponseList = new ArrayList<>();
 
             SlabPage<OperateLog> operateLogSlabPage = new SlabPage<>(searchRequest);
-            IPage<OperateLog> logResults = operateLogMapper.selectPage(operateLogSlabPage,wrapper);
+            IPage<OperateLog> logResults = operateLogMapper.selectPage(operateLogSlabPage, operateLogWrapper);
             for (OperateLog record : logResults.getRecords()) {
                 LogListResponse logListResponse = new LogListResponse();
                 BeanUtils.copyProperties(record, logListResponse);
                 User user = userMapper.selectById(record.getUserId());
-                BeanUtils.copyProperties(user, logListResponse);
+                BeanUtils.copyProperties(user, logListResponse, "createdAt");
                 logListResponseList.add(logListResponse);
             }
             SlabPage<LogListResponse> logListResponseSlabPage = new SlabPage<>(searchRequest);
@@ -66,14 +77,36 @@ public class OperateLogServiceImpl implements IOperateLogService {
             return logListResponseSlabPage;
         }catch (Exception e){
             LOGGER.error("listWithSearchError",e);
-            throw new ConflictException("listWithSearchError");//暂时没啥用
+            throw new ConflictException("listWithSearchError");
         }
     }
-
-    @Override
-    public List<User> getUserList() {
-        UserWrapper userWrapper = new UserWrapper();
-        userWrapper.getUserList();
-       return userMapper.selectList(userWrapper);
-    }
+//    public IPage<LogListResponse> listWithSearch(SearchRequest searchRequest) {
+//        try {
+//            OperateLogWrapper operateLogWrapper = new OperateLogWrapper();
+//            operateLogWrapper.ofListWithSearch(searchRequest).orderByDesc("created_at");
+//            List<LogListResponse> logListResponseList = new ArrayList<>();
+//            Map<String,Object> map = searchRequest.getSearch();
+//
+//            SlabPage<OperateLog> operateLogSlabPage = new SlabPage<>(searchRequest);
+//            IPage<OperateLog> logResults = operateLogMapper.selectPage(operateLogSlabPage, operateLogWrapper);
+//            for (OperateLog record : logResults.getRecords()) {
+//                LogListResponse logListResponse = new LogListResponse();
+//                BeanUtils.copyProperties(record, logListResponse);
+//                User user = userMapper.selectById(record.getUserId());
+//                BeanUtils.copyProperties(user, logListResponse, "createdAt");
+//                logListResponseList.add(logListResponse);
+//            }
+//            SlabPage<LogListResponse> logListResponseSlabPage = new SlabPage<>(searchRequest);
+//            logListResponseSlabPage.setRecords(logListResponseList);
+//            logListResponseSlabPage.setTotal(logResults.getTotal());
+//
+//            Object userId = map.get("userId");
+////          //插入操作日志
+//            insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.LOGLIST, OperatePathEnumUtils.LOGLIST);
+//            return logListResponseSlabPage;
+//        }catch (Exception e){
+//            LOGGER.error("listWithSearchError",e);
+//            throw new ConflictException("listWithSearchError");
+//        }
+//    }
 }
