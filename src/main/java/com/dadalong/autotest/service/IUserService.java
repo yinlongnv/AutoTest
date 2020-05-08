@@ -34,7 +34,7 @@ public interface IUserService {
      * 创建/编辑用户，以Id区分是创建还是编辑
      * @param createOrEditUserDTO 从前端传回来的json格式数据转换的对象
      */
-    public void createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO);
+    public String createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO);
 
     /**
      * (批量)删除用户

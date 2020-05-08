@@ -16,6 +16,8 @@ public class OperateLogWrapper extends QueryWrapper<OperateLog> {
      */
     public OperateLogWrapper ofListWithSearch(SearchRequest request){
         Map<String,Object> map = request.getSearch();
+        Object userId = map.get("user");
+        this.ofUserId(userId);
         Object startTime = map.get("startTime");
         Object endTime = map.get("endTime");
         this.ofTime(startTime, endTime);
@@ -27,7 +29,7 @@ public class OperateLogWrapper extends QueryWrapper<OperateLog> {
     }
 
     /**
-     * 筛选操作起止时间段
+     * 根据操作起止时间段筛选操作日志
      * @param startTime
      * @param endTime
      * @return
@@ -35,6 +37,19 @@ public class OperateLogWrapper extends QueryWrapper<OperateLog> {
     public OperateLogWrapper ofTime(Object startTime,Object endTime){
         if(startTime != null && endTime != null && StringUtils.isNotBlank(startTime.toString()) && StringUtils.isNotBlank(endTime.toString())){
             this.between("created_at",startTime,endTime);
+            return this;
+        }
+        return this;
+    }
+
+    /**
+     * 根据user_id精确筛选操作日志
+     * @param userId
+     * @return
+     */
+    public OperateLogWrapper ofUserId(Object userId){
+        if(userId != null && StringUtils.isNotBlank(userId.toString())){
+            this.eq("user_id", userId);
             return this;
         }
         return this;

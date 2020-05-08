@@ -6,5 +6,6 @@ import java.util.List;
 
 @Data
 public class BatchDTO {
-    List<Integer> userIds;
+    private List<Integer> userIds;
+    private Integer userId;
 }

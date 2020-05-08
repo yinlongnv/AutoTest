@@ -56,41 +56,45 @@ public class UserControl {
     @ApiOperation(value="创建/编辑账号", httpMethod = "POST")
     @PostMapping("/createOrEdit")
     public @ResponseBody TypedApiResponse createOrEditUser(@RequestBody CreateOrEditUserDTO createOrEditUserDTO){
-        iUserService.createOrEditUser(createOrEditUserDTO);
-        return TypedApiResponse.ok().message("createOrEdit-success");
+        String returnMsg = iUserService.createOrEditUser(createOrEditUserDTO);
+        if (returnMsg.equals("编辑成功") || returnMsg.equals("创建成功")) {
+            return TypedApiResponse.ok().message("createOrEdit-success");
+        } else {
+            return TypedApiResponse.error().message(returnMsg);
+        }
     }
 
     @ApiOperation(value="(批量)删除账号",httpMethod = "POST")
     @PostMapping("/delete")
     public @ResponseBody TypedApiResponse delete(@RequestBody BatchDTO batchDTO){
-        iUserService.deleteBatch(batchDTO.getUserIds());
-//        iUserService.deleteBatch(batchDTO);
+//        iUserService.deleteBatch(batchDTO.getUserIds());
+        iUserService.deleteBatch(batchDTO);
         return TypedApiResponse.ok().message("删除成功");
     }
 
     @ApiOperation(value="(批量)禁用账号",httpMethod = "POST")
     @PostMapping("/disable")
     public @ResponseBody TypedApiResponse disable(@RequestBody BatchDTO batchDTO){
-        iUserService.disableBatch(batchDTO.getUserIds());
-//        iUserService.deleteBatch(batchDTO);
+//        iUserService.disableBatch(batchDTO.getUserIds());
+        iUserService.disableBatch(batchDTO);
         return TypedApiResponse.ok().message("禁用成功");
     }
 
     @ApiOperation(value="(批量)启用账号",httpMethod = "POST")
     @PostMapping("/enable")
     public @ResponseBody TypedApiResponse enable(@RequestBody BatchDTO batchDTO){
-        iUserService.enableBatch(batchDTO.getUserIds());
-//        iUserService.deleteBatch(batchDTO);
+//        iUserService.enableBatch(batchDTO.getUserIds());
+        iUserService.enableBatch(batchDTO);
         return TypedApiResponse.ok().message("启用成功");
     }
 
     @ApiOperation(value="查看用户详情",httpMethod = "GET")
     @GetMapping("/detail")
-    public TypedApiResponse detail(Integer id){
-        return TypedApiResponse.ok().message("detail-success").data(iUserService.detail(id));
-    }
-//    public TypedApiResponse detail(DetailDTO detailDTO){
-//        return TypedApiResponse.ok().message("detail-success").data(iUserService.detail(detailDTO));
+//    public TypedApiResponse detail(Integer id){
+//        return TypedApiResponse.ok().message("detail-success").data(iUserService.detail(id));
 //    }
+    public TypedApiResponse detail(DetailDTO detailDTO){
+        return TypedApiResponse.ok().message("detail-success").data(iUserService.detail(detailDTO));
+    }
 
 }
