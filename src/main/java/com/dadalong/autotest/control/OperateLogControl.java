@@ -5,12 +5,9 @@ import cn.com.dbapp.slab.common.model.dto.CollectionResponse;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.response.FilterUserNameResponse;
 import com.dadalong.autotest.model.response.LogListResponse;
-import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.service.IOperateLogService;
-import com.dadalong.autotest.service.IUserService;
 import com.dadalong.autotest.utils.FilterMapUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @Api(value="/", description = "操作日志管理下的全部接口")
 @RestController
@@ -48,12 +44,10 @@ public class OperateLogControl {
         return TypedApiResponse.ok().message("listWithSearch-success").data(response);
     }
 
-    @ApiOperation(value="获取用户名筛选项，支持模糊查询用户名筛选项",httpMethod = "GET")
+    @ApiOperation(value="获取用户名筛选项",httpMethod = "GET")
     @GetMapping("/filterUserName")
     public FilterUserNameResponse filterUserName() {
-        //提取请求中的参数到map中
-        SearchRequest searchRequest = new SearchRequest(request);
-        return filterMapUtils.filterUserName(searchRequest);
+        return filterMapUtils.filterUserName();
     }
 
 }

@@ -82,26 +82,19 @@ public class FilterMapUtils {
     }
 
     /**
-     * 提取用户名筛选项，支持模糊查询筛选用户名
-     * @param searchRequest
+     * 提取用户名筛选项
      * @return
      */
-    public FilterUserNameResponse filterUserName(SearchRequest searchRequest) {
+    public FilterUserNameResponse filterUserName() {
         FilterUserNameResponse filterUserNameResponse = new FilterUserNameResponse();
         UserWrapper userWrapper = new UserWrapper();
-        Map<String,Object> map = searchRequest.getSearch();
-        Object username = map.get("username");
-        if (username != null && StringUtils.isNotBlank(username.toString())) {
-            userWrapper.like("username", username).groupBy("username").orderByAsc("id");
-        } else {
-            userWrapper.groupBy("username").orderByAsc("id");
-        }
+        userWrapper.groupBy("username").orderByAsc("id");
         List<User> userList = userMapper.selectList(userWrapper);
         List<UserName> userNameList = new ArrayList<>();
         for (User user : userList) {
             UserName userName = new UserName();
-            userName.setValue(user.getUsername());
-            userName.setLabel(user.getId().toString());
+            userName.setValue(user.getId().toString());
+            userName.setLabel(user.getUsername());
             userNameList.add(userName);
         }
         filterUserNameResponse.setUserNameOptions(userNameList);
