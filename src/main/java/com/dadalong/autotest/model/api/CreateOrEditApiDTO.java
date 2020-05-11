@@ -6,8 +6,8 @@ import lombok.Data;
 public class CreateOrEditApiDTO {
 
     private Integer id;
-    private String projectName;
-    private String apiGroup;
+
+    private String projectGroup;
     private String baseUrl;
     private String reqMethod;
     private String reqHeaders;
@@ -16,6 +16,7 @@ public class CreateOrEditApiDTO {
     private String apiPath;
     private String apiName;
     private String apiDescription;
+
     private Integer userId;//如果是创建用户，前端需要传回当前登录用户的id——即创建该账户的用户id
 
 }

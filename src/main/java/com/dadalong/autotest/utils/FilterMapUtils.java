@@ -1,6 +1,5 @@
 package com.dadalong.autotest.utils;
 
-import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import com.dadalong.autotest.bean.v1.mapper.ApiMapper;
 import com.dadalong.autotest.bean.v1.mapper.UserMapper;
 import com.dadalong.autotest.bean.v1.pojo.Api;
@@ -8,7 +7,6 @@ import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 import com.dadalong.autotest.model.response.*;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Resource;

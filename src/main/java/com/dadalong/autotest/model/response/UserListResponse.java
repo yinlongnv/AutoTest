@@ -25,7 +25,7 @@ public class UserListResponse {
     private Date lastLogin;
     private Integer loginCount;
 
-    //以下目前多余
+    //目前以下不在用户管理列表展示
     private String idNumber;
     private String phoneNumber;
     private String email;

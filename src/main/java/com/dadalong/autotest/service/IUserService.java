@@ -9,10 +9,6 @@ import com.dadalong.autotest.model.user.BatchDTO;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.model.user.DetailDTO;
 import com.dadalong.autotest.model.user.LoginDTO;
-import io.swagger.models.auth.In;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.util.List;
 
 public interface IUserService {
 
@@ -38,30 +34,27 @@ public interface IUserService {
 
     /**
      * (批量)删除用户
-     * @param userIds
+     * @param batchDTO
      */
-    public void deleteBatch(List<Integer> userIds);
     public void deleteBatch(BatchDTO batchDTO);
 
     /**
      * (批量)禁用用户
-     * @param userIds
+     * @param batchDTO
      */
-    public void disableBatch(List<Integer> userIds);
     public void disableBatch(BatchDTO batchDTO);
 
     /**
      * (批量)启用用户
-     * @param userIds
+     * @param batchDTO
      */
-    public void enableBatch(List<Integer> userIds);
     public void enableBatch(BatchDTO batchDTO);
 
     /**
      * 查看用户详情
-     * @param id
+     * @param detailDTO
+     * @return
      */
-    public User detail(Integer id);
     public User detail(DetailDTO detailDTO);
 
 }

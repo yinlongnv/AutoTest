@@ -14,6 +14,18 @@ public class OperatePathEnumUtils {
     public static final String USERDISABLE = "/user/disable";
     public static final String USERDETAIL = "/user/detail";
 
+    public static final String APILIST = "/api/listWithSearch";
+    public static final String APICREATE = "/api/createOrEdit";
+    public static final String APIEDIT = "/api/createOrEdit";
+    public static final String APIDELETE = "/api/delete";
+    public static final String APIDETAIL = "/api/detail";
+
+    public static final String CASELIST = "/case/listWithSearch";
+    public static final String CASECREATE = "/case/createOrEdit";
+    public static final String CASEEDIT = "/case/createOrEdit";
+    public static final String CASEDELETE = "/case/delete";
+    public static final String CASEDETAIL = "/case/detail";
+
     public static final String LOGLIST = "/operateLog/listWithSearch";
 
 }

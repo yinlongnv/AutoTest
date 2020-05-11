@@ -59,14 +59,14 @@ public class ApiControl {
     @ApiOperation(value="(批量)删除接口",httpMethod = "POST")
     @PostMapping("/delete")
     public @ResponseBody TypedApiResponse delete(@RequestBody BatchDTO batchDTO){
-        iApiService.deleteBatch(batchDTO.getApiIds());
+        iApiService.deleteBatch(batchDTO);
         return TypedApiResponse.ok().message("delete-success");
     }
 
     @ApiOperation(value="查看接口详情",httpMethod = "GET")
     @GetMapping("/detail")
-    public TypedApiResponse detail(Integer id){
-        return TypedApiResponse.ok().message("detail-success").data(iApiService.detail(id));
+    public TypedApiResponse detail(DetailDTO detailDTO){
+        return TypedApiResponse.ok().message("detail-success").data(iApiService.detail(detailDTO));
     }
 
     @ApiOperation(value="上传json文件",httpMethod = "POST")

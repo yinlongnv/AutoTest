@@ -1,16 +1,11 @@
 package com.dadalong.autotest.service.impl;
 
-import cn.com.dbapp.slab.common.lang.LangUtil;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.common.model.dto.SlabPage;
 import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
-import cn.com.dbapp.slab.java.commons.utils.ConverterUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.dadalong.autotest.bean.v1.mapper.OperateLogMapper;
 import com.dadalong.autotest.bean.v1.mapper.UserMapper;
-import com.dadalong.autotest.bean.v1.model.ApiData;
-import com.dadalong.autotest.bean.v1.pojo.OperateLog;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 import com.dadalong.autotest.model.response.UserListResponse;
@@ -74,30 +69,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
      * @param searchRequest
      * @return
      */
-//    public IPage<UserListResponse> listWithSearch(SearchRequest searchRequest){
-//        try {
-//            UserWrapper userWrapper = new UserWrapper();
-//            userWrapper.ofListWithSearch(searchRequest).orderByDesc("created_at");
-//            List<UserListResponse> userListResponseList = new ArrayList<>();
-//
-//            SlabPage<User> userSlabPage = new SlabPage<>(searchRequest);
-//            IPage<User> userResults = userMapper.selectPage(userSlabPage, userWrapper);
-//            for (User record : userResults.getRecords()) {
-//                User user = userMapper.selectById(record.getUserId());
-//                UserListResponse userListResponse = new UserListResponse();
-//                BeanUtils.copyProperties(record, userListResponse);
-//                userListResponse.setCreatedBy(user.getUsername());
-//                userListResponseList.add(userListResponse);
-//            }
-//            SlabPage<UserListResponse> userListResponseSlabPage = new SlabPage<>(searchRequest);
-//            userListResponseSlabPage.setRecords(userListResponseList);
-//            userListResponseSlabPage.setTotal(userResults.getTotal());
-//            return userListResponseSlabPage;
-//        }catch (Exception e){
-//            LOGGER.error("listWithSearchError",e);
-//            throw new ConflictException("listWithSearchError");
-//        }
-//    }
     public IPage<UserListResponse> listWithSearch(SearchRequest searchRequest){
         try {
             UserWrapper userWrapper = new UserWrapper();
@@ -110,14 +81,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             IPage<User> userResults = userMapper.selectPage(userSlabPage, userWrapper);
             for (User record : userResults.getRecords()) {
                 User user = userMapper.selectById(record.getUserId());
+                UserListResponse userListResponse = new UserListResponse();
+                BeanUtils.copyProperties(record, userListResponse);
                 if (user != null && StringUtils.isNotBlank(user.toString())) {
-                    UserListResponse userListResponse = new UserListResponse();
-                    BeanUtils.copyProperties(record, userListResponse);
                     userListResponse.setCreatedBy(user.getUsername());
                     userListResponseList.add(userListResponse);
                 } else {
-                    UserListResponse userListResponse = new UserListResponse();
-                    BeanUtils.copyProperties(record, userListResponse);
                     userListResponse.setCreatedBy("root");
                     userListResponseList.add(userListResponse);
                 }
@@ -171,16 +140,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     /**
      * (批量)删除用户
-     * @param userIds
+     * @param batchDTO
      */
-    @Override
-    public void deleteBatch(List<Integer> userIds) {
-        try {
-            removeByIds(userIds);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
     @Override
     public void deleteBatch(BatchDTO batchDTO) {
         try {
@@ -195,19 +156,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     /**
      * (批量)禁用用户
-     * @param userIds
+     * @param batchDTO
      */
-    @Override
-    public void disableBatch(List<Integer> userIds) {
-        Map<String,Object> map = new HashMap<>();
-        for(Integer userId : userIds){
-            map.put("id",userId);
-            List<User> users = userMapper.selectByMap(map);
-            users.get(0).setStatus(1);
-            userMapper.updateById(users.get(0));
-        }
-    }
-
     @Override
     public void disableBatch(BatchDTO batchDTO) {
         Map<String,Object> map = new HashMap<>();
@@ -223,18 +173,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     /**
      * (批量)启用用户
-     * @param userIds
+     * @param batchDTO
      */
-    @Override
-    public void enableBatch(List<Integer> userIds) {
-        Map<String,Object> map = new HashMap<>();
-        for(Integer userId : userIds){
-            map.put("id",userId);
-            List<User> users = userMapper.selectByMap(map);
-            users.get(0).setStatus(0);
-            userMapper.updateById(users.get(0));
-        }
-    }
     @Override
     public void enableBatch(BatchDTO batchDTO) {
         Map<String,Object> map = new HashMap<>();
@@ -248,11 +188,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         insertOperateLogUtils.insertOperateLog(batchDTO.getUserId(), LogContentEnumUtils.USERENABLE, OperatePathEnumUtils.USERENABLE);
     }
 
-    @Override
-    public User detail(Integer id) {
-        return userMapper.selectById(id);
-    }
 
+    /**
+     * 查看用户详情
+     * @param detailDTO
+     * @return
+     */
     @Override
     public User detail(DetailDTO detailDTO) {
         //插入操作日志

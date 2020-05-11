@@ -26,6 +26,6 @@ public class ApiListResponse {
     private String apiDescription;
     private String createdBy;//创建人用户名 + user_id
 
-    private List<TestCaseListResponse> testCaseList;
+//    private List<TestCaseListResponse> testCaseList;
 
 }

@@ -2,7 +2,9 @@ package com.dadalong.autotest.service;
 
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dadalong.autotest.model.api.BatchDTO;
 import com.dadalong.autotest.model.api.CreateOrEditApiDTO;
+import com.dadalong.autotest.model.api.DetailDTO;
 import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.response.ApiNameListResponse;
 import com.dadalong.autotest.model.response.FilterMapResponse;
@@ -29,15 +31,16 @@ public interface IApiService {
 
     /**
      * (批量)删除接口
-     * @param apiIds
+     * @param batchDTO
      */
-    public void deleteBatch(List<Integer> apiIds);
+    public void deleteBatch(BatchDTO batchDTO);
 
     /**
      * 查看接口详情
-     * @param id
+     * @param detailDTO
+     * @return
      */
-    public ApiListResponse detail(Integer id);
+    public ApiListResponse detail(DetailDTO detailDTO);
 
     /**
      * 接收上传的json文件
