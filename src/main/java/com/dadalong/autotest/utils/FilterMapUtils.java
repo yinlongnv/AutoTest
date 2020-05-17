@@ -62,7 +62,7 @@ public class FilterMapUtils {
                 levelTwo.setValue(api.getApiGroup());
                 List<LevelThree> listThree = new ArrayList<>();
                 for (Api two : groupApi) {
-                    Api last = apiMapper.selectOne(new ApiWrapper().eq("project_name",pn).eq("api_group",two.getApiGroup()).eq("api_path",two.getApiPath()));
+                    Api last = apiMapper.selectOne(new ApiWrapper().eq("project_name",pn).eq("api_group",two.getApiGroup()).eq("api_path",two.getApiPath()).groupBy("project_name"));
                     String merge = last.getApiName() + " " + last.getApiPath();
                     LevelThree levelThree = new LevelThree();
                     levelThree.setValue(merge);
@@ -97,5 +97,25 @@ public class FilterMapUtils {
         }
         filterUserNameResponse.setUserNameOptions(userNameList);
         return filterUserNameResponse;
+    }
+
+    /**
+     * 获取现有的环境域名下拉列表
+     * @return
+     */
+    public FilterBaseUrlResponse filterBaseUrl() {
+        FilterBaseUrlResponse filterBaseUrlResponse = new FilterBaseUrlResponse();
+        ApiWrapper apiWrapper = new ApiWrapper();
+        apiWrapper.groupBy("base_url").orderByAsc("id");
+        List<Api> apiList = apiMapper.selectList(apiWrapper);
+        List<BaseUrl> baseUrlList = new ArrayList<>();
+        for (Api api : apiList) {
+            BaseUrl baseUrl = new BaseUrl();
+            baseUrl.setValue(api.getBaseUrl());
+            baseUrl.setLabel(api.getBaseUrl());
+            baseUrlList.add(baseUrl);
+        }
+        filterBaseUrlResponse.setBaseUrlOptions(baseUrlList);
+        return filterBaseUrlResponse;
     }
 }

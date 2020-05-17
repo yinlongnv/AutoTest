@@ -3,23 +3,22 @@ package com.dadalong.autotest.service.impl;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.common.model.dto.SlabPage;
 import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
+import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dadalong.autotest.bean.v1.mapper.ApiMapper;
 import com.dadalong.autotest.bean.v1.mapper.UserMapper;
-import com.dadalong.autotest.bean.v1.model.ApiData;
 import com.dadalong.autotest.bean.v1.pojo.Api;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.model.api.BatchDTO;
 import com.dadalong.autotest.model.api.CreateOrEditApiDTO;
 import com.dadalong.autotest.model.api.DetailDTO;
+import com.dadalong.autotest.model.api.UploadDTO;
 import com.dadalong.autotest.model.response.*;
 import com.dadalong.autotest.service.IApiService;
-import com.dadalong.autotest.utils.InsertOperateLogUtils;
-import com.dadalong.autotest.utils.LogContentEnumUtils;
-import com.dadalong.autotest.utils.OperatePathEnumUtils;
+import com.dadalong.autotest.utils.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -32,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -47,6 +47,12 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
 
     @Resource
     InsertOperateLogUtils insertOperateLogUtils;
+
+    @Resource
+    DeleteFileUtils deleteFileUtils;
+
+    @Resource
+    ExcelUtils excelUtils;
 
     /**
      * 设置每页10条记录
@@ -103,10 +109,8 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
         Api api = new Api();
         BeanUtils.copyProperties(createOrEditApiDTO, api, "userId");
 
-//        System.out.println("++++++++++复制接口属性不传userID:"+ api.getUserId());
-        if(createOrEditApiDTO.getId() == null) {
+        if(createOrEditApiDTO.getId() == null || createOrEditApiDTO.getId().toString().equals("")) {
             api.setUserId(createOrEditApiDTO.getUserId());
-//            System.out.println("++++++++++创建接口时给予userID:"+ api.getUserId());
             //插入操作日志
             insertOperateLogUtils.insertOperateLog(createOrEditApiDTO.getUserId(), LogContentEnumUtils.APICREATE, OperatePathEnumUtils.APICREATE);
             apiMapper.insert(api);
@@ -155,28 +159,50 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
     }
 
     @Override
-    public String handleUploadedFile(MultipartFile file) throws IOException {
-        String content = new String(file.getBytes());
-        System.out.println("++++++++++++json文件字符串"+ content);
-//        JsonArray jsonArry = new JsonParser().parse(content).getAsJsonArray();
-//        System.out.println(jsonArry.get(0).getAsJsonObject().get("name").toString());
-        List<ApiData> apiDatas = toDatabaseFromJson(content);
-        System.out.println(apiDatas.get(0).getList().get(0).getReq_body_type());
-        System.out.println(apiDatas.get(0).getList().get(0).getReq_body_type());
-        System.out.println(apiDatas.get(1).getName());
-        return null;
-    }
-
-    private List<ApiData> toDatabaseFromJson(String content){
-        JsonArray jsonArray = new JsonParser().parse(content).getAsJsonArray();
-        List<ApiData> apis = new LinkedList<>();
-        ApiData apiData;
-        for(int i = 0 ; i < jsonArray.size();i++){
-            JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
-            apiData = JSONObject.parseObject(jsonObject.toString(), ApiData.class);
-            apis.add(apiData);
+    public String upload(UploadDTO uploadDTO) {
+        if (uploadDTO.getFile().isEmpty()) {
+            return "导入失败，请选择文件！";
         }
-        return apis;
+
+        String fileName = uploadDTO.getFile().getOriginalFilename();
+//        System.out.println("上传文件的文件名是："+fileName);
+        String filePath = "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadApi\\";
+        File dest = new File(filePath + fileName);
+        try {
+            uploadDTO.getFile().transferTo(dest);
+//            String filename = "file.txt";// 文件名
+            String[] strArray = new String[0];
+            if (fileName != null) {
+                strArray = fileName.split("\\.");
+            }
+            int suffixIndex = strArray.length -1;
+            //获取上传文件的文件类型
+            String fileType = strArray[suffixIndex];
+//            System.out.println("文件类型为："+strArray[suffixIndex]);
+            if (fileType.equals("html")) {
+//                String pyPath = "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\pyToSql\\analysis_html.py";
+                String[] argument = new String[]{"python", "D://Workspace/IDEA/AutoTest/src/main/resources/static/pyToSql/analysis_html.py", uploadDTO.getUserId().toString(), uploadDTO.getBaseUrl()};
+                try{
+                    Process process = Runtime.getRuntime().exec(argument);
+                    //java代码中的process.waitFor()返回值为0表示我们调用python脚本成功，
+                    //返回值为1表示调用python脚本失败，这和我们通常意义上见到的0与1定义正好相反
+                    int re = process.waitFor();
+                    System.out.println("python运行的返回值："+re);
+                    return "批量导入成功！";
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("不是html文件");
+            }
+        } catch (IOException e) {
+            System.out.println("批量导入错误：" + e);
+        }
+        return "批量导入失败！";
     }
 
+    @Override
+    public Api exportDemo() {
+        return apiMapper.selectById(1);
+    }
 }

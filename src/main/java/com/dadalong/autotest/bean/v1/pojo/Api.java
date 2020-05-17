@@ -20,57 +20,50 @@ public class Api extends Datetime{
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
-
-    /**
-     * 所属业务
-     */
-    private String projectName;
-
-    /**
-     * 所属分组
-     */
-    private String apiGroup;
-
     /**
      * 环境域名
      */
     private String baseUrl;
-
     /**
-     * 请求头
+     * 所属业务
      */
-    private String reqHeaders;
-
+    private String projectName;
+    /**
+     * 所属分组
+     */
+    private String apiGroup;
     /**
      * 接口名称
      */
     private String apiName;
-
     /**
      * 接口路径
      */
     private String apiPath;
-
-    /**
-     * 接口描述
-     */
-    private String apiDescription;
-
     /**
      * 请求方法
      */
     private String reqMethod;
-
+    /**
+     * 接口描述
+     */
+    private String apiDescription;
+    /**
+     * 请求头
+     */
+    private String reqHeaders;
+    /**
+     * 请求参数
+     */
+    private String reqQuery;
     /**
      * 请求体
      */
     private String reqBody;
-
     /**
      * 响应信息
      */
     private String apiResponse;
-
     /**
      * 创建该接口的用户id
      */

@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
+import com.dadalong.autotest.model.testCase.BatchDTO;
 import com.dadalong.autotest.model.testCase.CreateOrEditCaseDTO;
+import com.dadalong.autotest.model.testCase.DetailDTO;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 
 import java.sql.Date;
@@ -30,14 +32,14 @@ public interface ITestCaseService {
 
     /**
      * (批量)删除用例
-     * @param caseIds
+     * @param batchDTO
      */
-    public void deleteBatch(List<Integer> caseIds);
+    public void deleteBatch(BatchDTO batchDTO);
 
     /**
      * 查看用例详情
-     * @param id
+     * @param detailDTO
      */
-    public TestCaseListResponse detail(Integer id);
+    public TestCaseListResponse detail(DetailDTO detailDTO);
 
 }

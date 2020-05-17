@@ -11,6 +11,7 @@ import com.dadalong.autotest.model.response.FilterMapResponse;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
 import com.dadalong.autotest.model.testCase.BatchDTO;
 import com.dadalong.autotest.model.testCase.CreateOrEditCaseDTO;
+import com.dadalong.autotest.model.testCase.DetailDTO;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.service.ITestCaseService;
@@ -64,14 +65,14 @@ public class TestCaseControl {
     @ApiOperation(value="(批量)删除用例",httpMethod = "POST")
     @PostMapping("/delete")
     public @ResponseBody TypedApiResponse delete(@RequestBody BatchDTO batchDTO){
-        iTestCaseService.deleteBatch(batchDTO.getCaseIds());
+        iTestCaseService.deleteBatch(batchDTO);
         return TypedApiResponse.ok().message("delete-success");
     }
 
     @ApiOperation(value="查看用例详情",httpMethod = "GET")
     @GetMapping("/detail")
-    public TypedApiResponse detail(Integer id){
-        return TypedApiResponse.ok().message("detail-success").data(iTestCaseService.detail(id));
+    public TypedApiResponse detail(DetailDTO detailDTO){
+        return TypedApiResponse.ok().message("detail-success").data(iTestCaseService.detail(detailDTO));
     }
 
     @ApiOperation(value="获取三级级联",httpMethod = "GET")

@@ -14,16 +14,18 @@ public class ApiListResponse {
 
     private Integer id;
 
+    private String baseUrl;
     private String projectName;
     private String apiGroup;
-    private String baseUrl;
+    private String apiName;
+    private String apiPath;
     private String reqMethod;
+    private String apiDescription;
     private String reqHeaders;
+    private String reqQuery;
     private String reqBody;
     private String apiResponse;
-    private String apiPath;
-    private String apiName;
-    private String apiDescription;
+
     private String createdBy;//创建人用户名 + user_id
 
 //    private List<TestCaseListResponse> testCaseList;

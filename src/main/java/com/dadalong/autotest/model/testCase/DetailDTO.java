@@ -2,10 +2,11 @@ package com.dadalong.autotest.model.testCase;
 
 import lombok.Data;
 
-import java.util.List;
-
+/**
+ * Created by 78089 on 2020/5/7.
+ */
 @Data
-public class BatchDTO {
-    List<Integer> caseIds;
+public class DetailDTO {
+    private Integer id;
     private Integer userId;
 }

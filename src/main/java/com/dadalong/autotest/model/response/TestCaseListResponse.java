@@ -12,20 +12,22 @@ import java.util.Date;
 public class TestCaseListResponse {
 
     private Integer id;
-
+    private String baseUrl;
     private String projectName;
     private String apiGroup;
-    private String baseUrl;
+    private String apiName;//1 + api_id
+    private String apiPath;
     private String reqMethod;
+    private String apiDescription;
     private String reqHeaders;
+    private String reqQuery;
     private String reqBody;
     private String apiResponse;
-    private String apiPath;
-    private String apiName;//1 + api_id
-    private String apiDescription;
 
+    private String caseRules;
     private String caseBody;
     private String caseDescription;//2
+    private String caseResponse;
     private String createdBy;//3创建人用户名 + user_id
     private String username;//4执行人用户名 + execute_by_user_id
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")

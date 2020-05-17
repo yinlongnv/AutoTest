@@ -9,8 +9,9 @@ public class CreateOrEditCaseDTO {
     private String projectName;
     private String apiGroup;
     private String apiMerge;//apiName apiPath格式
+    private String caseRules;
     private String caseBody;
     private String caseDescription;
-    private Integer userId;//如果是创建用户，前端需要传回当前登录用户的id——即创建该账户的用户id
-
+    private String caseResponse;
+    private Integer userId;//如果是创建，前端需要传回当前登录用户的id——即创建该账户的用户id
 }

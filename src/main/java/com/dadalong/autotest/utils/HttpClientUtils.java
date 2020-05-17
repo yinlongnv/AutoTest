@@ -166,7 +166,7 @@ public class HttpClientUtils {
         return strResult;
     }
     /**
-     * 用HttpClient发送有参、请求头信息的post请求
+     * 用HttpClient发送有参、无请求头信息的post请求
      * @param post_uri
      * @param params
      * @return

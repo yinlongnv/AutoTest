@@ -51,7 +51,6 @@ public class ApiWrapper extends QueryWrapper<Api> {
      */
     public ApiWrapper ofApiGroup(Object apiGroup){
         if(apiGroup != null && StringUtils.isNotBlank(apiGroup.toString())){
-            System.out.println(apiGroup.toString());
             this.eq("api_group",apiGroup.toString());
         }
         return this;
@@ -77,7 +76,6 @@ public class ApiWrapper extends QueryWrapper<Api> {
      */
     public ApiWrapper ofReqMethod(Object reqMethod){
         if(reqMethod != null && StringUtils.isNotBlank(reqMethod.toString())){
-            System.out.println(reqMethod.toString());
             this.eq("req_method",reqMethod.toString());
         }
         return this;

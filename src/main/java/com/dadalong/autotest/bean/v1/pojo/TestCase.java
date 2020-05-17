@@ -30,26 +30,31 @@ public class TestCase extends Datetime {
      * 创建该条用例的用户id
      */
     private Integer userId;
-
+    /**
+     * 用例规则
+     */
+    private String caseRules;
+    /**
+     * 用例内容
+     */
+    private String caseBody;
+    /**
+     * 用例描述
+     */
+    private String caseDescription;
+    /**
+     * 预期响应
+     */
+    private String caseResponse;
     /**
      * 执行状态
      */
     private Integer executeStatus;
 
     /**
-     * 用例内容
-     */
-    private String caseBody;
-
-    /**
      * 执行次数：默认为0
      */
     private Integer executeCount;
-
-    /**
-     * 用例描述
-     */
-    private String caseDescription;
 
     /**
      * 执行人id

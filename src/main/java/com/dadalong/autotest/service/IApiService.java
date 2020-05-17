@@ -2,17 +2,12 @@ package com.dadalong.autotest.service;
 
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dadalong.autotest.bean.v1.pojo.Api;
 import com.dadalong.autotest.model.api.BatchDTO;
 import com.dadalong.autotest.model.api.CreateOrEditApiDTO;
 import com.dadalong.autotest.model.api.DetailDTO;
+import com.dadalong.autotest.model.api.UploadDTO;
 import com.dadalong.autotest.model.response.ApiListResponse;
-import com.dadalong.autotest.model.response.ApiNameListResponse;
-import com.dadalong.autotest.model.response.FilterMapResponse;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
-
 
 public interface IApiService {
 
@@ -43,10 +38,13 @@ public interface IApiService {
     public ApiListResponse detail(DetailDTO detailDTO);
 
     /**
-     * 接收上传的json文件
-     * @param file
-     * @return
-     * @throws IOException
+     * 接收批量导入的html
      */
-    public String handleUploadedFile(MultipartFile file) throws IOException;
+    public String upload(UploadDTO uploadDTO);
+
+    /**
+     * 下载模板的模板数据，取数据库第一条
+     */
+    public Api exportDemo();
+
 }

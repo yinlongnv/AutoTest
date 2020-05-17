@@ -16,9 +16,14 @@ import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.TestCaseWrapper;
 import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
+import com.dadalong.autotest.model.testCase.BatchDTO;
 import com.dadalong.autotest.model.testCase.CreateOrEditCaseDTO;
+import com.dadalong.autotest.model.testCase.DetailDTO;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.service.ITestCaseService;
+import com.dadalong.autotest.utils.InsertOperateLogUtils;
+import com.dadalong.autotest.utils.LogContentEnumUtils;
+import com.dadalong.autotest.utils.OperatePathEnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +52,9 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
 
     @Resource
     private ApiMapper apiMapper;
+
+    @Resource
+    InsertOperateLogUtils insertOperateLogUtils;
 
     /**
      * 设置每页10条记录
@@ -85,13 +93,21 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             SlabPage<TestCase> testCaseSlabPage = new SlabPage<>(searchRequest);
             IPage<TestCase> testCaseResults = testCaseMapper.selectPage(testCaseSlabPage,testCaseWrapper);
             for (TestCase record : testCaseResults.getRecords()) {
-                User createdBy = userMapper.selectById(record.getUserId());
-                User username = userMapper.selectById(record.getExecuteByUserId());
                 Api api = apiMapper.selectById(record.getApiId());
                 TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
                 BeanUtils.copyProperties(record, testCaseListResponse);
-                testCaseListResponse.setCreatedBy(createdBy.getUsername());
-                testCaseListResponse.setUsername(username.getUsername());
+                User createdBy = userMapper.selectById(record.getUserId());
+                User username = userMapper.selectById(record.getExecuteByUserId());
+                if(createdBy != null && StringUtils.isNotBlank(createdBy.toString())) {
+                    testCaseListResponse.setCreatedBy(createdBy.getUsername());
+                } else {
+                    testCaseListResponse.setCreatedBy("root");
+                }
+                if(username != null && StringUtils.isNotBlank(username.toString())) {
+                    testCaseListResponse.setUsername(username.getUsername());
+                } else {
+                    testCaseListResponse.setUsername("root");
+                }
                 testCaseListResponse.setLastExecuteTime(record.getUpdatedAt());
                 testCaseListResponse.setApiName(api.getApiName());
                 testCaseListResponseList.add(testCaseListResponse);
@@ -99,11 +115,13 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             SlabPage<TestCaseListResponse> testCaseListResponseSlabPage = new SlabPage<>(searchRequest);
             testCaseListResponseSlabPage.setRecords(testCaseListResponseList);
             testCaseListResponseSlabPage.setTotal(testCaseResults.getTotal());
+            Object userId = map.get("userId");
+            //插入操作日志
+            insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.CASELIST, OperatePathEnumUtils.CASELIST);
             return testCaseListResponseSlabPage;
-
         }catch (Exception e){
             LOGGER.error("listWithSearchError",e);
-            throw new ConflictException("listWithSearchError");//暂时没啥用
+            throw new ConflictException("listWithSearchError");
         }
     }
 
@@ -123,39 +141,60 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         testCase.setApiId(apiId);
         if(createOrEditCaseDTO.getId() == null) {
             testCase.setUserId(createOrEditCaseDTO.getUserId());
+            //插入操作日志
+            insertOperateLogUtils.insertOperateLog(createOrEditCaseDTO.getUserId(), LogContentEnumUtils.CASECREATE, OperatePathEnumUtils.CASECREATE);
             testCaseMapper.insert(testCase);
         } else {
+            //插入操作日志
+            insertOperateLogUtils.insertOperateLog(createOrEditCaseDTO.getUserId(), LogContentEnumUtils.CASEEDIT, OperatePathEnumUtils.CASEEDIT);
             testCaseMapper.updateById(testCase);
         }
     }
 
     /**
      * (批量)删除用例
-     * @param caseIds
+     * @param batchDTO
      */
     @Override
-    public void deleteBatch(List<Integer> caseIds) {
+    public void deleteBatch(BatchDTO batchDTO) {
         try {
-            removeByIds(caseIds);
+            removeByIds(batchDTO.getCaseIds());
+            //插入操作日志
+            insertOperateLogUtils.insertOperateLog(batchDTO.getUserId(), LogContentEnumUtils.CASEDELETE, OperatePathEnumUtils.CASEDELETE);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
+    /**
+     * 查看用例详情
+     * @param detailDTO
+     * @return
+     */
     @Override
-    public TestCaseListResponse detail(Integer id) {
+    public TestCaseListResponse detail(DetailDTO detailDTO) {
         TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
-        TestCase testCase = testCaseMapper.selectById(id);
-        System.out.println("+++++++++++++++++++++1用例内容："+ testCase.getCaseBody());
+        TestCase testCase = testCaseMapper.selectById(detailDTO.getId());
+//        System.out.println("+++++++++++++++++++++1用例内容："+ testCase.getCaseBody());
         BeanUtils.copyProperties(testCase, testCaseListResponse);
         Api api = apiMapper.selectById(testCase.getApiId());
         BeanUtils.copyProperties(api, testCaseListResponse);
         User createdBy = userMapper.selectById(testCase.getUserId());
         User username = userMapper.selectById(testCase.getExecuteByUserId());
-        testCaseListResponse.setCreatedBy(createdBy.getUsername());
-        testCaseListResponse.setUsername(username.getUsername());
+        if(createdBy != null && StringUtils.isNotBlank(createdBy.toString())) {
+            testCaseListResponse.setCreatedBy(createdBy.getUsername());
+        } else {
+            testCaseListResponse.setCreatedBy("root");
+        }
+        if(username != null && StringUtils.isNotBlank(username.toString())) {
+            testCaseListResponse.setUsername(username.getUsername());
+        } else {
+            testCaseListResponse.setUsername("root");
+        }
         testCaseListResponse.setLastExecuteTime(testCase.getUpdatedAt());
-        System.out.println("+++++++++++++++++++++3用例内容："+ testCaseListResponse.getCaseBody());
+//        System.out.println("+++++++++++++++++++++3用例内容："+ testCaseListResponse.getCaseBody());
+        //插入操作日志
+        insertOperateLogUtils.insertOperateLog(detailDTO.getUserId(), LogContentEnumUtils.CASEDETAIL, OperatePathEnumUtils.CASEDETAIL);
         return testCaseListResponse;
     }
 
