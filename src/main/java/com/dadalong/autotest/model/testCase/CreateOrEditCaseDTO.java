@@ -9,7 +9,6 @@ public class CreateOrEditCaseDTO {
     private String projectName;
     private String apiGroup;
     private String apiMerge;//apiName apiPath格式
-    private String caseRules;
     private String caseBody;
     private String caseDescription;
     private String caseResponse;

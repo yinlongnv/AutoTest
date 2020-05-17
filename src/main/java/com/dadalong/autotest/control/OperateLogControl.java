@@ -1,6 +1,5 @@
 package com.dadalong.autotest.control;
 
-
 import cn.com.dbapp.slab.common.model.dto.CollectionResponse;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Api(value="/", description = "操作日志管理下的全部接口")
 @RestController
@@ -42,6 +42,14 @@ public class OperateLogControl {
         //构造响应体pageInfo+tbody形式
         CollectionResponse response = new CollectionResponse<>(pages, new LogListResponse());
         return TypedApiResponse.ok().message("listWithSearch-success").data(response);
+    }
+
+    @ApiOperation(value="导出所有操作日志",httpMethod = "GET")
+    @GetMapping("/exportAllLogs")
+    public List<LogListResponse> exportAllLogs() {
+        //提取请求中的参数到map中
+        SearchRequest searchRequest = new SearchRequest(request);
+        return iOperateLogService.exportAllLogs(searchRequest);
     }
 
     @ApiOperation(value="获取用户名筛选项",httpMethod = "GET")

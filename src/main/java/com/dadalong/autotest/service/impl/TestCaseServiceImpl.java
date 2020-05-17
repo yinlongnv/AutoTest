@@ -3,7 +3,6 @@ package com.dadalong.autotest.service.impl;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.common.model.dto.SlabPage;
 import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
-import cn.com.dbapp.slab.java.commons.utils.ConverterUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dadalong.autotest.bean.v1.mapper.ApiMapper;
@@ -14,12 +13,10 @@ import com.dadalong.autotest.bean.v1.pojo.TestCase;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.TestCaseWrapper;
-import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
 import com.dadalong.autotest.model.testCase.BatchDTO;
 import com.dadalong.autotest.model.testCase.CreateOrEditCaseDTO;
 import com.dadalong.autotest.model.testCase.DetailDTO;
-import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.service.ITestCaseService;
 import com.dadalong.autotest.utils.InsertOperateLogUtils;
 import com.dadalong.autotest.utils.LogContentEnumUtils;
@@ -32,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -56,11 +52,6 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     @Resource
     InsertOperateLogUtils insertOperateLogUtils;
 
-    /**
-     * 设置每页10条记录
-     */
-    private static final Integer size = 10;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiServiceImpl.class);
 
     /**
@@ -73,7 +64,6 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         try {
             TestCaseWrapper testCaseWrapper = new TestCaseWrapper();
             ApiWrapper apiWrapper = new ApiWrapper();
-//            UserWrapper userWrapper = new UserWrapper();
 
             Map<String,Object> map = searchRequest.getSearch();
             if (StringUtils.isNotBlank(map.get("projectName").toString())) {
@@ -87,7 +77,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 Integer apiId = apiMapper.selectOne(apiWrapper).getId();
                 searchRequest.setSearch("apiId", apiId);
             }
-            testCaseWrapper.ofListWithSearch(searchRequest);
+            testCaseWrapper.ofListWithSearch(searchRequest).orderByDesc("created_at");
             List<TestCaseListResponse> testCaseListResponseList = new ArrayList<>();
 
             SlabPage<TestCase> testCaseSlabPage = new SlabPage<>(searchRequest);
@@ -95,6 +85,9 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             for (TestCase record : testCaseResults.getRecords()) {
                 Api api = apiMapper.selectById(record.getApiId());
                 TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
+                BeanUtils.copyProperties(api, testCaseListResponse, "id");
+                String merge = api.getApiName() + " " + api.getApiPath();
+                testCaseListResponse.setApiMerge(merge);
                 BeanUtils.copyProperties(record, testCaseListResponse);
                 User createdBy = userMapper.selectById(record.getUserId());
                 User username = userMapper.selectById(record.getExecuteByUserId());
@@ -109,7 +102,6 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                     testCaseListResponse.setUsername("root");
                 }
                 testCaseListResponse.setLastExecuteTime(record.getUpdatedAt());
-                testCaseListResponse.setApiName(api.getApiName());
                 testCaseListResponseList.add(testCaseListResponse);
             }
             SlabPage<TestCaseListResponse> testCaseListResponseSlabPage = new SlabPage<>(searchRequest);
@@ -137,9 +129,10 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         api.setApiName(apiInfo[0]);
         api.setApiPath(apiInfo[1]);
         apiWrapper.ofApiId(api);
-        Integer apiId = apiMapper.selectOne(apiWrapper).getId();
+        Integer apiId = apiMapper.selectOne(apiWrapper).getId();//这里可能存在脏数据，暂未定位
         testCase.setApiId(apiId);
         if(createOrEditCaseDTO.getId() == null) {
+            testCase.setExecuteStatus(1);
             testCase.setUserId(createOrEditCaseDTO.getUserId());
             //插入操作日志
             insertOperateLogUtils.insertOperateLog(createOrEditCaseDTO.getUserId(), LogContentEnumUtils.CASECREATE, OperatePathEnumUtils.CASECREATE);
@@ -175,10 +168,11 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     public TestCaseListResponse detail(DetailDTO detailDTO) {
         TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
         TestCase testCase = testCaseMapper.selectById(detailDTO.getId());
-//        System.out.println("+++++++++++++++++++++1用例内容："+ testCase.getCaseBody());
         BeanUtils.copyProperties(testCase, testCaseListResponse);
         Api api = apiMapper.selectById(testCase.getApiId());
-        BeanUtils.copyProperties(api, testCaseListResponse);
+        BeanUtils.copyProperties(api, testCaseListResponse, "id");
+        String merge = api.getApiName() + " " + api.getApiPath();
+        testCaseListResponse.setApiMerge(merge);
         User createdBy = userMapper.selectById(testCase.getUserId());
         User username = userMapper.selectById(testCase.getExecuteByUserId());
         if(createdBy != null && StringUtils.isNotBlank(createdBy.toString())) {
@@ -192,7 +186,6 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             testCaseListResponse.setUsername("root");
         }
         testCaseListResponse.setLastExecuteTime(testCase.getUpdatedAt());
-//        System.out.println("+++++++++++++++++++++3用例内容："+ testCaseListResponse.getCaseBody());
         //插入操作日志
         insertOperateLogUtils.insertOperateLog(detailDTO.getUserId(), LogContentEnumUtils.CASEDETAIL, OperatePathEnumUtils.CASEDETAIL);
         return testCaseListResponse;

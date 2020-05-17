@@ -15,16 +15,19 @@ public class TestCaseListResponse {
     private String baseUrl;
     private String projectName;
     private String apiGroup;
-    private String apiName;//1 + api_id
+    private String apiName;
+
+    private String apiMerge;
+
     private String apiPath;
     private String reqMethod;
     private String apiDescription;
     private String reqHeaders;
     private String reqQuery;
     private String reqBody;
+    private String caseRules;
     private String apiResponse;
 
-    private String caseRules;
     private String caseBody;
     private String caseDescription;//2
     private String caseResponse;

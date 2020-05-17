@@ -76,7 +76,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             List<UserListResponse> userListResponseList = new ArrayList<>();
             Map<String,Object> map = searchRequest.getSearch();
 
-
             SlabPage<User> userSlabPage = new SlabPage<>(searchRequest);
             IPage<User> userResults = userMapper.selectPage(userSlabPage, userWrapper);
             for (User record : userResults.getRecords()) {

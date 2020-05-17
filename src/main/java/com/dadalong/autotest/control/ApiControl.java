@@ -106,19 +106,19 @@ public class ApiControl {
             return "failed";
         }
     }
-    @GetMapping("/export")
-    public void exportExcel(HttpServletResponse response) {
-        List<ApiExcel> personList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            ApiExcel personVo = new ApiExcel();
-            personVo.setUserName("张三" + i);
-            personVo.setUserAge(18);
-            personVo.setFavorite("羽毛球");
-            personList.add(personVo);
-        }
-            excelUtils.exportExcel(personList, "体育课学生名单", "学生信息", ApiExcel.class, "体育课学生名单", response);
-
-    }
+//    @GetMapping("/export")
+//    public void exportExcel(HttpServletResponse response) {
+//        List<ApiExcel> personList = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            ApiExcel personVo = new ApiExcel();
+//            personVo.setUserName("张三" + i);
+//            personVo.setUserAge(18);
+//            personVo.setFavorite("羽毛球");
+//            personList.add(personVo);
+//        }
+//            excelUtils.exportExcel(personList, "体育课学生名单", "学生信息", ApiExcel.class, "体育课学生名单", response);
+//
+//    }
 
     @ApiOperation(value="获取三级级联",httpMethod = "GET")
     @GetMapping("/filterMap")

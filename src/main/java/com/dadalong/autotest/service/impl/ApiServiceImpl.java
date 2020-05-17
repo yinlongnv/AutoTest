@@ -3,8 +3,6 @@ package com.dadalong.autotest.service.impl;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.common.model.dto.SlabPage;
 import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
-import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dadalong.autotest.bean.v1.mapper.ApiMapper;
@@ -19,16 +17,12 @@ import com.dadalong.autotest.model.api.UploadDTO;
 import com.dadalong.autotest.model.response.*;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.utils.*;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -53,11 +47,6 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
 
     @Resource
     ExcelUtils excelUtils;
-
-    /**
-     * 设置每页10条记录
-     */
-    private static final Integer size = 10;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiServiceImpl.class);
 

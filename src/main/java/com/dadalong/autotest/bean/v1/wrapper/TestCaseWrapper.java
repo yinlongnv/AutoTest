@@ -16,6 +16,8 @@ public class TestCaseWrapper extends QueryWrapper<TestCase> {
      */
     public TestCaseWrapper ofListWithSearch(SearchRequest request){
         Map<String,Object> map = request.getSearch();
+        Object executeStatus = map.get("executeStatus");
+        this.ofExecuteStatus(executeStatus);
         Object caseDescription = map.get("caseDescription");
         if (caseDescription != null && StringUtils.isNotBlank(caseDescription.toString())) {
             this.like("case_description", caseDescription.toString());
@@ -24,8 +26,6 @@ public class TestCaseWrapper extends QueryWrapper<TestCase> {
         if (apiId != null && StringUtils.isNotBlank(apiId.toString())) {
             this.eq("api_id", Integer.parseInt(apiId.toString()));
         }
-        Object executeStatus = map.get("executeStatus");
-        this.ofExecuteStatus(executeStatus);
         return this;
     }
 

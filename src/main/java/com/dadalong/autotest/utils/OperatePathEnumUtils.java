@@ -20,12 +20,22 @@ public class OperatePathEnumUtils {
     public static final String APIDELETE = "/api/delete";
     public static final String APIDETAIL = "/api/detail";
 
+    public static final String APIEXPORT = "/api/export";
+    public static final String APIIMPORT = "/api/import";
+
+    public static final String CASERULES = "/api/caseRules";
+
     public static final String CASELIST = "/case/listWithSearch";
     public static final String CASECREATE = "/case/createOrEdit";
     public static final String CASEEDIT = "/case/createOrEdit";
     public static final String CASEDELETE = "/case/delete";
     public static final String CASEDETAIL = "/case/detail";
 
+    public static final String CASEEXPORT = "/case/export";
+    public static final String CASEIMPORT = "/case/import";
+    public static final String CASEEXECUTE = "/case/execute";
+
     public static final String LOGLIST = "/operateLog/listWithSearch";
+    public static final String LOGEXPORT = "/operateLog/exportAllLogs";
 
 }

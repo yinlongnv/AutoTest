@@ -4,6 +4,8 @@ import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dadalong.autotest.model.response.LogListResponse;
 
+import java.util.List;
+
 public interface IOperateLogService {
 
     /**
@@ -11,6 +13,7 @@ public interface IOperateLogService {
      * @param searchRequest
      * @return
      */
-    public IPage<LogListResponse> listWithSearch(SearchRequest searchRequest);
+    IPage<LogListResponse> listWithSearch(SearchRequest searchRequest);
 
+    List<LogListResponse> exportAllLogs(SearchRequest searchRequest);
 }

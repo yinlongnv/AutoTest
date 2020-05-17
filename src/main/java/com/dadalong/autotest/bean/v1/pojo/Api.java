@@ -61,6 +61,10 @@ public class Api extends Datetime{
      */
     private String reqBody;
     /**
+     * 参数规则
+     */
+    private String caseRules;
+    /**
      * 响应信息
      */
     private String apiResponse;

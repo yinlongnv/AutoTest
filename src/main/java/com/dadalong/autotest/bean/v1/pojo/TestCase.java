@@ -31,10 +31,6 @@ public class TestCase extends Datetime {
      */
     private Integer userId;
     /**
-     * 用例规则
-     */
-    private String caseRules;
-    /**
      * 用例内容
      */
     private String caseBody;
@@ -47,7 +43,7 @@ public class TestCase extends Datetime {
      */
     private String caseResponse;
     /**
-     * 执行状态
+     * 执行状态，未执行1，成功2，失败3
      */
     private Integer executeStatus;
 

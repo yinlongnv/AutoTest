@@ -27,14 +27,14 @@ public class UserWrapper extends QueryWrapper<User> {
      */
     public UserWrapper ofListWithSearch(SearchRequest request){
         Map<String,Object> map = request.getSearch();
+        Object startTime = map.get("startTime");
+        Object endTime = map.get("endTime");
+        this.ofTime(startTime, endTime);
+        this.ofRole(map.get("role"));
         Object search = map.get("userInfo");
         if (search != null && StringUtils.isNotBlank(search.toString())) {
             this.like("username", search.toString()).or().like("user_number", search.toString());
         }
-        this.ofRole(map.get("role"));
-        Object startTime = map.get("startTime");
-        Object endTime = map.get("endTime");
-        this.ofTime(startTime, endTime);
         return this;
     }
 
@@ -45,7 +45,6 @@ public class UserWrapper extends QueryWrapper<User> {
      */
     public UserWrapper ofRole(Object role){
         if(role != null && StringUtils.isNotBlank(role.toString())){
-//            System.out.println(Integer.parseInt(role.toString()));
             this.eq("role",Integer.parseInt(role.toString()));
         }
         return this;
@@ -59,20 +58,9 @@ public class UserWrapper extends QueryWrapper<User> {
      */
     public UserWrapper ofTime(Object startTime,Object endTime){
         if(startTime != null && endTime != null && StringUtils.isNotBlank(startTime.toString()) && StringUtils.isNotBlank(endTime.toString())){
-//            System.out.println("+++++++++++++++++++++开始时间："+startTime);
-//            System.out.println("+++++++++++++++++++++结束时间："+endTime);
             this.between("last_login",startTime,endTime);
             return this;
         }
-        return this;
-    }
-
-    /**
-     * 获取用户筛选列表，根据username去重分组
-     * @return
-     */
-    public UserWrapper getUserList() {
-        this.groupBy("username");
         return this;
     }
 

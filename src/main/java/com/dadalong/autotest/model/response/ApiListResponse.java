@@ -24,6 +24,7 @@ public class ApiListResponse {
     private String reqHeaders;
     private String reqQuery;
     private String reqBody;
+    private String caseRules;
     private String apiResponse;
 
     private String createdBy;//创建人用户名 + user_id

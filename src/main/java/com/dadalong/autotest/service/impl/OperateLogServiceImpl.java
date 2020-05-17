@@ -5,17 +5,12 @@ import cn.com.dbapp.slab.common.model.dto.SlabPage;
 import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dadalong.autotest.bean.v1.mapper.OperateLogMapper;
-import com.dadalong.autotest.bean.v1.mapper.TestCaseMapper;
 import com.dadalong.autotest.bean.v1.mapper.UserMapper;
 import com.dadalong.autotest.bean.v1.pojo.OperateLog;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.OperateLogWrapper;
-import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 import com.dadalong.autotest.model.response.LogListResponse;
-import com.dadalong.autotest.model.response.TestCaseListResponse;
-import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 import com.dadalong.autotest.service.IOperateLogService;
-import com.dadalong.autotest.service.IUserService;
 import com.dadalong.autotest.utils.InsertOperateLogUtils;
 import com.dadalong.autotest.utils.LogContentEnumUtils;
 import com.dadalong.autotest.utils.OperatePathEnumUtils;
@@ -27,9 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,11 +36,6 @@ public class OperateLogServiceImpl implements IOperateLogService {
     private UserMapper userMapper;
     @Resource
     InsertOperateLogUtils insertOperateLogUtils;
-
-    /**
-     * 设置每页10条记录
-     */
-    private static final Integer size = 10;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiServiceImpl.class);
 
@@ -92,5 +80,30 @@ public class OperateLogServiceImpl implements IOperateLogService {
             LOGGER.error("listWithSearchError",e);
             throw new ConflictException("listWithSearchError");
         }
+    }
+
+    @Override
+    public List<LogListResponse> exportAllLogs(SearchRequest searchRequest) {
+        Map<String,Object> map = searchRequest.getSearch();
+        Object userId = map.get("userId");
+        List<LogListResponse> logListResponseList = new ArrayList<>();
+        List<OperateLog> operateLogList = operateLogMapper.selectList(null);//查询全部
+        for (OperateLog operateLog : operateLogList) {
+            LogListResponse logListResponse = new LogListResponse();
+            BeanUtils.copyProperties(operateLog, logListResponse);
+            User user = userMapper.selectById(operateLog.getUserId());
+            if (user != null && StringUtils.isNotBlank(user.toString())) {
+                BeanUtils.copyProperties(user, logListResponse, "createdAt");
+            } else {
+                logListResponse.setUsername("root");
+                logListResponse.setUserNumber("AH19981006000000");
+                logListResponse.setRole(1);
+                logListResponse.setLastIp("127.0.0.1");
+            }
+            logListResponseList.add(logListResponse);
+        }
+        //插入操作日志
+        insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.LOGEXPORT, OperatePathEnumUtils.LOGEXPORT);
+        return logListResponseList;
     }
 }
