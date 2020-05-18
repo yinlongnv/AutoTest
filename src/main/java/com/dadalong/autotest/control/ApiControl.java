@@ -85,6 +85,7 @@ public class ApiControl {
     @PostMapping("/upload")
     public TypedApiResponse upload(UploadDTO uploadDTO) {
         String upload_msg = iApiService.upload(uploadDTO);
+        System.out.println("上传文件："+uploadDTO.getFile());
         switch (upload_msg) {
             case "导入失败，请选择文件！":
                 return TypedApiResponse.error().message("导入失败，请选择文件！");
@@ -116,7 +117,11 @@ public class ApiControl {
 //            personVo.setFavorite("羽毛球");
 //            personList.add(personVo);
 //        }
+//        try {
 //            excelUtils.exportExcel(personList, "体育课学生名单", "学生信息", ApiExcel.class, "体育课学生名单", response);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 //
 //    }
 

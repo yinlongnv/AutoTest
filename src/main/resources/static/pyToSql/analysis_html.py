@@ -118,8 +118,7 @@ def html_to_mysql(user_id, base_url):
                                                 # print(h3_p1_title_content_pre.text)
                                                 if h3_p1_title_content_pre.name == "pre":
                                                     # print(h3_p1_title_content_pre.text)
-                                                    # 处理返回数据里面的信息
-                                                    p_pres = str(h3_p1_title_content_pre.text).split("\n")
+                                                    p_pres = str(h3_p1_title_content_pre.text).split("\n")  # 处理返回数据里面的信息
                                                     api_desc = h3_content1.next_sibling.next_sibling.text
                                                     for p_pre in p_pres:
                                                         api_desc += p_pre.strip()
@@ -128,8 +127,12 @@ def html_to_mysql(user_id, base_url):
                                                     api_data["api_description"] = h3_content1.next_sibling.next_sibling.text
                                             else:
                                                 api_data["api_description"] = ""
+                                        else:
+                                            pass
                                     except:
                                         pass
+                                else:
+                                    pass
                         elif h2_content.text == "请求参数":
                             p2_counts += 1
                             print("请求参数的p2数量有：" + str(p2_counts))
@@ -177,7 +180,7 @@ def html_to_mysql(user_id, base_url):
                                                 # print(headers)
                                                 headers_table_list.append(headers)
                                                 # print(headers_table_list)
-                                                api_data["req_headers"] = str(headers_table_list)
+                                            api_data["req_headers"] = str(headers_table_list)
                                         elif h3_p2_title == "Query":
                                             print("Query")
                                             query_table = h3_content2.next_sibling.next_sibling  # 拿到Headers内的表格
@@ -207,7 +210,7 @@ def html_to_mysql(user_id, base_url):
                                                 # print(query)
                                                 query_table_list.append(query)
                                                 # print(query_table_list)
-                                                api_data["req_query"] = str(query_table_list)
+                                            api_data["req_query"] = str(query_table_list)
                                         elif h3_p2_title == "Body":
                                             body_sibling = h3_content2.next_sibling.next_sibling
                                             print(h3_content2.next_sibling.next_sibling.name)
@@ -238,8 +241,8 @@ def html_to_mysql(user_id, base_url):
                                                         body["required"] = "0"
                                                         body["example"] = body_table_tr_td[3].text
                                                         body["desc"] = body_table_tr_td[4].text
-                                                    # print(body)
-                                                    body_table_list.append(body)
+                                                        # print(body)
+                                                        body_table_list.append(body)
                                                     # print(body_table_list)
                                                     api_data["req_body"] = str(body_table_list)
                                             elif body_sibling.name == "pre":
@@ -248,8 +251,14 @@ def html_to_mysql(user_id, base_url):
                                                 for pre in body_pres:
                                                     body_pre += pre.strip()
                                                     api_data["req_body"] = body_pre
+                                            else:
+                                                pass
+                                        else:
+                                            pass
                                     except:
                                         pass
+                                else:
+                                    pass
                         elif h2_content.text == "返回数据":
                             p3_counts += 1
                             print("返回数据的p3数量有：" + str(p3_counts))
@@ -273,8 +282,55 @@ def html_to_mysql(user_id, base_url):
                                     api_data["updated_at"] = current_date_time
                                     print(api_data)
                                     insert(api_data, project_name.strip())
+                                elif h3_content3.name == "table":
+                                    h3_content3_table = h3_content3
+                                    h3_content3_table_tr = h3_content3_table.tbody.findAll("tr")  # 拿到表格内每行
+                                    print(h3_content3_table.tbody.findAll("tr"))
+                                    h3_content3_table_list = []
+                                    # print("tr个数：")
+                                    # print(len(body_table_tr))
+                                    print(range(len(body_table_tr)))
+                                    for tr in range(len(h3_content3_table_tr)):  # 拿到每行的每格
+                                        # print(table_tr[tr].findAll("td"))
+                                        h3_content3_table_tr_td = h3_content3_table_tr[tr].findAll("td")
+                                        h3_content3_body = {
+                                            "name": "",
+                                            "type": "",
+                                            "required": "",
+                                            "default": "",
+                                            "desc": "",
+                                            "other": ""
+                                        }
+                                        h3_content3_body["name"] = h3_content3_table_tr_td[0].text
+                                        h3_content3_body["type"] = h3_content3_table_tr_td[1].text
+                                        if h3_content3_table_tr_td[2].text == "是" \
+                                                or h3_content3_table_tr_td[2].text == "必须":
+                                            h3_content3_body["required"] = "1"
+                                        else:
+                                            h3_content3_body["required"] = "0"
+                                        h3_content3_body["default"] = h3_content3_table_tr_td[3].text
+                                        h3_content3_body["desc"] = h3_content3_table_tr_td[4].text
+                                        h3_content3_body["other"] = h3_content3_table_tr_td[5].text
+                                        # print(body)
+                                        h3_content3_table_list.append(h3_content3_body)
+                                        # print(body_table_list)
+                                    api_data["req_body"] = str(h3_content3_table_list)
+                                    api_data["user_id"] = user_id
+                                    api_data["base_url"] = base_url
+                                    current_date_time = time.strftime('%Y-%m-%d %H:%M:%S')
+                                    print(current_date_time)
+                                    api_data["created_at"] = current_date_time
+                                    api_data["updated_at"] = current_date_time
+                                    print(api_data)
+                                    insert(api_data, project_name.strip())
+                                else:
+                                    pass
                         else:
                             pass
+                    else:
+                        pass
+            else:
+                pass
         # print("i等于：" + str(api_count))
     # print("h2数量：")
     # print(h2_counts)
@@ -289,6 +345,6 @@ def html_to_mysql(user_id, base_url):
 
 
 if __name__ == '__main__':
-    # html_to_mysql(sys.argv[1], sys.argv[2])
-    html_to_mysql("1", "csr.adl.io")
+    html_to_mysql(sys.argv[1], sys.argv[2])
+    # html_to_mysql("1", "csr.adl.io")
 # html_to_mysql(sys.argv[1], sys.argv[2])
