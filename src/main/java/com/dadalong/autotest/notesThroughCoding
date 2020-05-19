@@ -59,3 +59,10 @@ bs4.FeatureNotFound: Couldn't find a tree builder with the features you requeste
 python脚本跑三条就不跑了，因为太多print语句影响了缓存
 ——去除所有的print语句
 
+python解析同级的html。。。基本可以了，太难啦！
+
+JsonArray、JsonObject、List、String不想再碰了。
+
+
+
+

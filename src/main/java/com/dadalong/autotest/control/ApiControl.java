@@ -8,8 +8,10 @@ import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.api.*;
 import com.dadalong.autotest.model.response.FilterBaseUrlResponse;
 import com.dadalong.autotest.model.response.FilterMapResponse;
+import com.dadalong.autotest.model.response.ReqBodyResponse;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.utils.FilterMapUtils;
+import com.dadalong.autotest.utils.HandleUploadMsgUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -18,8 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
-
 
 @Api(value="/", description = "接口管理下的全部接口")
 @RestController
@@ -28,6 +30,9 @@ public class ApiControl {
 
     @Resource
     FilterMapUtils filterMapUtils;
+
+    @Resource
+    HandleUploadMsgUtils handleUploadMsgUtils;
 
     private final IApiService iApiService;
     private final HttpServletRequest request;
@@ -82,16 +87,16 @@ public class ApiControl {
     @PostMapping("/upload")
     public TypedApiResponse upload(UploadDTO uploadDTO) {
         String uploadMsg = iApiService.upload(uploadDTO);
-//        System.out.println("上传文件：" + uploadDTO.getFile());
-        switch (uploadMsg) {
-            case "导入失败，请选择文件":
-                return TypedApiResponse.error().message("导入失败，请选择文件");
-            case "批量导入失败":
-                return TypedApiResponse.error().message("批量导入失败");
-            case "批量导入成功":
-                return TypedApiResponse.ok().message("批量导入成功");
-            default:
-                return TypedApiResponse.error().message("loading");
+        return handleUploadMsgUtils.handleUploadMsgUtils(uploadMsg);
+    }
+
+    @ApiOperation(value="填入参数规则",httpMethod = "POST")
+    @PostMapping("/caseRules")
+    public TypedApiResponse putCaseRules(CaseRulesDTO caseRulesDTO) {
+        if (iApiService.putCaseRules(caseRulesDTO)) {
+            return TypedApiResponse.ok().message("caseRules-success");
+        } else {
+            return TypedApiResponse.error().message("caseRules-failed");
         }
     }
 
@@ -107,9 +112,15 @@ public class ApiControl {
         return filterMapUtils.filterBaseUrl();
     }
 
-    @ApiOperation(value="获取现接口参数信息",httpMethod = "GET")
+    @ApiOperation(value="获取指定apiId的接口参数信息",httpMethod = "GET")
     @GetMapping("/getReqQueryOrBody")
-    public List<String> getReqBody(Integer apiId) {
-        return filterMapUtils.getReqBody(apiId);
+    public TypedApiResponse getReqBody(Integer apiId) {
+        List<ReqBodyResponse> reqBodyResponseList;
+        reqBodyResponseList = filterMapUtils.getReqBody(apiId);
+        if (reqBodyResponseList != null && StringUtils.isNotBlank(reqBodyResponseList.toString())) {
+            return TypedApiResponse.ok().message("getReqQueryOrBody-success").data(reqBodyResponseList);
+        } else {
+            return TypedApiResponse.error().message("该接口不需要设置参数规则");
+        }
     }
 }

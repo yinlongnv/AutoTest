@@ -1,4 +1,4 @@
-package com.dadalong.autotest.model.response;
+package com.dadalong.autotest.model.other;
 
 import lombok.Data;
 

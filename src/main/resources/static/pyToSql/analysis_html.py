@@ -110,8 +110,6 @@ def html_to_mysql(user_id, base_url):
                                                     "name": "",
                                                     "value": "",
                                                     "required": "",
-                                                    "example": "",
-                                                    "desc": ""
                                                 }
                                                 headers["name"] = headers_table_tr_td[0].text
                                                 headers["value"] = headers_table_tr_td[1].text
@@ -120,8 +118,6 @@ def html_to_mysql(user_id, base_url):
                                                     headers["required"] = "1"
                                                 else:
                                                     headers["required"] = "0"
-                                                headers["example"] = headers_table_tr_td[3].text
-                                                headers["desc"] = headers_table_tr_td[4].text
                                                 headers_table_list.append(headers)
                                             api_data["req_headers"] = str(headers_table_list)
                                         elif h3_p2_title == "Query":
@@ -149,7 +145,7 @@ def html_to_mysql(user_id, base_url):
                                         elif h3_p2_title == "Body":
                                             body_sibling = h3_content2.next_sibling.next_sibling
                                             if body_sibling.name == "table":
-                                                body_table = h3_content2.next_sibling.next_sibling  # 拿到Headers内的表格
+                                                body_table = body_sibling  # 拿到Headers内的表格
                                                 body_table_tr = body_table.tbody.findAll("tr")  # 拿到表格内每行
                                                 body_table_list = []
                                                 for tr in range(len(body_table_tr)):  # 拿到每行的每格
@@ -157,9 +153,7 @@ def html_to_mysql(user_id, base_url):
                                                     body = {
                                                         "name": "",
                                                         "type": "",
-                                                        "required": "",
-                                                        "example": "",
-                                                        "desc": ""
+                                                        "required": ""
                                                     }
                                                     body["name"] = body_table_tr_td[0].text
                                                     body["type"] = body_table_tr_td[1].text
@@ -168,8 +162,6 @@ def html_to_mysql(user_id, base_url):
                                                         body["required"] = "1"
                                                     else:
                                                         body["required"] = "0"
-                                                        body["example"] = body_table_tr_td[3].text
-                                                        body["desc"] = body_table_tr_td[4].text
                                                         body_table_list.append(body)
                                                     api_data["req_body"] = str(body_table_list)
                                             elif body_sibling.name == "pre":
@@ -203,6 +195,10 @@ def html_to_mysql(user_id, base_url):
                                     api_data["created_at"] = current_date_time
                                     api_data["updated_at"] = current_date_time
                                     insert(api_data, project_name.strip())
+                                    api_data["req_headers"] = ""
+                                    api_data["req_query"] = ""
+                                    api_data["req_body"] = ""
+                                    api_data["api_response"] = ""
                                 elif h3_content3.name == "table":
                                     h3_content3_table = h3_content3
                                     h3_content3_table_tr = h3_content3_table.tbody.findAll("tr")  # 拿到表格内每行
@@ -212,10 +208,7 @@ def html_to_mysql(user_id, base_url):
                                         h3_content3_body = {
                                             "name": "",
                                             "type": "",
-                                            "required": "",
-                                            "default": "",
-                                            "desc": "",
-                                            "other": ""
+                                            "required": ""
                                         }
                                         h3_content3_body["name"] = h3_content3_table_tr_td[0].text
                                         h3_content3_body["type"] = h3_content3_table_tr_td[1].text
@@ -224,25 +217,24 @@ def html_to_mysql(user_id, base_url):
                                             h3_content3_body["required"] = "1"
                                         else:
                                             h3_content3_body["required"] = "0"
-                                        h3_content3_body["default"] = h3_content3_table_tr_td[3].text
-                                        h3_content3_body["desc"] = h3_content3_table_tr_td[4].text
-                                        h3_content3_body["other"] = h3_content3_table_tr_td[5].text
                                         h3_content3_table_list.append(h3_content3_body)
-                                    api_data["req_body"] = str(h3_content3_table_list)
+                                    api_data["api_response"] = str(h3_content3_table_list)
                                     api_data["user_id"] = user_id
                                     api_data["base_url"] = base_url
                                     current_date_time = time.strftime('%Y-%m-%d %H:%M:%S')
                                     api_data["created_at"] = current_date_time
                                     api_data["updated_at"] = current_date_time
                                     insert(api_data, project_name.strip())
+                                    api_data["req_headers"] = ""
+                                    api_data["req_query"] = ""
+                                    api_data["req_body"] = ""
+                                    api_data["api_response"] = ""
                                 else:
                                     pass
                         else:
                             pass
                     else:
                         pass
-            else:
-                pass
 
 
 if __name__ == '__main__':

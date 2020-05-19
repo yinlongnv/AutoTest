@@ -2,10 +2,7 @@ package com.dadalong.autotest.service;
 
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.dadalong.autotest.model.api.BatchDTO;
-import com.dadalong.autotest.model.api.CreateOrEditApiDTO;
-import com.dadalong.autotest.model.api.DetailDTO;
-import com.dadalong.autotest.model.api.UploadDTO;
+import com.dadalong.autotest.model.api.*;
 import com.dadalong.autotest.model.response.ApiListResponse;
 
 public interface IApiService {
@@ -41,4 +38,10 @@ public interface IApiService {
      */
     String upload(UploadDTO uploadDTO);
 
+    /**
+     * 填入参数规则
+     * @param caseRulesDTO
+     * @return
+     */
+    Boolean putCaseRules(CaseRulesDTO caseRulesDTO);
 }

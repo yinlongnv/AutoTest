@@ -14,6 +14,7 @@ import com.dadalong.autotest.model.testCase.UploadDTO;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.service.ITestCaseService;
 import com.dadalong.autotest.utils.FilterMapUtils;
+import com.dadalong.autotest.utils.HandleUploadMsgUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,9 @@ public class TestCaseControl {
 
     @Resource
     FilterMapUtils filterMapUtils;
+
+    @Resource
+    HandleUploadMsgUtils handleUploadMsgUtils;
 
     private final ITestCaseService iTestCaseService;
     private final HttpServletRequest request;
@@ -73,17 +77,7 @@ public class TestCaseControl {
     @PostMapping("/upload")
     public TypedApiResponse upload(UploadDTO uploadDTO) {
         String uploadMsg = iTestCaseService.upload(uploadDTO);
-        System.out.println("上传文件：" + uploadDTO.getFile());
-        switch (uploadMsg) {
-            case "导入失败，请选择文件":
-                return TypedApiResponse.error().message("导入失败，请选择文件");
-            case "批量导入失败":
-                return TypedApiResponse.error().message("批量导入失败");
-            case "批量导入成功":
-                return TypedApiResponse.ok().message("批量导入成功");
-            default:
-                return TypedApiResponse.error().message("loading");
-        }
+        return handleUploadMsgUtils.handleUploadMsgUtils(uploadMsg);
     }
 
     @ApiOperation(value="获取三级级联",httpMethod = "GET")

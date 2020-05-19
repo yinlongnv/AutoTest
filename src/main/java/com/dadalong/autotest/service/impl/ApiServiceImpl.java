@@ -3,6 +3,8 @@ package com.dadalong.autotest.service.impl;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.common.model.dto.SlabPage;
 import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dadalong.autotest.bean.v1.mapper.ApiMapper;
@@ -13,10 +15,7 @@ import com.dadalong.autotest.bean.v1.pojo.TestCase;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.TestCaseWrapper;
-import com.dadalong.autotest.model.api.BatchDTO;
-import com.dadalong.autotest.model.api.CreateOrEditApiDTO;
-import com.dadalong.autotest.model.api.DetailDTO;
-import com.dadalong.autotest.model.api.UploadDTO;
+import com.dadalong.autotest.model.api.*;
 import com.dadalong.autotest.model.response.*;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.utils.*;
@@ -216,6 +215,21 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
             e.printStackTrace();
         }
         return "批量导入失败";
+    }
+
+    @Override
+    public Boolean putCaseRules(CaseRulesDTO caseRulesDTO) {
+        Api api = apiMapper.selectById(caseRulesDTO.getApiId());
+        System.out.println(caseRulesDTO.getApiId());
+        System.out.println(caseRulesDTO.getUserId());
+        JSONArray jsonArray= JSONArray.parseArray(JSON.toJSONString(caseRulesDTO.getCaseRulesList()));
+        System.out.println(jsonArray);
+        System.out.println(jsonArray.toString());
+        return true;
+//        api.setCaseRules(jsonArray.toString());
+//        apiMapper.updateById(api);
+        //插入操作日志
+//        insertOperateLogUtils.insertOperateLog(caseRulesDTO.getUserId(), LogContentEnumUtils.CASERULES, OperatePathEnumUtils.CASERULES);
     }
 
 }

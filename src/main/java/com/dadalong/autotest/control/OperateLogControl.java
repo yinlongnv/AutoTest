@@ -47,7 +47,6 @@ public class OperateLogControl {
     @ApiOperation(value="导出所有操作日志数据",httpMethod = "GET")
     @GetMapping("/exportAllLogs")
     public List<LogListResponse> exportAllLogs() {
-        //提取请求中的参数到map中
         SearchRequest searchRequest = new SearchRequest(request);
         return iOperateLogService.exportAllLogs(searchRequest);
     }

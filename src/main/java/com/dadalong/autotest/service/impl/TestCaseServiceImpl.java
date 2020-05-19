@@ -193,13 +193,13 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             Integer apiId = testCaseUtils.getApiId(uploadDTO.getProjectName(), uploadDTO.getApiGroup(), uploadDTO.getApiMerge());
 
             if (fileType.equals("xlsx")) {
-                System.out.println("上传的是xlsx");
+//                System.out.println("上传的是xlsx");
                 ReadExcelUtils readExcelUtils = new ReadExcelUtils("D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadCase\\case.xlsx");
                 try {
                     Map<Integer, Map<Integer, Object>> map = readExcelUtils.readExcelContent();
                     for (Integer key : map.keySet()) {
                         Map<Integer, Object> line = map.get(key);
-                        System.out.println(line);
+//                        System.out.println(line);
                         TestCase testCase = new TestCase();
                         testCase.setCaseBody(line.get(0).toString());
                         testCase.setCaseDescription(line.get(1).toString());

@@ -1,5 +1,6 @@
 package com.dadalong.autotest.model.response;
 
+import com.dadalong.autotest.model.other.BaseUrl;
 import lombok.Data;
 
 import java.util.List;

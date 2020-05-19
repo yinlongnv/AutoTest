@@ -22,7 +22,7 @@ public class LogContentEnumUtils {
 
     public static final String APIIMPORT = "批量导入接口数据";
 
-    public static final String CASERULES = "编辑参数规则";
+    public static final String CASERULES = "填入参数规则";
 
     public static final String CASELIST = "查看用例列表";
     public static final String CASECREATE = "创建用例";

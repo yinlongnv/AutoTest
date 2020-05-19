@@ -7,10 +7,11 @@ import com.dadalong.autotest.bean.v1.pojo.Api;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
+import com.dadalong.autotest.model.other.*;
 import com.dadalong.autotest.model.response.*;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Resource;
@@ -126,27 +127,25 @@ public class FilterMapUtils {
         return filterBaseUrlResponse;
     }
 
-    public List<String> getReqBody(Integer apiId) {
-        System.out.println(apiId);
+    public List<ReqBodyResponse> getReqBody(Integer apiId) {
         List<Api> apiList = apiMapper.selectList(new ApiWrapper()
                 .like("api_path", "create")
                 .or().like("api_path", "update")
                 .or().like("api_path", "edit"));
         for (Api api : apiList) {
-            System.out.println(api.getId());
             if (api.getId().equals(apiId)) {
-                System.out.println(api.getReqBody());
                 String jsonString = api.getReqBody();
                 JsonArray jsonArray = new JsonParser().parse(jsonString).getAsJsonArray();
-//                List<String> strings = jsonArray;
-                System.out.println(jsonArray);
-//                if (api.getReqBody() != null && StringUtils.isNotBlank(api.getReqBody()) && !api.getReqBody().equals("[]")) {
-//
-//                }
+                List<ReqBodyResponse> reqBodyResponseList = new ArrayList<>();
+                ReqBodyResponse reqBodyResponse;
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
+                    reqBodyResponse = JSONObject.parseObject(jsonObject.toString(), ReqBodyResponse.class);
+                    reqBodyResponseList.add(reqBodyResponse);
+                }
+                return reqBodyResponseList;
             }
         }
         return null;
     }
-
-
 }
