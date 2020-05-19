@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by 78089 on 2020/4/24.
+ * 三级筛选下拉框
  */
 @Data
 public class FilterMapResponse {

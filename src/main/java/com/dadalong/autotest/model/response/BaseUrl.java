@@ -3,7 +3,7 @@ package com.dadalong.autotest.model.response;
 import lombok.Data;
 
 /**
- * Created by 78089 on 2020/4/24.
+ * 基础域名BaseUrl筛选下拉框
  */
 @Data
 public class BaseUrl {

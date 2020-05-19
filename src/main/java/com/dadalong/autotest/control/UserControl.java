@@ -11,6 +11,7 @@ import com.dadalong.autotest.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,15 +68,16 @@ public class UserControl {
     @ApiOperation(value="(批量)删除账号",httpMethod = "POST")
     @PostMapping("/delete")
     public @ResponseBody TypedApiResponse delete(@RequestBody BatchDTO batchDTO){
-//        iUserService.deleteBatch(batchDTO.getUserIds());
-        iUserService.deleteBatch(batchDTO);
-        return TypedApiResponse.ok().message("删除成功");
+        if (iUserService.deleteBatch(batchDTO)) {
+            return TypedApiResponse.ok().message("删除成功");
+        } else {
+            return TypedApiResponse.error().message("删除失败");
+        }
     }
 
     @ApiOperation(value="(批量)禁用账号",httpMethod = "POST")
     @PostMapping("/disable")
     public @ResponseBody TypedApiResponse disable(@RequestBody BatchDTO batchDTO){
-//        iUserService.disableBatch(batchDTO.getUserIds());
         iUserService.disableBatch(batchDTO);
         return TypedApiResponse.ok().message("禁用成功");
     }
@@ -83,18 +85,18 @@ public class UserControl {
     @ApiOperation(value="(批量)启用账号",httpMethod = "POST")
     @PostMapping("/enable")
     public @ResponseBody TypedApiResponse enable(@RequestBody BatchDTO batchDTO){
-//        iUserService.enableBatch(batchDTO.getUserIds());
         iUserService.enableBatch(batchDTO);
         return TypedApiResponse.ok().message("启用成功");
     }
 
     @ApiOperation(value="查看用户详情",httpMethod = "GET")
     @GetMapping("/detail")
-//    public TypedApiResponse detail(Integer id){
-//        return TypedApiResponse.ok().message("detail-success").data(iUserService.detail(id));
-//    }
     public TypedApiResponse detail(DetailDTO detailDTO){
-        return TypedApiResponse.ok().message("detail-success").data(iUserService.detail(detailDTO));
+        User user = iUserService.detail(detailDTO);
+        if (user != null && StringUtils.isNotBlank(user.toString())) {
+            return TypedApiResponse.ok().message("detail-success").data(user);
+        } else {
+            return TypedApiResponse.error().message("detail-error");
+        }
     }
-
 }

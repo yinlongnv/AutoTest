@@ -16,8 +16,6 @@ import com.dadalong.autotest.model.user.LoginDTO;
 import com.dadalong.autotest.service.IUserService;
 import com.dadalong.autotest.utils.*;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,18 +32,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Resource
     InsertOperateLogUtils insertOperateLogUtils;
 
-    /**
-     * 设置每页10条记录
-     */
-    private static final Integer size = 10;
+    @Resource
+    CreateUserNumberUtils createUserNumberUtils;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
-
-    /**
-     * 用户登录，更新上次登录IP信息，更新最后登录时间信息，更新登录次数
-     * @param loginDTO
-     * @return
-     */
     @Override
     public User login(LoginDTO loginDTO) {
         UserWrapper userWrapper = new UserWrapper();
@@ -64,11 +53,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         }
     }
 
-    /**
-     * 获取用户列表，包含筛选查询
-     * @param searchRequest
-     * @return
-     */
     public IPage<UserListResponse> listWithSearch(SearchRequest searchRequest){
         try {
             UserWrapper userWrapper = new UserWrapper();
@@ -103,10 +87,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         }
     }
 
-    /**
-     * 创建/编辑用户，以userId区分是创建还是编辑
-     * @param createOrEditUserDTO 从前端传回来的json格式数据转换的对象
-     */
     @Override
     public String createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO) {
         User user = new User();
@@ -115,7 +95,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         if(createOrEditUserDTO.getId() == null) {
             if (userMapper.selectOne(userWrapper.eq("username", user.getUsername())) == null) {
                 //随机生成用户编号
-                CreateUserNumberUtils createUserNumberUtils = new CreateUserNumberUtils();
                 user.setUserNumber(createUserNumberUtils.createUserNumber());
                 user.setUserId(createOrEditUserDTO.getUserId());
                 //插入操作日志
@@ -137,26 +116,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         }
     }
 
-    /**
-     * (批量)删除用户
-     * @param batchDTO
-     */
     @Override
-    public void deleteBatch(BatchDTO batchDTO) {
-        try {
+    public Boolean deleteBatch(BatchDTO batchDTO) {
+        if (removeByIds(batchDTO.getUserIds())) {
             //插入操作日志
             insertOperateLogUtils.insertOperateLog(batchDTO.getUserId(), LogContentEnumUtils.USERDELETE, OperatePathEnumUtils.USERDELETE);
-            removeByIds(batchDTO.getUserIds());
-
-        }catch (Exception e){
-            e.printStackTrace();
+            return true;
+        } else {
+            return false;
         }
     }
 
-    /**
-     * (批量)禁用用户
-     * @param batchDTO
-     */
     @Override
     public void disableBatch(BatchDTO batchDTO) {
         Map<String,Object> map = new HashMap<>();
@@ -170,10 +140,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         insertOperateLogUtils.insertOperateLog(batchDTO.getUserId(), LogContentEnumUtils.USERDISABLE, OperatePathEnumUtils.USERDISABLE);
     }
 
-    /**
-     * (批量)启用用户
-     * @param batchDTO
-     */
     @Override
     public void enableBatch(BatchDTO batchDTO) {
         Map<String,Object> map = new HashMap<>();
@@ -187,12 +153,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         insertOperateLogUtils.insertOperateLog(batchDTO.getUserId(), LogContentEnumUtils.USERENABLE, OperatePathEnumUtils.USERENABLE);
     }
 
-
-    /**
-     * 查看用户详情
-     * @param detailDTO
-     * @return
-     */
     @Override
     public User detail(DetailDTO detailDTO) {
         //插入操作日志

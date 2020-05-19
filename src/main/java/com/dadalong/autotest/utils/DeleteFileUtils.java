@@ -5,15 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import java.io.File;
 
 /**
- * Created by 78089 on 2020/5/15.
+ * 提供绝对路径删除文件夹下所有文件和文件夹
  */
 @Configuration
 public class DeleteFileUtils {
-    /**
-     * 提供绝对路径删除文件夹下所有文件和文件夹
-     * @param path
-     * @return
-     */
     public boolean delAllFile(String path) {
         boolean flag = false;
         File file = new File(path);

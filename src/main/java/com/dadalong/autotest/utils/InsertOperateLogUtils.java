@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
- * Created by 78089 on 2020/5/6.
+ * 插入操作日志工具类
  */
 @Configuration
 public class InsertOperateLogUtils {

@@ -15,5 +15,10 @@ public interface IOperateLogService {
      */
     IPage<LogListResponse> listWithSearch(SearchRequest searchRequest);
 
+    /**
+     * 导出全部操作日志数据
+     * @param searchRequest
+     * @return
+     */
     List<LogListResponse> exportAllLogs(SearchRequest searchRequest);
 }

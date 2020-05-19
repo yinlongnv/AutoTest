@@ -48,10 +48,14 @@ soup.tag.attrs或soup.tag['attrs']或soup.tag.get('attrs')：该标签所有属�
 %M 分钟数（00=59）
 %S 秒（00-59）
 
-tips：python存入数据库要字符串形式
+——python存入数据库要字符串形式
 
 安装了pymysql和BeautifulSoup4但import 时显示No module named 'pymysql'问题：
 ——原因是在cmd命令行中 使用pip install pymysql 安装好是将这个包安装到了python3中，但是在Anaconde运行环境中没有这些包
 
 bs4.FeatureNotFound: Couldn't find a tree builder with the features you requested: html5lib. Do you need to install a parser library?：
 ——Use 'html.parser' instead of 'html5lib'. This will work.
+
+python脚本跑三条就不跑了，因为太多print语句影响了缓存
+——去除所有的print语句
+

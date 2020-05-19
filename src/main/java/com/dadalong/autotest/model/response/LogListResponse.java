@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * Created by 78089 on 2020/4/24.
+ * 日志列表返回数据
  */
 @Data
 public class LogListResponse {

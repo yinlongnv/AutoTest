@@ -1,7 +1,7 @@
 package com.dadalong.autotest.utils;
 
 /**
- * Created by 78089 on 2020/5/6.
+ * 账号操作内容语言包工具类
  */
 public class LogContentEnumUtils {
 
@@ -20,7 +20,6 @@ public class LogContentEnumUtils {
     public static final String APIDELETE = "删除接口";
     public static final String APIDETAIL = "查看接口详情";
 
-    public static final String APIEXPORT = "下载接口模板";
     public static final String APIIMPORT = "批量导入接口数据";
 
     public static final String CASERULES = "编辑参数规则";
@@ -31,7 +30,6 @@ public class LogContentEnumUtils {
     public static final String CASEDELETE = "删除用例";
     public static final String CASEDETAIL = "查看用例详情";
 
-    public static final String CASEEXPORT = "下载用例模板";
     public static final String CASEIMPORT = "批量导入用例数据";
     public static final String CASEEXECUTE = "执行用例";
 

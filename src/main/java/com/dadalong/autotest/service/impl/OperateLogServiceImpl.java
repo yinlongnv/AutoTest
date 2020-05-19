@@ -15,8 +15,6 @@ import com.dadalong.autotest.utils.InsertOperateLogUtils;
 import com.dadalong.autotest.utils.LogContentEnumUtils;
 import com.dadalong.autotest.utils.OperatePathEnumUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,13 +35,6 @@ public class OperateLogServiceImpl implements IOperateLogService {
     @Resource
     InsertOperateLogUtils insertOperateLogUtils;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApiServiceImpl.class);
-
-    /**
-     * 获取操作日志列表，包含筛选查询
-     * @param searchRequest
-     * @return
-     */
     @Override
     public IPage<LogListResponse> listWithSearch(SearchRequest searchRequest) {
         try {
@@ -77,7 +68,6 @@ public class OperateLogServiceImpl implements IOperateLogService {
             insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.LOGLIST, OperatePathEnumUtils.LOGLIST);
             return logListResponseSlabPage;
         }catch (Exception e){
-            LOGGER.error("listWithSearchError",e);
             throw new ConflictException("listWithSearchError");
         }
     }

@@ -6,10 +6,13 @@ import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dadalong.autotest.bean.v1.mapper.ApiMapper;
+import com.dadalong.autotest.bean.v1.mapper.TestCaseMapper;
 import com.dadalong.autotest.bean.v1.mapper.UserMapper;
 import com.dadalong.autotest.bean.v1.pojo.Api;
+import com.dadalong.autotest.bean.v1.pojo.TestCase;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
+import com.dadalong.autotest.bean.v1.wrapper.TestCaseWrapper;
 import com.dadalong.autotest.model.api.BatchDTO;
 import com.dadalong.autotest.model.api.CreateOrEditApiDTO;
 import com.dadalong.autotest.model.api.DetailDTO;
@@ -18,8 +21,6 @@ import com.dadalong.autotest.model.response.*;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.utils.*;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,21 +41,14 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
     private UserMapper userMapper;
 
     @Resource
+    private TestCaseMapper testCaseMapper;
+
+    @Resource
     InsertOperateLogUtils insertOperateLogUtils;
 
     @Resource
     DeleteFileUtils deleteFileUtils;
 
-    @Resource
-    ExcelUtils excelUtils;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApiServiceImpl.class);
-
-    /**
-     * 获取接口列表，包含筛选查询
-     * @param searchRequest
-     * @return
-     */
     public IPage<ApiListResponse> listWithSearch(SearchRequest searchRequest){
         try {
             ApiWrapper wrapper = new ApiWrapper();
@@ -84,17 +78,12 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
             insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.APILIST, OperatePathEnumUtils.APILIST);
             return apiListResponseSlabPage;
         }catch (Exception e){
-            LOGGER.error("listWithSearchError",e);
             throw new ConflictException("listWithSearchError");
         }
     }
 
-    /**
-     * 创建/编辑接口
-     * @param createOrEditApiDTO 从前端传回来的json格式数据转换的对象
-     */
     @Override
-    public void createOrEditApi(CreateOrEditApiDTO createOrEditApiDTO) {
+    public String createOrEditApi(CreateOrEditApiDTO createOrEditApiDTO) {
         Api api = new Api();
         BeanUtils.copyProperties(createOrEditApiDTO, api, "userId");
 
@@ -103,21 +92,25 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
             //插入操作日志
             insertOperateLogUtils.insertOperateLog(createOrEditApiDTO.getUserId(), LogContentEnumUtils.APICREATE, OperatePathEnumUtils.APICREATE);
             apiMapper.insert(api);
+            return "创建成功";
         } else {
             //插入操作日志
             insertOperateLogUtils.insertOperateLog(createOrEditApiDTO.getUserId(), LogContentEnumUtils.APIEDIT, OperatePathEnumUtils.APIEDIT);
             apiMapper.updateById(api);
+            return "编辑成功";
         }
     }
 
-    /**
-     * (批量)删除接口
-     * @param batchDTO
-     */
     @Override
     public void deleteBatch(BatchDTO batchDTO) {
         try {
             removeByIds(batchDTO.getApiIds());
+            for (Integer apiId : batchDTO.getApiIds()) {
+                List<TestCase> testCaseList = testCaseMapper.selectList(new TestCaseWrapper().eq("api_id", apiId));
+                for (TestCase testCase : testCaseList) {
+                    testCaseMapper.deleteById(testCase.getId());
+                }
+            }
             //插入操作日志
             insertOperateLogUtils.insertOperateLog(batchDTO.getUserId(), LogContentEnumUtils.APIDELETE, OperatePathEnumUtils.APIDELETE);
         }catch (Exception e){
@@ -125,11 +118,6 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
         }
     }
 
-    /**
-     * 获取接口详情
-     * @param detailDTO
-     * @return
-     */
     @Override
     public ApiListResponse detail(DetailDTO detailDTO) {
         ApiListResponse apiListResponse = new ApiListResponse();
@@ -150,16 +138,13 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
     @Override
     public String upload(UploadDTO uploadDTO) {
         if (uploadDTO.getFile().isEmpty()) {
-            return "导入失败，请选择文件！";
+            return "导入失败，请选择文件";
         }
-
         String fileName = uploadDTO.getFile().getOriginalFilename();
-//        System.out.println("上传文件的文件名是："+fileName);
         String filePath = "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadApi\\";
         File dest = new File(filePath + fileName);
         try {
             uploadDTO.getFile().transferTo(dest);
-//            String filename = "file.txt";// 文件名
             String[] strArray = new String[0];
             if (fileName != null) {
                 strArray = fileName.split("\\.");
@@ -167,31 +152,70 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
             int suffixIndex = strArray.length -1;
             //获取上传文件的文件类型
             String fileType = strArray[suffixIndex];
-//            System.out.println("文件类型为："+strArray[suffixIndex]);
             if (fileType.equals("html")) {
-//                String pyPath = "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\pyToSql\\analysis_html.py";
                 String[] argument = new String[]{"python", "D://Workspace/IDEA/AutoTest/src/main/resources/static/pyToSql/analysis_html.py", uploadDTO.getUserId().toString(), uploadDTO.getBaseUrl()};
                 try{
                     Process process = Runtime.getRuntime().exec(argument);
                     //java代码中的process.waitFor()返回值为0表示我们调用python脚本成功，
                     //返回值为1表示调用python脚本失败，这和我们通常意义上见到的0与1定义正好相反
                     int re = process.waitFor();
-                    System.out.println("python运行的返回值："+re);
-                    return "批量导入成功！";
+//                    System.out.println("python运行的返回值："+re);
+                    //导入成功后删除已保存的api.html文件
+                    if (re == 0) {
+                        String deletePath = "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadApi";
+                        if (!deleteFileUtils.delAllFile(deletePath)) {
+                            //插入操作日志
+                            insertOperateLogUtils.insertOperateLog(uploadDTO.getUserId(), LogContentEnumUtils.APIIMPORT, OperatePathEnumUtils.APIIMPORT);
+                            return "批量导入成功";
+                        } else {
+                            return "failed";
+                        }
+                    } else {
+                        return "批量导入失败";
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-            } else {
-                System.out.println("不是html文件");
+            } else if (fileType.equals("xlsx")){
+//                System.out.println("上传的是xlsx");
+                ReadExcelUtils readExcelUtils = new ReadExcelUtils("D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadApi\\api.xlsx");
+                try {
+                    Map<Integer, Map<Integer, Object>> map = readExcelUtils.readExcelContent();
+                    for (Integer key : map.keySet()) {
+                        Map<Integer, Object> line = map.get(key);
+//                        System.out.println(line);
+                        Api api = new Api();
+                        api.setBaseUrl(uploadDTO.getBaseUrl());
+                        api.setProjectName(line.get(0).toString());
+                        api.setApiGroup(line.get(1).toString());
+                        api.setApiName(line.get(2).toString());
+                        api.setApiPath(line.get(3).toString());
+                        api.setReqMethod(line.get(4).toString());
+                        api.setApiDescription(line.get(5).toString());
+                        api.setReqHeaders(line.get(6).toString());
+                        api.setReqQuery(line.get(7).toString());
+                        api.setReqBody(line.get(8).toString());
+                        api.setCaseRules(line.get(9).toString());
+                        api.setApiResponse(line.get(10).toString());
+                        api.setUserId(uploadDTO.getUserId());
+                        apiMapper.insert(api);
+                    }
+                    String deletePath = "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadApi";
+                    if (!deleteFileUtils.delAllFile(deletePath)) {
+                        //插入操作日志
+                        insertOperateLogUtils.insertOperateLog(uploadDTO.getUserId(), LogContentEnumUtils.APIIMPORT, OperatePathEnumUtils.APIIMPORT);
+                        return "批量导入成功";
+                    } else {
+                        return "failed";
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } catch (IOException e) {
-            System.out.println("批量导入错误：" + e);
+            e.printStackTrace();
         }
-        return "批量导入失败！";
+        return "批量导入失败";
     }
 
-    @Override
-    public Api exportDemo() {
-        return apiMapper.selectById(1);
-    }
 }

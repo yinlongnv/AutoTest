@@ -9,6 +9,7 @@ import com.dadalong.autotest.model.response.TestCaseListResponse;
 import com.dadalong.autotest.model.testCase.BatchDTO;
 import com.dadalong.autotest.model.testCase.CreateOrEditCaseDTO;
 import com.dadalong.autotest.model.testCase.DetailDTO;
+import com.dadalong.autotest.model.testCase.UploadDTO;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 
 import java.sql.Date;
@@ -22,24 +23,28 @@ public interface ITestCaseService {
      * @param searchRequest
      * @return
      */
-    public IPage<TestCaseListResponse> listWithSearch(SearchRequest searchRequest);
+    IPage<TestCaseListResponse> listWithSearch(SearchRequest searchRequest);
 
     /**
      * 创建/编辑用例，以Id区分是创建还是编辑
      * @param createOrEditCaseDTO 从前端传回来的json格式数据转换的对象
      */
-    public void createOrEditCase(CreateOrEditCaseDTO createOrEditCaseDTO);
+    void createOrEditCase(CreateOrEditCaseDTO createOrEditCaseDTO);
 
     /**
      * (批量)删除用例
      * @param batchDTO
      */
-    public void deleteBatch(BatchDTO batchDTO);
+    void deleteBatch(BatchDTO batchDTO);
 
     /**
      * 查看用例详情
      * @param detailDTO
      */
-    public TestCaseListResponse detail(DetailDTO detailDTO);
+    TestCaseListResponse detail(DetailDTO detailDTO);
 
+    /**
+     * 批量导入xlsx
+     */
+    String upload(UploadDTO uploadDTO);
 }

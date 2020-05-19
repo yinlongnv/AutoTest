@@ -5,9 +5,6 @@ import com.dadalong.autotest.bean.v1.pojo.Api;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by 78089 on 2020/4/9.
- */
 @Mapper
 @Component
 public interface ApiMapper extends BaseMapper<Api> {

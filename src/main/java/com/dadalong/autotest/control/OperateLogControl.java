@@ -44,7 +44,7 @@ public class OperateLogControl {
         return TypedApiResponse.ok().message("listWithSearch-success").data(response);
     }
 
-    @ApiOperation(value="导出所有操作日志",httpMethod = "GET")
+    @ApiOperation(value="导出所有操作日志数据",httpMethod = "GET")
     @GetMapping("/exportAllLogs")
     public List<LogListResponse> exportAllLogs() {
         //提取请求中的参数到map中

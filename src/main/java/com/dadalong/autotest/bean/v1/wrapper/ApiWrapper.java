@@ -3,10 +3,8 @@ package com.dadalong.autotest.bean.v1.wrapper;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dadalong.autotest.bean.v1.pojo.Api;
-import com.dadalong.autotest.bean.v1.pojo.User;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Date;
 import java.util.Map;
 
 public class ApiWrapper extends QueryWrapper<Api> {
@@ -52,19 +50,6 @@ public class ApiWrapper extends QueryWrapper<Api> {
     public ApiWrapper ofApiGroup(Object apiGroup){
         if(apiGroup != null && StringUtils.isNotBlank(apiGroup.toString())){
             this.eq("api_group",apiGroup.toString());
-        }
-        return this;
-    }
-
-    /**
-     * 筛选接口名称
-     * @param apiName
-     * @return
-     */
-    public ApiWrapper ofApiName(Object apiName){
-        if(apiName != null && StringUtils.isNotBlank(apiName.toString())){
-            System.out.println(apiName.toString());
-            this.eq("api_name",apiName.toString());
         }
         return this;
     }

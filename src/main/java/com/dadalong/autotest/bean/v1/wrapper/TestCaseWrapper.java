@@ -31,7 +31,6 @@ public class TestCaseWrapper extends QueryWrapper<TestCase> {
 
     public TestCaseWrapper ofExecuteStatus(Object executeStatus){
         if(executeStatus != null && StringUtils.isNotBlank(executeStatus.toString())){
-            System.out.println(Integer.parseInt(executeStatus.toString()));
             this.eq("execute_status",Integer.parseInt(executeStatus.toString()));
         }
         return this;

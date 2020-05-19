@@ -1,5 +1,6 @@
 package com.dadalong.autotest.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dadalong.autotest.bean.v1.mapper.ApiMapper;
 import com.dadalong.autotest.bean.v1.mapper.UserMapper;
 import com.dadalong.autotest.bean.v1.pojo.Api;
@@ -7,6 +8,9 @@ import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 import com.dadalong.autotest.model.response.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Resource;
@@ -15,6 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 提取下拉筛选项工具类
+ */
 @Configuration
 public class FilterMapUtils {
 
@@ -118,4 +125,28 @@ public class FilterMapUtils {
         filterBaseUrlResponse.setBaseUrlOptions(baseUrlList);
         return filterBaseUrlResponse;
     }
+
+    public List<String> getReqBody(Integer apiId) {
+        System.out.println(apiId);
+        List<Api> apiList = apiMapper.selectList(new ApiWrapper()
+                .like("api_path", "create")
+                .or().like("api_path", "update")
+                .or().like("api_path", "edit"));
+        for (Api api : apiList) {
+            System.out.println(api.getId());
+            if (api.getId().equals(apiId)) {
+                System.out.println(api.getReqBody());
+                String jsonString = api.getReqBody();
+                JsonArray jsonArray = new JsonParser().parse(jsonString).getAsJsonArray();
+//                List<String> strings = jsonArray;
+                System.out.println(jsonArray);
+//                if (api.getReqBody() != null && StringUtils.isNotBlank(api.getReqBody()) && !api.getReqBody().equals("[]")) {
+//
+//                }
+            }
+        }
+        return null;
+    }
+
+
 }

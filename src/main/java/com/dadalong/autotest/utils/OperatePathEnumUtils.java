@@ -1,7 +1,7 @@
 package com.dadalong.autotest.utils;
 
 /**
- * Created by 78089 on 2020/5/6.
+ * 账号操作界面语言包工具类
  */
 public class OperatePathEnumUtils {
 
@@ -20,7 +20,6 @@ public class OperatePathEnumUtils {
     public static final String APIDELETE = "/api/delete";
     public static final String APIDETAIL = "/api/detail";
 
-    public static final String APIEXPORT = "/api/export";
     public static final String APIIMPORT = "/api/import";
 
     public static final String CASERULES = "/api/caseRules";
@@ -31,7 +30,6 @@ public class OperatePathEnumUtils {
     public static final String CASEDELETE = "/case/delete";
     public static final String CASEDETAIL = "/case/detail";
 
-    public static final String CASEEXPORT = "/case/export";
     public static final String CASEIMPORT = "/case/import";
     public static final String CASEEXECUTE = "/case/execute";
 

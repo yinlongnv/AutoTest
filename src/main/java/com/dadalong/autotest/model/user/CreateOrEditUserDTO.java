@@ -2,6 +2,9 @@ package com.dadalong.autotest.model.user;
 
 import lombok.Data;
 
+/**
+ * 创建/编辑请求参数
+ */
 @Data
 public class CreateOrEditUserDTO {
 

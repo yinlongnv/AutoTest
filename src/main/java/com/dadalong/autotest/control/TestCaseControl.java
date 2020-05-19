@@ -5,17 +5,14 @@ import cn.com.dbapp.slab.common.model.dto.CollectionResponse;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.dadalong.autotest.model.response.ApiListResponse;
-import com.dadalong.autotest.model.response.ApiNameListResponse;
 import com.dadalong.autotest.model.response.FilterMapResponse;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
 import com.dadalong.autotest.model.testCase.BatchDTO;
 import com.dadalong.autotest.model.testCase.CreateOrEditCaseDTO;
 import com.dadalong.autotest.model.testCase.DetailDTO;
-import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
+import com.dadalong.autotest.model.testCase.UploadDTO;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.service.ITestCaseService;
-import com.dadalong.autotest.service.IUserService;
 import com.dadalong.autotest.utils.FilterMapUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @Api(value="/", description = "用例管理下的全部接口")
 @RestController
@@ -34,12 +30,10 @@ public class TestCaseControl {
     FilterMapUtils filterMapUtils;
 
     private final ITestCaseService iTestCaseService;
-    private final IApiService iApiService;
     private final HttpServletRequest request;
 
-    public TestCaseControl(ITestCaseService iTestCaseService, IApiService iApiService, HttpServletRequest request){
+    public TestCaseControl(ITestCaseService iTestCaseService, HttpServletRequest request){
         this.iTestCaseService = iTestCaseService;
-        this.iApiService = iApiService;
         this.request = request;
     }
 
@@ -73,6 +67,23 @@ public class TestCaseControl {
     @GetMapping("/detail")
     public TypedApiResponse detail(DetailDTO detailDTO){
         return TypedApiResponse.ok().message("detail-success").data(iTestCaseService.detail(detailDTO));
+    }
+
+    @ApiOperation(value="批量导入用例数据",httpMethod = "POST")
+    @PostMapping("/upload")
+    public TypedApiResponse upload(UploadDTO uploadDTO) {
+        String uploadMsg = iTestCaseService.upload(uploadDTO);
+        System.out.println("上传文件：" + uploadDTO.getFile());
+        switch (uploadMsg) {
+            case "导入失败，请选择文件":
+                return TypedApiResponse.error().message("导入失败，请选择文件");
+            case "批量导入失败":
+                return TypedApiResponse.error().message("批量导入失败");
+            case "批量导入成功":
+                return TypedApiResponse.ok().message("批量导入成功");
+            default:
+                return TypedApiResponse.error().message("loading");
+        }
     }
 
     @ApiOperation(value="获取三级级联",httpMethod = "GET")

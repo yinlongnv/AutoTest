@@ -3,7 +3,7 @@ package com.dadalong.autotest.model.user;
 import lombok.Data;
 
 /**
- * Created by 78089 on 2020/5/7.
+ * 查看详情请求参数
  */
 @Data
 public class DetailDTO {

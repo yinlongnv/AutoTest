@@ -17,44 +17,44 @@ public interface IUserService {
      * @param loginDTO
      * @return
      */
-    public User login(LoginDTO loginDTO);
+    User login(LoginDTO loginDTO);
 
     /**
      * 获取用户列表，可同时筛选搜索条件
      * @param searchRequest
      * @return
      */
-    public IPage<UserListResponse> listWithSearch(SearchRequest searchRequest);
+    IPage<UserListResponse> listWithSearch(SearchRequest searchRequest);
 
     /**
      * 创建/编辑用户，以Id区分是创建还是编辑
      * @param createOrEditUserDTO 从前端传回来的json格式数据转换的对象
      */
-    public String createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO);
+    String createOrEditUser(CreateOrEditUserDTO createOrEditUserDTO);
 
     /**
      * (批量)删除用户
      * @param batchDTO
      */
-    public void deleteBatch(BatchDTO batchDTO);
+    Boolean deleteBatch(BatchDTO batchDTO);
 
     /**
      * (批量)禁用用户
      * @param batchDTO
      */
-    public void disableBatch(BatchDTO batchDTO);
+    void disableBatch(BatchDTO batchDTO);
 
     /**
      * (批量)启用用户
      * @param batchDTO
      */
-    public void enableBatch(BatchDTO batchDTO);
+    void enableBatch(BatchDTO batchDTO);
 
     /**
      * 查看用户详情
      * @param detailDTO
      * @return
      */
-    public User detail(DetailDTO detailDTO);
+    User detail(DetailDTO detailDTO);
 
 }

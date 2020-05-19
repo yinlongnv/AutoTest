@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Created by 78089 on 2020/5/15.
+ * 批量导入接口文档
  */
 @Data
 public class UploadDTO {
