@@ -128,12 +128,15 @@ public class FilterMapUtils {
     }
 
     public List<ReqBodyResponse> getReqBody(Integer apiId) {
-        List<Api> apiList = apiMapper.selectList(new ApiWrapper()
+        System.out.println(apiId);
+        List<Api> apiList = apiMapper.selectList(new ApiWrapper().eq("req_method", "POST")
                 .like("api_path", "create")
-                .or().like("api_path", "update")
-                .or().like("api_path", "edit"));
+                .or().like("api_path", "update"));
         for (Api api : apiList) {
-            if (api.getId().equals(apiId)) {
+            System.out.println(api.getId());
+            if (api.getId().equals(apiId) && api.getReqBody()!=null && api.getReqBody()!="[]") {
+                System.out.println(api.getApiName());
+                System.out.println(api.getReqBody());
                 String jsonString = api.getReqBody();
                 JsonArray jsonArray = new JsonParser().parse(jsonString).getAsJsonArray();
                 List<ReqBodyResponse> reqBodyResponseList = new ArrayList<>();

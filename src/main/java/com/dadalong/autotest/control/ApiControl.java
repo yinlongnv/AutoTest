@@ -12,6 +12,7 @@ import com.dadalong.autotest.model.response.ReqBodyResponse;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.utils.FilterMapUtils;
 import com.dadalong.autotest.utils.HandleUploadMsgUtils;
+import com.dadalong.autotest.utils.RandomUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 @Api(value="/", description = "接口管理下的全部接口")
@@ -61,7 +61,7 @@ public class ApiControl {
         if (returnMsg.equals("编辑成功") || returnMsg.equals("创建成功")) {
             return TypedApiResponse.ok().message("createOrEdit-success");
         } else {
-            return TypedApiResponse.error().message("操作失败");
+            return TypedApiResponse.error().message("createOrEdit-failed");
         }
     }
 
@@ -79,7 +79,7 @@ public class ApiControl {
         if (apiListResponse != null && StringUtils.isNotBlank(apiListResponse.toString())) {
             return TypedApiResponse.ok().message("detail-success").data(apiListResponse);
         } else {
-            return TypedApiResponse.error().message("detail-error");
+            return TypedApiResponse.error().message("detail-failed");
         }
     }
 
@@ -92,12 +92,19 @@ public class ApiControl {
 
     @ApiOperation(value="填入参数规则",httpMethod = "POST")
     @PostMapping("/caseRules")
-    public TypedApiResponse putCaseRules(CaseRulesDTO caseRulesDTO) {
+    public TypedApiResponse putCaseRules(@RequestBody CaseRulesDTO caseRulesDTO) {
         if (iApiService.putCaseRules(caseRulesDTO)) {
-            return TypedApiResponse.ok().message("caseRules-success");
+            return TypedApiResponse.ok().message("填入参数规则成功");
         } else {
-            return TypedApiResponse.error().message("caseRules-failed");
+            return TypedApiResponse.error().message("填入参数规则失败，请重试");
         }
+    }
+
+    @ApiOperation(value="获取apiId为指定接口自动生成测试用例",httpMethod = "GET")
+    @GetMapping("/createCases")
+    public TypedApiResponse createCases(CreateCasesDTO createCasesDTO) {
+        iApiService.createCases(createCasesDTO);
+        return TypedApiResponse.ok().message("createCases-success");
     }
 
     @ApiOperation(value="获取三级级联",httpMethod = "GET")
@@ -120,7 +127,11 @@ public class ApiControl {
         if (reqBodyResponseList != null && StringUtils.isNotBlank(reqBodyResponseList.toString())) {
             return TypedApiResponse.ok().message("getReqQueryOrBody-success").data(reqBodyResponseList);
         } else {
-            return TypedApiResponse.error().message("该接口不需要设置参数规则");
+            return TypedApiResponse.error().message("该接口不需要设置参数规则，请直接点击生成测试用例");
         }
     }
+//    @GetMapping("/getRandom")
+//    public String getRandom() {
+//        return randomUtils.getIdNumberRandom();
+//    }
 }

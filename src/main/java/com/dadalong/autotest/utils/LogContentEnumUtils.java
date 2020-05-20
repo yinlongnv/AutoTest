@@ -31,6 +31,7 @@ public class LogContentEnumUtils {
     public static final String CASEDETAIL = "查看用例详情";
 
     public static final String CASEIMPORT = "批量导入用例数据";
+    public static final String CREATECASES = "生成测试用例";
     public static final String CASEEXECUTE = "执行用例";
 
     public static final String LOGLIST = "查看日志列表";

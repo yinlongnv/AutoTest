@@ -96,7 +96,7 @@ public class UserControl {
         if (user != null && StringUtils.isNotBlank(user.toString())) {
             return TypedApiResponse.ok().message("detail-success").data(user);
         } else {
-            return TypedApiResponse.error().message("detail-error");
+            return TypedApiResponse.error().message("detail-failed");
         }
     }
 }

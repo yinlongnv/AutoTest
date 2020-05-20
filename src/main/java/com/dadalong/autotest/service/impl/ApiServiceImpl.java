@@ -5,6 +5,7 @@ import cn.com.dbapp.slab.common.model.dto.SlabPage;
 import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dadalong.autotest.bean.v1.mapper.ApiMapper;
@@ -16,6 +17,7 @@ import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.TestCaseWrapper;
 import com.dadalong.autotest.model.api.*;
+import com.dadalong.autotest.model.other.CaseRules;
 import com.dadalong.autotest.model.response.*;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.utils.*;
@@ -25,8 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 @Service
@@ -48,6 +49,9 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
     @Resource
     DeleteFileUtils deleteFileUtils;
 
+    @Resource
+    RandomUtils randomUtils;
+
     public IPage<ApiListResponse> listWithSearch(SearchRequest searchRequest){
         try {
             ApiWrapper wrapper = new ApiWrapper();
@@ -56,7 +60,7 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
             Map<String,Object> map = searchRequest.getSearch();
 
             SlabPage<Api> apiSlabPage = new SlabPage<>(searchRequest);
-            IPage<Api> apiResults = apiMapper.selectPage(apiSlabPage,wrapper);
+            IPage<Api> apiResults = apiMapper.selectPage(apiSlabPage, wrapper);
             for (Api record : apiResults.getRecords()) {
                 User user = userMapper.selectById(record.getUserId());
                 ApiListResponse apiListResponse = new ApiListResponse();
@@ -220,16 +224,49 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
     @Override
     public Boolean putCaseRules(CaseRulesDTO caseRulesDTO) {
         Api api = apiMapper.selectById(caseRulesDTO.getApiId());
-        System.out.println(caseRulesDTO.getApiId());
-        System.out.println(caseRulesDTO.getUserId());
         JSONArray jsonArray= JSONArray.parseArray(JSON.toJSONString(caseRulesDTO.getCaseRulesList()));
-        System.out.println(jsonArray);
-        System.out.println(jsonArray.toString());
-        return true;
-//        api.setCaseRules(jsonArray.toString());
-//        apiMapper.updateById(api);
+        api.setCaseRules(jsonArray.toString());
+        apiMapper.updateById(api);
         //插入操作日志
-//        insertOperateLogUtils.insertOperateLog(caseRulesDTO.getUserId(), LogContentEnumUtils.CASERULES, OperatePathEnumUtils.CASERULES);
+        insertOperateLogUtils.insertOperateLog(caseRulesDTO.getUserId(), LogContentEnumUtils.CASERULES, OperatePathEnumUtils.CASERULES);
+        return true;
+    }
+
+    @Override
+    public Boolean createCases(CreateCasesDTO createCasesDTO) {
+        Api api = apiMapper.selectById(createCasesDTO.getApiId());
+        if (api.getCaseRules() != null && StringUtils.isNotBlank(api.getCaseRules())) {
+            JSONArray jsonArray= JSONArray.parseArray(JSON.toJSONString(api.getCaseRules()));
+            String jsonString = JSONObject.toJSONString(jsonArray);
+            List<CaseRules> caseRulesList = JSONObject.parseArray(jsonString, CaseRules.class);
+            System.out.println(caseRulesList);
+        }
+//        String[] argument = new String[]{"python", "D://Workspace/IDEA/AutoTest/src/main/resources/static/pyToSql/pairwise.py", createCasesDTO.getUserId().toString(), uploadDTO.getBaseUrl()};
+//        try{
+//            Process process = Runtime.getRuntime().exec(argument);
+//
+//            InputStreamReader ir = new InputStreamReader(process.getInputStream());
+//            LineNumberReader input = new LineNumberReader(ir);
+//            String result = input.readLine();
+//            input.close();
+//            ir.close();
+//
+//            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//            while ((in.readLine()) != null) {
+//                String line = in.readLine();
+//                System.out.println(line);
+//            }
+//            in.close();
+//            process.waitFor();
+//            int re = process.waitFor();
+//            System.out.println("python运行的返回值："+re);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+
+        //插入操作日志
+//        insertOperateLogUtils.insertOperateLog(createCasesDTO.getUserId(), LogContentEnumUtils.CREATECASES, OperatePathEnumUtils.CREATECASES);
+        return null;
     }
 
 }

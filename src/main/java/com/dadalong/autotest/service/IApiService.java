@@ -44,4 +44,11 @@ public interface IApiService {
      * @return
      */
     Boolean putCaseRules(CaseRulesDTO caseRulesDTO);
+
+    /**
+     * 为指定api生成测试用例
+     * @param createCasesDTO
+     * @return
+     */
+    Boolean createCases(CreateCasesDTO createCasesDTO);
 }

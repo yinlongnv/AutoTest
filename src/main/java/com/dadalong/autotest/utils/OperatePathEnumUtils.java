@@ -21,7 +21,7 @@ public class OperatePathEnumUtils {
     public static final String APIDETAIL = "/api/detail";
 
     public static final String APIIMPORT = "/api/import";
-
+    public static final String CREATECASES = "/api/createCases";
     public static final String CASERULES = "/api/caseRules";
 
     public static final String CASELIST = "/case/listWithSearch";

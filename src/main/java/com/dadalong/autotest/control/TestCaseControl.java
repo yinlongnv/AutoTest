@@ -82,8 +82,8 @@ public class TestCaseControl {
 
     @ApiOperation(value="获取三级级联",httpMethod = "GET")
     @GetMapping("/filterMap")
-    public FilterMapResponse filterMap() {
-        return filterMapUtils.filterMap();
+    public TypedApiResponse filterMap() {
+        return TypedApiResponse.ok().message("filterMap-success").data(filterMapUtils.filterMap());
     }
 
 }

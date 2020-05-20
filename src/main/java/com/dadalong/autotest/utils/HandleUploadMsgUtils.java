@@ -17,7 +17,7 @@ public class HandleUploadMsgUtils {
             case "批量导入成功":
                 return TypedApiResponse.ok().message("批量导入成功");
             default:
-                return TypedApiResponse.error().message("loading");
+                return TypedApiResponse.error().message("loading...");
         }
     }
 }

@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * 接收参数规则
+ */
 @Data
 public class CaseRulesDTO {
     private Integer apiId;
