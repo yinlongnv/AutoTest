@@ -4,13 +4,15 @@ import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.common.model.dto.SlabPage;
 import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.dadalong.autotest.bean.v1.mapper.NoticeMapper;
-import com.dadalong.autotest.bean.v1.mapper.OperateLogMapper;
-import com.dadalong.autotest.bean.v1.mapper.UserMapper;
-import com.dadalong.autotest.bean.v1.pojo.OperateLog;
-import com.dadalong.autotest.bean.v1.pojo.User;
+import com.dadalong.autotest.bean.v1.mapper.*;
+import com.dadalong.autotest.bean.v1.pojo.*;
+import com.dadalong.autotest.bean.v1.wrapper.NoticeUsersWrapper;
+import com.dadalong.autotest.bean.v1.wrapper.NoticeWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.OperateLogWrapper;
+import com.dadalong.autotest.model.notice.DetailDTO;
+import com.dadalong.autotest.model.notice.MarkReadDTO;
 import com.dadalong.autotest.model.response.LogListResponse;
+import com.dadalong.autotest.model.response.NoticeListResponse;
 import com.dadalong.autotest.service.INoticeService;
 import com.dadalong.autotest.service.IOperateLogService;
 import com.dadalong.autotest.utils.InsertOperateLogUtils;
@@ -22,7 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -34,45 +38,108 @@ public class NoticeServiceImpl implements INoticeService {
     private NoticeMapper noticeMapper;
 
     @Resource
+    private NoticeUsersMapper noticeUsersMapper;
+
+    @Resource
+    private UserMapper userMapper;
+
+    @Resource
+    private ApiMapper apiMapper;
+
+    @Resource
     InsertOperateLogUtils insertOperateLogUtils;
 
     @Override
-    public IPage<LogListResponse> listWithSearch(SearchRequest searchRequest) {
-        return null;
+    public IPage<NoticeListResponse> listWithSearch(SearchRequest searchRequest) {
+        try {
+            Map<String,Object> map = searchRequest.getSearch();
+            int userId = (int) map.get("userId");
+            List<NoticeUsers> noticeUsersList =  noticeUsersMapper.selectList(new NoticeUsersWrapper().select("user_id", String.valueOf(userId)));
+            List<NoticeListResponse> noticeListResponses = new ArrayList<>();
+            List<Integer> noticeIds = new ArrayList<>();
+            for (NoticeUsers noticeUsers : noticeUsersList) {
+                noticeIds.add(noticeUsers.getNoticeId());
+            }
+            searchRequest.setSearch("noticeIds", noticeIds);
+            NoticeWrapper noticeWrapper = new NoticeWrapper();
+            noticeWrapper.ofListWithSearch(searchRequest).orderByDesc("created_at");
+            SlabPage<Notice> noticeSlabPage = new SlabPage<>(searchRequest);
+            IPage<Notice> noticeResults = noticeMapper.selectPage(noticeSlabPage, noticeWrapper);
+            for (Notice record : noticeResults.getRecords()) {
+                NoticeListResponse noticeListResponse = new NoticeListResponse();
+                BeanUtils.copyProperties(record, noticeListResponse);
+                User user = userMapper.selectById(record.getUserId());
+                if (user != null && StringUtils.isNotBlank(user.toString())) {
+                    noticeListResponse.setUsername(user.getUsername());
+                } else {
+                    noticeListResponse.setUsername("root");
+                }
+                noticeListResponses.add(noticeListResponse);
+            }
+            SlabPage<NoticeListResponse> noticeListResponseSlabPage = new SlabPage<>(searchRequest);
+            noticeListResponseSlabPage.setRecords(noticeListResponses);
+            noticeListResponseSlabPage.setTotal(noticeResults.getTotal());
+
+            //插入操作日志
+            insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.NOTICELIST, OperatePathEnumUtils.NOTICELIST);
+            return noticeListResponseSlabPage;
+        }catch (Exception e){
+            throw new ConflictException("listWithSearchError");
+        }
     }
-//        try {
-//            OperateLogWrapper operateLogWrapper = new OperateLogWrapper();
-//            operateLogWrapper.ofListWithSearch(searchRequest).orderByDesc("created_at");
-//            List<LogListResponse> logListResponseList = new ArrayList<>();
-//            Map<String,Object> map = searchRequest.getSearch();
-//
-//            SlabPage<OperateLog> operateLogSlabPage = new SlabPage<>(searchRequest);
-//            IPage<OperateLog> logResults = operateLogMapper.selectPage(operateLogSlabPage, operateLogWrapper);
-//            for (OperateLog record : logResults.getRecords()) {
-//                LogListResponse logListResponse = new LogListResponse();
-//                BeanUtils.copyProperties(record, logListResponse);
-//                User user = userMapper.selectById(record.getUserId());
-//                if (user != null && StringUtils.isNotBlank(user.toString())) {
-//                    BeanUtils.copyProperties(user, logListResponse, "createdAt");
-//                } else {
-//                    logListResponse.setUsername("root");
-//                    logListResponse.setUserNumber("AH19981006000000");
-//                    logListResponse.setRole(1);
-//                    logListResponse.setLastIp("127.0.0.1");
-//                }
-//                logListResponseList.add(logListResponse);
-//            }
-//            SlabPage<LogListResponse> logListResponseSlabPage = new SlabPage<>(searchRequest);
-//            logListResponseSlabPage.setRecords(logListResponseList);
-//            logListResponseSlabPage.setTotal(logResults.getTotal());
-//
-//            Object userId = map.get("userId");
-//            //插入操作日志
-//            insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.LOGLIST, OperatePathEnumUtils.LOGLIST);
-//            return logListResponseSlabPage;
-//        }catch (Exception e){
-//            throw new ConflictException("listWithSearchError");
-//        }
-//    }
+
+    @Override
+    public Boolean markReadAll(MarkReadDTO markReadDTO) {
+        NoticeUsersWrapper noticeUsersWrapper = new NoticeUsersWrapper();
+        List<NoticeUsers> noticeUsersList = noticeUsersMapper.selectList(noticeUsersWrapper.eq("user_id",markReadDTO.getUserId()).and(noticeUsersQueryWrapper -> noticeUsersQueryWrapper.ne("is_read", "0")));
+        if (noticeUsersList != null && StringUtils.isNotBlank(noticeUsersList.toString())) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+            String date = simpleDateFormat.format(new Date());
+            for (NoticeUsers noticeUsers : noticeUsersList) {
+                noticeUsers.setIsRead(date);
+                noticeUsersMapper.updateById(noticeUsers);
+            }
+            //插入操作日志
+            insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(markReadDTO.getUserId())), LogContentEnumUtils.NOTICEREADALL, OperatePathEnumUtils.NOTICEREADALL);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public NoticeListResponse detail(DetailDTO detailDTO) {
+        NoticeUsersWrapper noticeUsersWrapper = new NoticeUsersWrapper();
+        NoticeListResponse noticeListResponse = new NoticeListResponse();
+        Notice notice = noticeMapper.selectById(detailDTO.getNoticeId());
+        BeanUtils.copyProperties(notice, noticeListResponse);
+        User user = userMapper.selectById(notice.getUserId());
+        if (user != null && StringUtils.isNotBlank(user.toString())) {
+            noticeListResponse.setUsername(user.getUsername());
+        } else {
+            noticeListResponse.setUsername("root");
+        }
+        NoticeUsers noticeUsers = noticeUsersMapper.selectOne(noticeUsersWrapper.eq("notice_id", detailDTO.getNoticeId()).and(noticeUsersQueryWrapper -> noticeUsersWrapper.eq("user_id", detailDTO.getUserId())));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        String date = simpleDateFormat.format(new Date());
+        noticeUsers.setIsRead(date);
+        //插入操作日志
+        insertOperateLogUtils.insertOperateLog(detailDTO.getUserId(), LogContentEnumUtils.NOTICEREAD, OperatePathEnumUtils.NOTICEREAD);
+        Api api = apiMapper.selectById(notice.getApiId());
+        if (api != null && StringUtils.isNotBlank(api.toString())) {
+            noticeListResponse.setProjectName(api.getProjectName());
+            noticeListResponse.setApiGroup(api.getApiGroup());
+            noticeListResponse.setApiName(api.getApiName());
+            noticeListResponse.setApiPath(api.getApiPath());
+        } else {
+            noticeListResponse.setProjectName("演训产品中心");
+            noticeListResponse.setApiGroup("产品管理");
+            noticeListResponse.setApiName("接口名称");
+            noticeListResponse.setApiPath("接口路径");
+        }
+        //插入操作日志
+        insertOperateLogUtils.insertOperateLog(detailDTO.getUserId(), LogContentEnumUtils.NOTICEDETAIL, OperatePathEnumUtils.NOTICEDETAIL);
+        return noticeListResponse;
+    }
 
 }

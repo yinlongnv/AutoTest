@@ -6,14 +6,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 公告
+ * 通知公告表
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Notice extends Datetime{
 
     /**
-     * 日志id
+     * 通知公告id
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -24,6 +24,11 @@ public class Notice extends Datetime{
     private Integer userId;
 
     /**
+     * 接口id
+     */
+    private Integer apiId;
+
+    /**
      * 用例id
      */
     private Integer caseId;
@@ -32,9 +37,4 @@ public class Notice extends Datetime{
      * 测试报告html文件名
      */
     private String htmlUrl;
-
-    /**
-     * 是否已读，已读1，未读0
-     */
-    private Integer isRead;
 }

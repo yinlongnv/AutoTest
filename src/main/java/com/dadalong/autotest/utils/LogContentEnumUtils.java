@@ -37,4 +37,8 @@ public class LogContentEnumUtils {
     public static final String LOGLIST = "查看日志列表";
     public static final String LOGEXPORT = "导出全部日志";
 
+    public static final String NOTICELIST = "查看通知公告列表";
+    public static final String NOTICEREAD = "已读通知公告";
+    public static final String NOTICEREADALL = "全部已读通知公告";
+    public static final String NOTICEDETAIL = "查看公告详情";
 }

@@ -129,13 +129,4 @@ public class ApiControl {
         }
     }
 
-//    @GetMapping("/random")
-//    public List<String> getRandom(){
-//        return randomUtils.getPasswordRandom(6, 20);
-//    }
-//
-//    @GetMapping("/num")
-//    public String getString() {
-//        return RandomStringUtils.randomAlphanumeric(20);
-//    }
 }

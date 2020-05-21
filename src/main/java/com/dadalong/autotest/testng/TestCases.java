@@ -13,17 +13,18 @@ import java.util.Map;
 
 public class TestCases {
 
-//    @Test
-//    @Parameters({"getUrl"})
-//    public void testGet(String getUrl) throws IOException {
-//        HttpClientUtils httpClientUtils = new HttpClientUtils();
-//        Map<String, String> map = new HashMap<>();
-////        String url = "http://localhost:9001/case/filterMap";
-//        String result = httpClientUtils.get(getUrl, map);
-//        System.out.println(result);
-//        ApiResponse apiResponse = JSONObject.parseObject(result , ApiResponse.class);
-//        Assert.assertEquals(apiResponse.getCode(), "00000");
-//    }
+    @Test
+    @Parameters({"getUrl"})
+    public void testGet(String getUrl) throws IOException {
+//    public void testGet() throws IOException {
+        HttpClientUtils httpClientUtils = new HttpClientUtils();
+        Map<String, String> map = new HashMap<>();
+//        String getUrl = "http://localhost:9001/api/detail?userId=1&id=2";
+        String result = httpClientUtils.get(getUrl, map);
+        System.out.println(result);
+        ApiResponse apiResponse = JSONObject.parseObject(result , ApiResponse.class);
+        Assert.assertEquals(apiResponse.getCode(), "00000");
+    }
 
     @Test
     @Parameters({"postUrl","postData"})

@@ -85,9 +85,12 @@ public class TestCaseControl {
 
     @ApiOperation(value="执行用例",httpMethod = "POST")
     @PostMapping("/execute")
-    public TypedApiResponse execute(ExecuteDTO executeDTO) {
-        iTestCaseService.execute(executeDTO);
-        return TypedApiResponse.ok().message("execute-success");
+    public TypedApiResponse execute(@RequestBody ExecuteDTO executeDTO) {
+        if (iTestCaseService.execute(executeDTO)) {
+            return TypedApiResponse.ok().message("执行成功");
+        } else {
+            return TypedApiResponse.error().message("用例执行失败，请重试");
+        }
     }
 
 }

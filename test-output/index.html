@@ -24,7 +24,7 @@
     <div class="top-banner-root">
       <span class="top-banner-title-font">Test results</span>
       <br/>
-      <span class="top-banner-font-1">1 suite, 1 failed test</span>
+      <span class="top-banner-font-1">1 suite</span>
     </div> <!-- top-banner-root -->
     <div class="navigator-root">
       <div class="navigator-suite-header">
@@ -38,7 +38,7 @@
         <div class="rounded-window">
           <div class="suite-header light-rounded-window-top">
             <a href="#" class="navigator-link" panel-name="suite-______API______">
-              <span class="suite-name border-failed">演训产品中心API接口测试套件</span>
+              <span class="suite-name border-passed">演训产品中心API接口测试套件</span>
             </a> <!-- navigator-link -->
           </div> <!-- suite-header light-rounded-window-top -->
           <div class="navigator-suite-content">
@@ -91,21 +91,7 @@
               <div class="suite-section-content">
                 <ul>
                   <li>
-                    <span class="method-stats">2 methods, 1 failed,   1 passed</span>
-                  </li>
-                  <li>
-                    <span class="method-list-title failed">Failed methods</span>
-                    <span class="show-or-hide-methods failed">
-                      <a href="#" panel-name="suite-______API______" class="hide-methods failed suite-______API______"> (hide)</a> <!-- hide-methods failed suite-______API______ -->
-                      <a href="#" panel-name="suite-______API______" class="show-methods failed suite-______API______"> (show)</a> <!-- show-methods failed suite-______API______ -->
-                    </span>
-                    <div class="method-list-content failed suite-______API______">
-                      <span>
-                        <img width="3%" src="failed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-______API______" title="com.dadalong.autotest.testng.TestCases" hash-for-method="testGet">testGet</a> <!-- method navigator-link -->
-                      </span>
-                      <br/>
-                    </div> <!-- method-list-content failed suite-______API______ -->
+                    <span class="method-stats">2 methods,   2 passed</span>
                   </li>
                   <li>
                     <span class="method-list-title passed">Passed methods</span>
@@ -114,6 +100,11 @@
                       <a href="#" panel-name="suite-______API______" class="show-methods passed suite-______API______"> (show)</a> <!-- show-methods passed suite-______API______ -->
                     </span>
                     <div class="method-list-content passed suite-______API______">
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-______API______" title="com.dadalong.autotest.testng.TestCases" hash-for-method="testGet(http://localhost:9001/api/filterMap)">testGet(http://localhost:9001/api/filterMap)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
                         <a href="#" class="method navigator-link" panel-name="suite-______API______" title="com.dadalong.autotest.testng.TestCases" hash-for-method="testPost(http://localhost:9001/user/login, {&quot;username&quot;:&quot;大大龙&quot;,&quot;password&quot;:&quot;123456&quot;,&quot;lastIp&quot;:&quot;127.0.0.1&quot;})">testPost(http://localhost:9001/user/login, {"username":"大大龙","password":"123456","lastIp":"127.0.0.1"})</a> <!-- method navigator-link -->
@@ -131,92 +122,20 @@
     <div class="wrapper">
       <div class="main-panel-root">
         <div panel-name="suite-______API______" class="panel ______API______">
-          <div class="suite-______API______-class-failed">
-            <div class="main-panel-header rounded-window-top">
-              <img src="failed.png"/>
-              <span class="class-name">com.dadalong.autotest.testng.TestCases</span>
-            </div> <!-- main-panel-header rounded-window-top -->
-            <div class="main-panel-content rounded-window-bottom">
-              <div class="method">
-                <div class="method-content">
-                  <a name="testGet">
-                  </a> <!-- testGet -->
-                  <span class="method-name">testGet</span>
-                  <div class="stack-trace">org.testng.TestNGException: 
-Parameter &apos;getUrl&apos; is required by @Test on method testGet but has not been marked @Optional or defined
-
-	at java.util.ArrayList.forEach(ArrayList.java:1257)
-	at com.dadalong.autotest.service.impl.TestCaseServiceImpl.execute(TestCaseServiceImpl.java:310)
-	at com.dadalong.autotest.service.impl.TestCaseServiceImpl$$FastClassBySpringCGLIB$$34dd9cc0.invoke(&lt;generated&gt;)
-	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
-	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
-	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:366)
-	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:118)
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
-	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
-	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-	at com.dadalong.autotest.service.impl.TestCaseServiceImpl$$EnhancerBySpringCGLIB$$16235295.execute(&lt;generated&gt;)
-	at com.dadalong.autotest.control.TestCaseControl.execute(TestCaseControl.java:89)
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190)
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138)
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:105)
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:879)
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:793)
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1040)
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:943)
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909)
-	at javax.servlet.http.HttpServlet.service(HttpServlet.java:660)
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
-	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202)
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:373)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:868)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1594)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-	at java.lang.Thread.run(Thread.java:748)
-... Removed 27 stack frames
-</div> <!-- stack-trace -->
-                </div> <!-- method-content -->
-              </div> <!-- method -->
-            </div> <!-- main-panel-content rounded-window-bottom -->
-          </div> <!-- suite-______API______-class-failed -->
           <div class="suite-______API______-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
               <span class="class-name">com.dadalong.autotest.testng.TestCases</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testGet(http://localhost:9001/api/filterMap)">
+                  </a> <!-- testGet(http://localhost:9001/api/filterMap) -->
+                  <span class="method-name">testGet</span>
+                  <span class="parameters">(http://localhost:9001/api/filterMap)</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
                   <a name="testPost(http://localhost:9001/user/login, {&quot;username&quot;:&quot;大大龙&quot;,&quot;password&quot;:&quot;123456&quot;,&quot;lastIp&quot;:&quot;127.0.0.1&quot;})">
@@ -242,6 +161,7 @@ Parameter &apos;getUrl&apos; is required by @Test on method testGet but has not 
   &lt;test thread-count=&quot;5&quot; name=&quot;演训产品中心API接口测试用例&quot;&gt;
     &lt;classes&gt;
       &lt;class name=&quot;com.dadalong.autotest.testng.TestCases&quot;&gt;
+        &lt;parameter name=&quot;getUrl&quot; value=&quot;http://localhost:9001/api/filterMap&quot;/&gt;
         &lt;parameter name=&quot;postUrl&quot; value=&quot;http://localhost:9001/user/login&quot;/&gt;
         &lt;parameter name=&quot;postData&quot; value=&quot;{&amp;quot;username&amp;quot;:&amp;quot;大大龙&amp;quot;,&amp;quot;password&amp;quot;:&amp;quot;123456&amp;quot;,&amp;quot;lastIp&amp;quot;:&amp;quot;127.0.0.1&amp;quot;}&quot;/&gt;
       &lt;/class&gt; &lt;!-- com.dadalong.autotest.testng.TestCases --&gt;
@@ -286,18 +206,18 @@ data.addColumn('string', 'Class');
 data.addColumn('number', 'Time (ms)');
 data.addRows(2);
 data.setCell(0, 0, 0)
-data.setCell(0, 1, 'testPost')
+data.setCell(0, 1, 'testGet')
 data.setCell(0, 2, 'com.dadalong.autotest.testng.TestCases')
-data.setCell(0, 3, 8126);
+data.setCell(0, 3, 575);
 data.setCell(1, 0, 1)
-data.setCell(1, 1, 'testGet')
+data.setCell(1, 1, 'testPost')
 data.setCell(1, 2, 'com.dadalong.autotest.testng.TestCases')
-data.setCell(1, 3, 0);
+data.setCell(1, 3, 114);
 window.suiteTableData['______API______']= { tableData: data, tableDiv: 'times-div-______API______'}
 return data;
 }
               </script>
-              <span class="suite-total-time">Total running time: 8 seconds</span>
+              <span class="suite-total-time">Total running time: 689 ms</span>
               <div id="times-div-______API______">
               </div> <!-- times-div-______API______ -->
             </div> <!-- times-div -->
@@ -325,8 +245,12 @@ return data;
             <div class="chronological-class">
               <div class="chronological-class-name">com.dadalong.autotest.testng.TestCases</div> <!-- chronological-class-name -->
               <div class="test-method">
-                <span class="method-name">testPost(http://localhost:9001/user/login, {"username":"大大龙","password":"123456","lastIp":"127.0.0.1"})</span>
+                <span class="method-name">testGet(http://localhost:9001/api/filterMap)</span>
                 <span class="method-start">0 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testPost(http://localhost:9001/user/login, {"username":"大大龙","password":"123456","lastIp":"127.0.0.1"})</span>
+                <span class="method-start">581 ms</span>
               </div> <!-- test-method -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->

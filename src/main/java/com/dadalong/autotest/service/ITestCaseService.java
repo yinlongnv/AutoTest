@@ -49,5 +49,5 @@ public interface ITestCaseService {
      * 执行用例
      * @param executeDTO
      */
-    void execute(ExecuteDTO executeDTO);
+    Boolean execute(ExecuteDTO executeDTO);
 }

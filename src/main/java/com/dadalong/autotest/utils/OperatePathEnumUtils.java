@@ -36,4 +36,10 @@ public class OperatePathEnumUtils {
     public static final String LOGLIST = "/operateLog/listWithSearch";
     public static final String LOGEXPORT = "/operateLog/exportAllLogs";
 
+    public static final String NOTICELIST = "/notice/listWithSearch";
+    public static final String NOTICEREAD = "/notice/detail";
+    public static final String NOTICEREADALL = "/notice/markRead";
+    public static final String NOTICEDETAIL = "/notice/detail";
+
+
 }

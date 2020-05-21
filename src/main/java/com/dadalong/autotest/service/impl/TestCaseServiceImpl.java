@@ -3,6 +3,7 @@ package com.dadalong.autotest.service.impl;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.common.model.dto.SlabPage;
 import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dadalong.autotest.bean.v1.mapper.ApiMapper;
@@ -232,74 +233,52 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     }
 
     @Override
-    public void execute(ExecuteDTO executeDTO) {
-//        TestCase testCase = testCaseMapper.selectById(executeDTO.getCaseId());
-//        Api api = apiMapper.selectById(testCase.getApiId());
-//        XmlSuite suite = new XmlSuite();
-//        suite.setName("演训产品中心API接口测试套件");
-//        XmlTest test = new XmlTest(suite);
-//        test.setName("演训产品中心API接口测试用例");
-//        List<XmlClass> classes = new ArrayList<>();
-//        XmlClass xmlClass = new XmlClass("com.dadalong.autotest.testng.TestCases");
-//        if (api.getReqMethod().equals("POST")) {
-//            String postUrl = api.getBaseUrl() + api.getApiPath();
-//            String postData = "";
-////            String postData = "{\"username\":\"大大龙\",\"password\":\"123456\",\"lastIp\":\"127.0.0.1\"}";
-////            String postUrl = "http://localhost:9001/user/login";
-//            Map<String, String> map = new HashMap<>();
-//            map.put("postUrl", postUrl);
-//            map.put("postData", postData);
-//            xmlClass.setParameters(map);
-//        } else if (api.getReqMethod().equals("GET")){
-//            if (api.getReqQuery()!=null && StringUtils.isNotBlank(api.getReqQuery())) {
-//                String getUrl = api.getBaseUrl() + api.getApiPath();// 还没写完
-//                Map<String, String> map = new HashMap<>();
-//                map.put("getUrl", getUrl);
-//                xmlClass.setParameters(map);
-//            } else {
-//                String getUrl = api.getBaseUrl() + api.getApiPath();
-//                Map<String, String> map = new HashMap<>();
-//                map.put("getUrl", getUrl);
-//                xmlClass.setParameters(map);
-//            }
-//
-//        }
-//        classes.add(xmlClass);
-//        test.setXmlClasses(classes);
-//        suite.addListener("com.dadalong.autotest.utils.ExtentTestNGIReportListenerUtils");
-//        List<XmlSuite> suites = new ArrayList<XmlSuite>();
-//        suites.add(suite);
-//        TestNG testNG = new TestNG();
-//        testNG.setXmlSuites(suites);
-//        testNG.run();
-//        Timer timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//            public void run() {
-//                //延迟30000ms后执行以下语句
-//                String newestFile = handleFileUtils.findNewFile("D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\");
-//                testCase.setHtmlUrl(newestFile);
-//                testCase.setExecuteByUserId(executeDTO.getUserId());
-//                testCase.setExecuteStatus(1);
-//                testCase.setExecuteCount(testCase.getExecuteCount()+1);
-//                Notice notice = new Notice();
-//                notice.setCaseId(executeDTO.getCaseId());
-//                notice.setUserId(executeDTO.getUserId());
-//                notice.setIsRead(0);
-//                notice.setHtmlUrl(newestFile);
-//                noticeMapper.insert(notice);
-//            } }, 30000);
+    public Boolean execute(ExecuteDTO executeDTO) {
+        TestCase testCase = testCaseMapper.selectById(executeDTO.getCaseId());
+        Api api = apiMapper.selectById(testCase.getApiId());
         XmlSuite suite = new XmlSuite();
         suite.setName("演训产品中心API接口测试套件");
         XmlTest test = new XmlTest(suite);
         test.setName("演训产品中心API接口测试用例");
         List<XmlClass> classes = new ArrayList<>();
         XmlClass xmlClass = new XmlClass("com.dadalong.autotest.testng.TestCases");
-        String postData = "{\"username\":\"大大龙\",\"password\":\"123456\",\"lastIp\":\"127.0.0.1\"}";
-        String postUrl = "http://localhost:9001/user/login";
-        Map<String, String> map = new HashMap<>();
-        map.put("postUrl", postUrl);
-        map.put("postData", postData);
-        xmlClass.setParameters(map);
+        if (api.getReqMethod().equals("POST")) {
+            String postUrl = api.getBaseUrl() + api.getApiPath();
+            String postData = testCase.getCaseBody();
+            String getUrl = "http://localhost:9001/api/filterMap";
+            Map<String, String> map = new HashMap<>();
+            map.put("postUrl", postUrl);
+            map.put("postData", postData);
+            map.put("getUrl", getUrl);
+            xmlClass.setParameters(map);
+        } else if (api.getReqMethod().equals("GET")){
+            String caseBody = testCase.getCaseBody();
+            String postData = "{\"username\":\"大大龙\",\"password\":\"123456\",\"lastIp\":\"127.0.0.1\"}";
+            String postUrl = "http://localhost:9001/user/login";
+            if (caseBody != null && StringUtils.isNotBlank(caseBody)) {
+                JSONObject jsonObject = JSONObject.parseObject(caseBody);
+                String params = "";
+                for(String key : jsonObject.keySet()){
+                    params = key + "=" + jsonObject.get(key).toString() + "&";
+                }
+                System.out.println(params);
+                params = params.substring(0, params.length() - 1);// 去除字符串最后一个字符
+                String getUrl = api.getBaseUrl() + api.getApiPath() + "?" + params;
+                System.out.println(getUrl);
+                Map<String, String> map = new HashMap<>();
+                map.put("getUrl", getUrl);
+                map.put("postUrl", postUrl);
+                map.put("postData", postData);
+                xmlClass.setParameters(map);
+            } else {
+                String getUrl = api.getBaseUrl() + api.getApiPath();
+                Map<String, String> map = new HashMap<>();
+                map.put("getUrl", getUrl);
+                map.put("postUrl", postUrl);
+                map.put("postData", postData);
+                xmlClass.setParameters(map);
+            }
+        }
         classes.add(xmlClass);
         test.setXmlClasses(classes);
         suite.addListener("com.dadalong.autotest.utils.ExtentTestNGIReportListenerUtils");
@@ -308,6 +287,46 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         TestNG testNG = new TestNG();
         testNG.setXmlSuites(suites);
         testNG.run();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            public void run() {
+                //延迟30000ms后执行以下语句
+                String newestFile = handleFileUtils.findNewFile("D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\");
+                testCase.setHtmlUrl(newestFile);
+                testCase.setExecuteByUserId(executeDTO.getUserId());
+                testCase.setExecuteStatus(1);
+                testCase.setExecuteCount(testCase.getExecuteCount()+1);
+                testCaseMapper.updateById(testCase);
+                Notice notice = new Notice();
+                notice.setCaseId(executeDTO.getCaseId());
+                notice.setUserId(executeDTO.getUserId());
+                notice.setApiId(api.getId());
+                notice.setHtmlUrl(newestFile);
+                noticeMapper.insert(notice);
+            } }, 30000);
+        // 插入操作日志
+        insertOperateLogUtils.insertOperateLog(executeDTO.getUserId(), LogContentEnumUtils.CASEEXECUTE, OperatePathEnumUtils.CASEEXECUTE);
+        return true;
+//        XmlSuite suite = new XmlSuite();
+//        suite.setName("演训产品中心API接口测试套件");
+//        XmlTest test = new XmlTest(suite);
+//        test.setName("演训产品中心API接口测试用例");
+//        List<XmlClass> classes = new ArrayList<>();
+//        XmlClass xmlClass = new XmlClass("com.dadalong.autotest.testng.TestCases");
+//        String postData = "{\"username\":\"大大龙\",\"password\":\"123456\",\"lastIp\":\"127.0.0.1\"}";
+//        String postUrl = "http://localhost:9001/user/login";
+//        Map<String, String> map = new HashMap<>();
+//        map.put("postUrl", postUrl);
+//        map.put("postData", postData);
+//        xmlClass.setParameters(map);
+//        classes.add(xmlClass);
+//        test.setXmlClasses(classes);
+//        suite.addListener("com.dadalong.autotest.utils.ExtentTestNGIReportListenerUtils");
+//        List<XmlSuite> suites = new ArrayList<XmlSuite>();
+//        suites.add(suite);
+//        TestNG testNG = new TestNG();
+//        testNG.setXmlSuites(suites);
+//        testNG.run();
     }
 
 }
