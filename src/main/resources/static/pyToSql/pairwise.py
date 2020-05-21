@@ -64,11 +64,50 @@ class PairWiseUtils:
         return hold_params_list
 
 
+# 从txt中提取生成的参数list数据
+def get_params_from_file(file_path):
+    f = open(file_path)
+    lines = f.read().split("\n")
+    result = []
+    for line in lines[:-1]:
+        result.append(eval(line))
+    return result
+
+
+# 从txt中提取参数名
+def get_keys_from_file(keys_path):
+    f = open(keys_path)
+    lines = f.read().split("\n")
+    result = []
+    for line in lines[:-1]:
+        result.append(line)
+    return result
+
+
+# 把参数名和参数值处理成map结构
+def data_process(data, kys):
+    result = ''
+    for one_data in data:
+        obj = {}
+        index = 0
+        for key in kys:
+            if index < len(kys):
+                obj[key] = one_data[index]
+                index += 1
+        result = result + ";" + str(obj)
+    print(result)
+
+
 if __name__ == '__main__':
     # all_params = [['M', 'O', 'P'], ['W', 'L', 'I'], ['C', 'E']]
     # all_params = [['M', 'O', 'T'], ['L', 'I', 'T'], ['s', 'T', 'E', 'K'], [1, 3], ['Yes', 'No'], ['666', '']]
-    all_params = [['A', 'vlxtBQk0ww', 'a', '8IgFSn2gGKU'], ['uWK436', 'UjmaLEUV9F', 'v0Fu~', '@YM!zT$A2Ty'], ['3', '0', '21'], ['49', '0', '101'], ['450424201201278562'], ['13306490004'], ['apcj8izxqh@msn.com'], ['1', '0']]
-    final_list = PairWiseUtils().pairwise(all_params, 2)
+    # all_params = [['r', 'pwS3lbOlFN', 'a', 'Wb3HqmQuREF'], ['zndiuL', 'w!EonPZC2F', '7EuHT', 'sP%mwXhGSv&'],
+    # ['19', '0', '21'], ['22', '0', '101'], ['210622196908193945']
+    # , ['15603858933'], ['vhozbkczkt@126.com'], ['1', '0']]
+    # final_list = PairWiseUtils().pairwise(all_params, 2)
+    # print(final_list)
+    # print(len(final_list))
+    final_list = PairWiseUtils().pairwise(get_params_from_file(sys.argv[1]), 2)
+    keys = get_keys_from_file("D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\pyToSql\\keys.txt")
+    data_process(final_list, keys)
     print(final_list)
-    print(len(final_list))
-    # final_list = PairWiseUtils().pairwise(sys.argv[1], 2)

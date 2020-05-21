@@ -30,6 +30,12 @@ public class TestCase extends Datetime {
      * 创建该条用例的用户id
      */
     private Integer userId;
+
+    /**
+     * 测试报告html文件名
+     */
+    private String htmlUrl;
+
     /**
      * 用例内容
      */

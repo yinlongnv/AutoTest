@@ -29,8 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.*;
 import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -49,10 +47,13 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
     InsertOperateLogUtils insertOperateLogUtils;
 
     @Resource
-    DeleteFileUtils deleteFileUtils;
+    HandleFileUtils handleFileUtils;
 
     @Resource
     RandomUtils randomUtils;
+
+    @Resource
+    PutListToTextUtils putListToTextUtils;
 
     public IPage<ApiListResponse> listWithSearch(SearchRequest searchRequest){
         try {
@@ -168,7 +169,7 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
                     //导入成功后删除已保存的api.html文件
                     if (re == 0) {
                         String deletePath = "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadApi";
-                        if (!deleteFileUtils.delAllFile(deletePath)) {
+                        if (!handleFileUtils.delAllFile(deletePath)) {
                             //插入操作日志
                             insertOperateLogUtils.insertOperateLog(uploadDTO.getUserId(), LogContentEnumUtils.APIIMPORT, OperatePathEnumUtils.APIIMPORT);
                             return "批量导入成功";
@@ -206,7 +207,7 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
                         apiMapper.insert(api);
                     }
                     String deletePath = "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadApi";
-                    if (!deleteFileUtils.delAllFile(deletePath)) {
+                    if (!handleFileUtils.delAllFile(deletePath)) {
                         //插入操作日志
                         insertOperateLogUtils.insertOperateLog(uploadDTO.getUserId(), LogContentEnumUtils.APIIMPORT, OperatePathEnumUtils.APIIMPORT);
                         return "批量导入成功";
@@ -229,16 +230,21 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
         JSONArray jsonArray= JSONArray.parseArray(JSON.toJSONString(caseRulesDTO.getCaseRulesList()));
         api.setCaseRules(jsonArray.toString());
         apiMapper.updateById(api);
-        //插入操作日志
+        // 插入操作日志
         insertOperateLogUtils.insertOperateLog(caseRulesDTO.getUserId(), LogContentEnumUtils.CASERULES, OperatePathEnumUtils.CASERULES);
+        // 执行自动生成测试用例
         createCases(caseRulesDTO);
         return true;
     }
 
+    // 自动生成测试用例
     public Boolean createCases(CaseRulesDTO caseRulesDTO) {
-        System.out.println(caseRulesDTO.getCaseRulesList());
+//        System.out.println(caseRulesDTO.getCaseRulesList());
         List<List<String>> params = new ArrayList<>();
+        List<String> keys = new ArrayList<>();
+        // 根据参数规则随机生成测试数据
         for (CaseRules caseRules : caseRulesDTO.getCaseRulesList()) {
+            keys.add(caseRules.getName());
             if (caseRules.getMin()!=null||caseRules.getMax()!=null) {
                 if (caseRules.getMin() == null||caseRules.getMin() == "") {
                     caseRules.setMin("1");
@@ -249,9 +255,6 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
                 if (caseRules.getType().equals("int")) {
                     List<String> integers = randomUtils.getIntegerRandom(Integer.parseInt(caseRules.getMin()), Integer.parseInt(caseRules.getMax()));
                     params.add(integers);
-//                    System.out.println("随机范围整数：");
-//                    System.out.println(integers);
-//                    System.out.println(params);
                 } else if (caseRules.getType().equals("string")) {
                     List<String> strings;
                     if (caseRules.getName().contains("password")) {
@@ -260,87 +263,91 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
                         strings = randomUtils.getStringOrOtherRandom(Integer.parseInt(caseRules.getMin()), Integer.parseInt(caseRules.getMax()));
                     }
                     params.add(strings);
-//                    System.out.println("随机范围字符串：");
-//                    System.out.println(strings);
-//                    System.out.println(params);
                 }
             } else if (caseRules.getOptions()!=null) {
                 List<String> strings = new ArrayList<>();
                 String [] strArr= caseRules.getOptions().split(",");
                 strings.addAll(Arrays.asList(strArr));
-//                strings.add("不可能");
                 params.add(strings);
-//                System.out.println("指定选项内容：");
-//                System.out.println(strArr);
-//                System.out.println(strings);
-//                System.out.println(params);
             } else if (caseRules.getModel()!=null) {
                 List<String> models = new ArrayList<>();
                 if (caseRules.getModel().equals("phone")) {
                     models.add(randomUtils.getPhoneRandom());
-//                    models.add("11");
                 } else if (caseRules.getModel().equals("email")) {
                     models.add(randomUtils.getEmailRandom());
-//                    models.add("111");
                 } else if (caseRules.getModel().equals("idNumber")) {
                     models.add(randomUtils.getIdNumberRandom());
-//                    models.add("1111");
                 }
                 params.add(models);
-//                System.out.println("指定类型：");
-//                System.out.println(models);
-//                System.out.println(params);
             }
         }
-        System.out.println("最终得到：");
-        System.out.println(params.size());
-        System.out.println(params);
-        // 将数组内每个元素加上单引号传入pairwise
-        for (List<String> stringList : params) {
-            for (String string : stringList) {
-                int index = stringList.indexOf(string);
-                stringList.set(index,"'" + string + "'");
+        // 给参数值打标，int型为true，反之false
+        Map<String,Boolean> judgeInt = new HashMap<>();
+        for (CaseRules caseRules : caseRulesDTO.getCaseRulesList()) {
+            if("int".equals(caseRules.getType())){
+                judgeInt.put(caseRules.getName(),true);
+            }else{
+                judgeInt.put(caseRules.getName(),false);
             }
         }
-        System.out.println("每个元素加上单引号："+params);
-        System.out.println(params.toString());
-//        String[] argument = new String[]{"python", "D://Workspace/IDEA/AutoTest/src/main/resources/static/pyToSql/pairwise.py", params.toString()};
-        String[] argument = new String[]{"python", "D://Workspace/IDEA/AutoTest/src/main/resources/static/pyToSql/pairwise.py"};
+
+        // 写到txt中传给py做处理
+        try {
+            putListToTextUtils.putKeysToText(keys);
+            putListToTextUtils.putParamsToText(params);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // pairwise生成测试用例
+        String[] argument = new String[]{"python", "D://Workspace/IDEA/AutoTest/src/main/resources/static/pyToSql/pairwise.py", "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\pyToSql\\params.txt"};
         try{
             Process process = Runtime.getRuntime().exec(argument);
-
             InputStreamReader ir = new InputStreamReader(process.getInputStream());
             LineNumberReader input = new LineNumberReader(ir);
             String result = input.readLine();
-            System.out.println("python返回值：");
-            System.out.println(result);
+
+            String[] sp = result.split(";");
+            String[] wp = Arrays.copyOfRange(sp,1,sp.length);// 除去切分时候的一个空格
+            List<JSONObject> jsonObjectList = new ArrayList<>();
+            for (String s : wp) {
+                JSONObject jon = JSONObject.parseObject(s);
+                for(String key : jon.keySet()){
+                    if(judgeInt.get(key)){
+                        int num = Integer.valueOf(jon.get(key).toString());
+                        jon.put(key,num);
+                    }
+                }
+                jsonObjectList.add(jon);
+            }
             input.close();
             ir.close();
-
-//            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-//            while ((in.readLine()) != null) {
-//                String line = in.readLine();
-//                System.out.println(line);
-//            }
-//            in.close();
-//            process.waitFor();
             int re = process.waitFor();
-            System.out.println("python运行的返回值："+re);
+//            System.out.println("py返回值："+re);
+            // py 执行成功返回0，继续处理存入case表
+            if (re == 0) {
+                Api api = apiMapper.selectById(caseRulesDTO.getApiId());
+                String apiResponse = api.getApiResponse();
+                String apiName = api.getApiName();
+                int code = 1;
+                for (JSONObject jsonObject : jsonObjectList) {
+                    TestCase testCase = new TestCase();
+                    testCase.setApiId(caseRulesDTO.getApiId());
+                    testCase.setUserId(caseRulesDTO.getUserId());
+                    testCase.setCaseResponse(apiResponse);
+                    testCase.setExecuteStatus(0);
+                    String caseDescription = apiName + "case" + code;
+                    testCase.setCaseDescription(caseDescription);
+                    testCase.setCaseBody(jsonObject.toString());
+                    testCaseMapper.insert(testCase);
+                    code ++;
+                }
+                //插入操作日志
+                insertOperateLogUtils.insertOperateLog(caseRulesDTO.getUserId(), LogContentEnumUtils.CREATECASES, OperatePathEnumUtils.CREATECASES);
+                return true;
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
-//        Api api = apiMapper.selectById(caseRulesDTO.getApiId());
-//        if (api.getCaseRules() != null && StringUtils.isNotBlank(api.getCaseRules())) {
-//            JSONArray jsonArray= JSONArray.parseArray(JSON.toJSONString(api.getCaseRules()));
-//            String jsonString = JSONObject.toJSONString(jsonArray);
-//            List<CaseRules> caseRulesList = JSONObject.parseArray(jsonString, CaseRules.class);
-//            System.out.println(caseRulesList);
-//        }
-
-
-        //插入操作日志
-//        insertOperateLogUtils.insertOperateLog(createCasesDTO.getUserId(), LogContentEnumUtils.CREATECASES, OperatePathEnumUtils.CREATECASES);
-        return null;
+        return false;
     }
-
 }

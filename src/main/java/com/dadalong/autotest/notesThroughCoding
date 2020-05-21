@@ -67,6 +67,8 @@ JsonArray、JsonObject、List、String不想再碰了。
 List<String> strings = new ArrayList<>();
 String [] strArr= caseRules.getOptions().split(",");
 strings.addAll(Arrays.asList(strArr));
+字符串转对象：
+Myclass myclass = JSONObject.parseObject(jsonStr , Myclass.class);// jsonStr 是String类型。
 数组转字符串：
 
 

@@ -24,7 +24,12 @@ public class Notice extends Datetime{
     private Integer userId;
 
     /**
-     * 测试报告存储路径
+     * 用例id
+     */
+    private Integer caseId;
+
+    /**
+     * 测试报告html文件名
      */
     private String htmlUrl;
 

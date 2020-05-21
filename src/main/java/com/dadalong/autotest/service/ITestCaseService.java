@@ -6,10 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dadalong.autotest.bean.v1.pojo.User;
 import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
-import com.dadalong.autotest.model.testCase.BatchDTO;
-import com.dadalong.autotest.model.testCase.CreateOrEditCaseDTO;
-import com.dadalong.autotest.model.testCase.DetailDTO;
-import com.dadalong.autotest.model.testCase.UploadDTO;
+import com.dadalong.autotest.model.testCase.*;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 
 import java.sql.Date;
@@ -47,4 +44,10 @@ public interface ITestCaseService {
      * 批量导入xlsx
      */
     String upload(UploadDTO uploadDTO);
+
+    /**
+     * 执行用例
+     * @param executeDTO
+     */
+    void execute(ExecuteDTO executeDTO);
 }

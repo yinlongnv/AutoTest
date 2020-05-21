@@ -7,10 +7,7 @@ import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dadalong.autotest.model.response.FilterMapResponse;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
-import com.dadalong.autotest.model.testCase.BatchDTO;
-import com.dadalong.autotest.model.testCase.CreateOrEditCaseDTO;
-import com.dadalong.autotest.model.testCase.DetailDTO;
-import com.dadalong.autotest.model.testCase.UploadDTO;
+import com.dadalong.autotest.model.testCase.*;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.service.ITestCaseService;
 import com.dadalong.autotest.utils.FilterMapUtils;
@@ -84,6 +81,13 @@ public class TestCaseControl {
     @GetMapping("/filterMap")
     public TypedApiResponse filterMap() {
         return TypedApiResponse.ok().message("filterMap-success").data(filterMapUtils.filterMap());
+    }
+
+    @ApiOperation(value="执行用例",httpMethod = "POST")
+    @PostMapping("/execute")
+    public TypedApiResponse execute(ExecuteDTO executeDTO) {
+        iTestCaseService.execute(executeDTO);
+        return TypedApiResponse.ok().message("execute-success");
     }
 
 }
