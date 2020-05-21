@@ -29,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -229,28 +231,92 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
         apiMapper.updateById(api);
         //插入操作日志
         insertOperateLogUtils.insertOperateLog(caseRulesDTO.getUserId(), LogContentEnumUtils.CASERULES, OperatePathEnumUtils.CASERULES);
+        createCases(caseRulesDTO);
         return true;
     }
 
-    @Override
-    public Boolean createCases(CreateCasesDTO createCasesDTO) {
-        Api api = apiMapper.selectById(createCasesDTO.getApiId());
-        if (api.getCaseRules() != null && StringUtils.isNotBlank(api.getCaseRules())) {
-            JSONArray jsonArray= JSONArray.parseArray(JSON.toJSONString(api.getCaseRules()));
-            String jsonString = JSONObject.toJSONString(jsonArray);
-            List<CaseRules> caseRulesList = JSONObject.parseArray(jsonString, CaseRules.class);
-            System.out.println(caseRulesList);
+    public Boolean createCases(CaseRulesDTO caseRulesDTO) {
+        System.out.println(caseRulesDTO.getCaseRulesList());
+        List<List<String>> params = new ArrayList<>();
+        for (CaseRules caseRules : caseRulesDTO.getCaseRulesList()) {
+            if (caseRules.getMin()!=null||caseRules.getMax()!=null) {
+                if (caseRules.getMin() == null||caseRules.getMin() == "") {
+                    caseRules.setMin("1");
+                }
+                if (caseRules.getMax() == null||caseRules.getMax() == "") {
+                    caseRules.setMax("999");
+                }
+                if (caseRules.getType().equals("int")) {
+                    List<String> integers = randomUtils.getIntegerRandom(Integer.parseInt(caseRules.getMin()), Integer.parseInt(caseRules.getMax()));
+                    params.add(integers);
+//                    System.out.println("随机范围整数：");
+//                    System.out.println(integers);
+//                    System.out.println(params);
+                } else if (caseRules.getType().equals("string")) {
+                    List<String> strings;
+                    if (caseRules.getName().contains("password")) {
+                        strings = randomUtils.getPasswordRandom(Integer.parseInt(caseRules.getMin()), Integer.parseInt(caseRules.getMax()));
+                    } else {
+                        strings = randomUtils.getStringOrOtherRandom(Integer.parseInt(caseRules.getMin()), Integer.parseInt(caseRules.getMax()));
+                    }
+                    params.add(strings);
+//                    System.out.println("随机范围字符串：");
+//                    System.out.println(strings);
+//                    System.out.println(params);
+                }
+            } else if (caseRules.getOptions()!=null) {
+                List<String> strings = new ArrayList<>();
+                String [] strArr= caseRules.getOptions().split(",");
+                strings.addAll(Arrays.asList(strArr));
+//                strings.add("不可能");
+                params.add(strings);
+//                System.out.println("指定选项内容：");
+//                System.out.println(strArr);
+//                System.out.println(strings);
+//                System.out.println(params);
+            } else if (caseRules.getModel()!=null) {
+                List<String> models = new ArrayList<>();
+                if (caseRules.getModel().equals("phone")) {
+                    models.add(randomUtils.getPhoneRandom());
+//                    models.add("11");
+                } else if (caseRules.getModel().equals("email")) {
+                    models.add(randomUtils.getEmailRandom());
+//                    models.add("111");
+                } else if (caseRules.getModel().equals("idNumber")) {
+                    models.add(randomUtils.getIdNumberRandom());
+//                    models.add("1111");
+                }
+                params.add(models);
+//                System.out.println("指定类型：");
+//                System.out.println(models);
+//                System.out.println(params);
+            }
         }
-//        String[] argument = new String[]{"python", "D://Workspace/IDEA/AutoTest/src/main/resources/static/pyToSql/pairwise.py", createCasesDTO.getUserId().toString(), uploadDTO.getBaseUrl()};
-//        try{
-//            Process process = Runtime.getRuntime().exec(argument);
-//
-//            InputStreamReader ir = new InputStreamReader(process.getInputStream());
-//            LineNumberReader input = new LineNumberReader(ir);
-//            String result = input.readLine();
-//            input.close();
-//            ir.close();
-//
+        System.out.println("最终得到：");
+        System.out.println(params.size());
+        System.out.println(params);
+        // 将数组内每个元素加上单引号传入pairwise
+        for (List<String> stringList : params) {
+            for (String string : stringList) {
+                int index = stringList.indexOf(string);
+                stringList.set(index,"'" + string + "'");
+            }
+        }
+        System.out.println("每个元素加上单引号："+params);
+        System.out.println(params.toString());
+//        String[] argument = new String[]{"python", "D://Workspace/IDEA/AutoTest/src/main/resources/static/pyToSql/pairwise.py", params.toString()};
+        String[] argument = new String[]{"python", "D://Workspace/IDEA/AutoTest/src/main/resources/static/pyToSql/pairwise.py"};
+        try{
+            Process process = Runtime.getRuntime().exec(argument);
+
+            InputStreamReader ir = new InputStreamReader(process.getInputStream());
+            LineNumberReader input = new LineNumberReader(ir);
+            String result = input.readLine();
+            System.out.println("python返回值：");
+            System.out.println(result);
+            input.close();
+            ir.close();
+
 //            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
 //            while ((in.readLine()) != null) {
 //                String line = in.readLine();
@@ -258,11 +324,19 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
 //            }
 //            in.close();
 //            process.waitFor();
-//            int re = process.waitFor();
-//            System.out.println("python运行的返回值："+re);
-//        }catch (Exception e){
-//            e.printStackTrace();
+            int re = process.waitFor();
+            System.out.println("python运行的返回值："+re);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+//        Api api = apiMapper.selectById(caseRulesDTO.getApiId());
+//        if (api.getCaseRules() != null && StringUtils.isNotBlank(api.getCaseRules())) {
+//            JSONArray jsonArray= JSONArray.parseArray(JSON.toJSONString(api.getCaseRules()));
+//            String jsonString = JSONObject.toJSONString(jsonArray);
+//            List<CaseRules> caseRulesList = JSONObject.parseArray(jsonString, CaseRules.class);
+//            System.out.println(caseRulesList);
 //        }
+
 
         //插入操作日志
 //        insertOperateLogUtils.insertOperateLog(createCasesDTO.getUserId(), LogContentEnumUtils.CREATECASES, OperatePathEnumUtils.CREATECASES);

@@ -12,6 +12,7 @@ import com.dadalong.autotest.model.response.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Resource;
@@ -127,28 +128,43 @@ public class FilterMapUtils {
         return filterBaseUrlResponse;
     }
 
-    public List<ReqBodyResponse> getReqBody(Integer apiId) {
-        System.out.println(apiId);
+    /**
+     * 获取指定apiId的ReqBody或者CaseRules
+     * @param apiId
+     * @return
+     */
+    public List<CaseRules> getReqBodyOrCaseRules (Integer apiId) {
         List<Api> apiList = apiMapper.selectList(new ApiWrapper().eq("req_method", "POST")
                 .like("api_path", "create")
                 .or().like("api_path", "update"));
         for (Api api : apiList) {
-            System.out.println(api.getId());
-            if (api.getId().equals(apiId) && api.getReqBody()!=null && api.getReqBody()!="[]") {
-                System.out.println(api.getApiName());
-                System.out.println(api.getReqBody());
-                String jsonString = api.getReqBody();
-                JsonArray jsonArray = new JsonParser().parse(jsonString).getAsJsonArray();
-                List<ReqBodyResponse> reqBodyResponseList = new ArrayList<>();
-                ReqBodyResponse reqBodyResponse;
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
-                    reqBodyResponse = JSONObject.parseObject(jsonObject.toString(), ReqBodyResponse.class);
-                    reqBodyResponseList.add(reqBodyResponse);
+            if (api.getId().equals(apiId)) {
+                if (api.getCaseRules()!=null && StringUtils.isNotBlank(api.getCaseRules())) {
+                    String jsonStringCaseRules =  api.getCaseRules();
+                    return jsonArrayToCaseRules(jsonStringCaseRules);
+                } else if (api.getReqBody()!=null && api.getReqBody()!="[]") {
+                    String jsonStringReqBody = api.getReqBody();
+                    return jsonArrayToCaseRules(jsonStringReqBody);
                 }
-                return reqBodyResponseList;
             }
         }
         return null;
+    }
+
+    /**
+     * 将用例规则字符串转换成json数组
+     * @param jsonString
+     * @return
+     */
+    public List<CaseRules> jsonArrayToCaseRules(String jsonString) {
+        List<CaseRules> caseRulesList = new ArrayList<>();
+        JsonArray jsonArray = new JsonParser().parse(jsonString).getAsJsonArray();
+        CaseRules caseRules;
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
+            caseRules = JSONObject.parseObject(jsonObject.toString(), CaseRules.class);
+            caseRulesList.add(caseRules);
+        }
+        return caseRulesList;
     }
 }

@@ -67,6 +67,8 @@ class PairWiseUtils:
 if __name__ == '__main__':
     # all_params = [['M', 'O', 'P'], ['W', 'L', 'I'], ['C', 'E']]
     # all_params = [['M', 'O', 'T'], ['L', 'I', 'T'], ['s', 'T', 'E', 'K'], [1, 3], ['Yes', 'No'], ['666', '']]
-    # final_list = PairWiseUtils().pairwise(all_params, 2)
-    # print(final_list)
-    final_list = PairWiseUtils().pairwise(sys.argv[1], sys.argv[2])
+    all_params = [['A', 'vlxtBQk0ww', 'a', '8IgFSn2gGKU'], ['uWK436', 'UjmaLEUV9F', 'v0Fu~', '@YM!zT$A2Ty'], ['3', '0', '21'], ['49', '0', '101'], ['450424201201278562'], ['13306490004'], ['apcj8izxqh@msn.com'], ['1', '0']]
+    final_list = PairWiseUtils().pairwise(all_params, 2)
+    print(final_list)
+    print(len(final_list))
+    # final_list = PairWiseUtils().pairwise(sys.argv[1], 2)

@@ -1,11 +1,12 @@
 package com.dadalong.autotest.utils;
 
+import io.swagger.models.auth.In;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.context.annotation.Configuration;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 随机生成数据的工具类
@@ -31,7 +32,6 @@ public class RandomUtils {
 
     /**
      * 随机生成邮箱地址
-     * @param len
      * @return
      */
     public String getEmailRandom() {
@@ -85,5 +85,100 @@ public class RandomUtils {
         // 拼接身份证号码
         id = province + city + county + birth + no + check;
         return id;
+    }
+
+    /**
+     * 获取随机密码
+     * @param min
+     * @param max
+     * @return
+     */
+    public List<String> getPasswordRandom(int min, int max) {
+        List<Integer> integers = makeRangeList(min, max);
+        List<String> stringList = new ArrayList<>();
+        for (Integer i : integers) {
+            String result = makeRandomPassword(i);
+            stringList.add(result);
+        }
+        return stringList;
+    }
+    //随机密码生成
+    public String makeRandomPassword(int len){
+        char charr[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~!@#$%^&*.?".toCharArray();
+        StringBuilder sb = new StringBuilder();
+        Random r = new Random();
+        for (int x = 0; x < len; ++x) {
+            sb.append(charr[r.nextInt(charr.length)]);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 获取随机字符串
+     * @param min
+     * @param max
+     * @return
+     */
+    public List<String> getStringOrOtherRandom(int min, int max) {
+        List<Integer> integers = makeRangeList(min, max);
+        List<String> stringList = new ArrayList<>();
+        for (Integer i : integers) {
+            String result;
+            if (i<=0) {
+                result = "a";
+            } else {
+                result = RandomStringUtils.randomAlphanumeric(i);
+            }
+            stringList.add(result);
+        }
+        return stringList;
+    }
+
+    /**
+     * 获取随机整数
+     * @param min
+     * @param max
+     * @return
+     */
+    public List<String> getIntegerRandom(int min, int max) {
+        List<String> integerList = new ArrayList<>();
+        Random random = new Random();
+        String m = String.valueOf((random.nextInt(max)%(max-min+1) + min));
+        integerList.add(m);
+        String a = String.valueOf(min - 1);
+        String b = String.valueOf(max + 1);
+        integerList.add(a);
+        integerList.add(b);
+        return integerList;
+    }
+
+    /**
+     * 处理最大值最小值
+     * @param min
+     * @param max
+     * @return
+     */
+    public List<Integer> makeRangeList(int min, int max) {
+        int a = min - 1;
+        int b = max + 1;
+        List<Integer> integers = new ArrayList<>();
+        integers.add(min);
+        integers.add(max);
+        integers.add(a);
+        integers.add(b);
+        return integers;
+    }
+
+    /**
+     * 给数组内每个元素加上单引号
+     * @param strings
+     * @return
+     */
+    public List<String> toStringList(List<String> strings) {
+        String ids = strings.stream().map(s -> "\'" + s + "\'").collect(Collectors.joining(", "));
+        String[] strings1 = ids.split(",");
+        List<String> stringList = new ArrayList<>();
+        stringList.addAll(Arrays.asList(strings1));
+        return stringList;
     }
 }

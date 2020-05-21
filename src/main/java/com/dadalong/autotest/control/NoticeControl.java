@@ -49,4 +49,12 @@ public class NoticeControl {
         return filterMapUtils.filterUserName();
     }
 
+
+    @GetMapping("/demo")
+    public String demo() {
+        System.out.println("进入controller中的demo方法！");
+        /*注意：这里返回值有后缀名，如何省略后缀名后面有介绍*/
+        return "extent-reports";
+    }
+
 }

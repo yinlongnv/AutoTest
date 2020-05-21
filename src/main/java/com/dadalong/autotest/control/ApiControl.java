@@ -4,6 +4,7 @@ import cn.com.dbapp.slab.common.model.dto.CollectionResponse;
 import cn.com.dbapp.slab.common.model.dto.SearchRequest;
 import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dadalong.autotest.model.other.CaseRules;
 import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.api.*;
 import com.dadalong.autotest.model.response.FilterBaseUrlResponse;
@@ -16,6 +17,7 @@ import com.dadalong.autotest.utils.RandomUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +35,9 @@ public class ApiControl {
 
     @Resource
     HandleUploadMsgUtils handleUploadMsgUtils;
+
+    @Resource
+    RandomUtils randomUtils;
 
     private final IApiService iApiService;
     private final HttpServletRequest request;
@@ -90,7 +95,7 @@ public class ApiControl {
         return handleUploadMsgUtils.handleUploadMsgUtils(uploadMsg);
     }
 
-    @ApiOperation(value="填入参数规则",httpMethod = "POST")
+    @ApiOperation(value="为指定apiId填入参数规则",httpMethod = "POST")
     @PostMapping("/caseRules")
     public TypedApiResponse putCaseRules(@RequestBody CaseRulesDTO caseRulesDTO) {
         if (iApiService.putCaseRules(caseRulesDTO)) {
@@ -100,38 +105,37 @@ public class ApiControl {
         }
     }
 
-    @ApiOperation(value="获取apiId为指定接口自动生成测试用例",httpMethod = "GET")
-    @GetMapping("/createCases")
-    public TypedApiResponse createCases(CreateCasesDTO createCasesDTO) {
-        iApiService.createCases(createCasesDTO);
-        return TypedApiResponse.ok().message("createCases-success");
-    }
-
     @ApiOperation(value="获取三级级联",httpMethod = "GET")
     @GetMapping("/filterMap")
-    public FilterMapResponse filterMap() {
-        return filterMapUtils.filterMap();
+    public TypedApiResponse filterMap() {
+        return TypedApiResponse.ok().message("filterMap-success").data(filterMapUtils.filterMap());
     }
 
     @ApiOperation(value="获取现有的环境域名下拉列表",httpMethod = "GET")
     @GetMapping("/filterBaseUrl")
-    public FilterBaseUrlResponse filterBaseUrl() {
-        return filterMapUtils.filterBaseUrl();
+    public TypedApiResponse filterBaseUrl() {
+        return TypedApiResponse.ok().message("filterBaseUrl-success").data(filterMapUtils.filterBaseUrl());
     }
 
     @ApiOperation(value="获取指定apiId的接口参数信息",httpMethod = "GET")
-    @GetMapping("/getReqQueryOrBody")
+    @GetMapping("/getReqBody")
     public TypedApiResponse getReqBody(Integer apiId) {
-        List<ReqBodyResponse> reqBodyResponseList;
-        reqBodyResponseList = filterMapUtils.getReqBody(apiId);
-        if (reqBodyResponseList != null && StringUtils.isNotBlank(reqBodyResponseList.toString())) {
-            return TypedApiResponse.ok().message("getReqQueryOrBody-success").data(reqBodyResponseList);
+        List<CaseRules> caseRulesList;
+        caseRulesList = filterMapUtils.getReqBodyOrCaseRules(apiId);
+        if (caseRulesList != null && StringUtils.isNotBlank(caseRulesList.toString())) {
+            return TypedApiResponse.ok().message("getReqQueryOrBody-success").data(caseRulesList);
         } else {
-            return TypedApiResponse.error().message("该接口不需要设置参数规则，请直接点击生成测试用例");
+            return TypedApiResponse.error().message("该接口不符合条件，请直接创建测试用例");
         }
     }
-//    @GetMapping("/getRandom")
-//    public String getRandom() {
-//        return randomUtils.getIdNumberRandom();
+
+//    @GetMapping("/random")
+//    public List<String> getRandom(){
+//        return randomUtils.getPasswordRandom(6, 20);
+//    }
+//
+//    @GetMapping("/num")
+//    public String getString() {
+//        return RandomStringUtils.randomAlphanumeric(20);
 //    }
 }

@@ -63,6 +63,11 @@ python解析同级的html。。。基本可以了，太难啦！
 
 JsonArray、JsonObject、List、String不想再碰了。
 
+字符串转数组：
+List<String> strings = new ArrayList<>();
+String [] strArr= caseRules.getOptions().split(",");
+strings.addAll(Arrays.asList(strArr));
+数组转字符串：
 
 
 

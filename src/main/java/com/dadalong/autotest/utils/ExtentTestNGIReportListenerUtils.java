@@ -12,13 +12,18 @@ import org.testng.*;
 import org.testng.xml.XmlSuite;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 //更改设置显示必须翻墙才能显示的ExtentReports测试报告页面
 public class ExtentTestNGIReportListenerUtils implements IReporter {
     //生成的路径以及文件名
-    private static final String OUTPUT_FOLDER = "test-output/";
-    private static final String FILE_NAME = "extent-reports.html";
+//    private static final String OUTPUT_FOLDER = "test-output/";
+//    private static final String FILE_NAME = "extent-reports.html";
+    private static final String OUTPUT_FOLDER = "D://Workspace/IDEA/AutoTest/src/main/resources/static/";
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+    String date = simpleDateFormat.format(new Date());
+    private String FILE_NAME = date+".html";
 
     private ExtentReports extent;
 
