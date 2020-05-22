@@ -113,7 +113,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             testCaseListResponseSlabPage.setTotal(testCaseResults.getTotal());
             Object userId = map.get("userId");
             //插入操作日志
-            insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.CASELIST, OperatePathEnumUtils.CASELIST);
+            insertOperateLogUtils.insertOperateLog((Integer) userId, LogContentEnumUtils.CASELIST, OperatePathEnumUtils.CASELIST);
             return testCaseListResponseSlabPage;
         }catch (Exception e){
             throw new ConflictException("listWithSearchError");
@@ -299,7 +299,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 testCaseMapper.updateById(testCase);
                 Notice notice = new Notice();
                 notice.setCaseId(executeDTO.getCaseId());
-                notice.setUserId(executeDTO.getUserId());
+                notice.setCreatorId(executeDTO.getUserId());
                 notice.setApiId(api.getId());
                 notice.setHtmlUrl(newestFile);
                 noticeMapper.insert(notice);

@@ -80,7 +80,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
             Object userId = map.get("userId");
             //插入操作日志
-            insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.USERLIST, OperatePathEnumUtils.USERLIST);
+            insertOperateLogUtils.insertOperateLog((Integer) userId, LogContentEnumUtils.USERLIST, OperatePathEnumUtils.USERLIST);
             return userListResponseSlabPage;
         }catch (Exception e){
             throw new ConflictException("listWithSearchError");

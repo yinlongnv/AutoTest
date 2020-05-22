@@ -21,7 +21,7 @@ public class Notice extends Datetime{
     /**
      * 执行人id
      */
-    private Integer userId;
+    private Integer creatorId;
 
     /**
      * 接口id

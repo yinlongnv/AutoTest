@@ -54,21 +54,22 @@ public class NoticeServiceImpl implements INoticeService {
         try {
             Map<String,Object> map = searchRequest.getSearch();
             int userId = (int) map.get("userId");
-            List<NoticeUsers> noticeUsersList =  noticeUsersMapper.selectList(new NoticeUsersWrapper().select("user_id", String.valueOf(userId)));
+            NoticeUsersWrapper noticeUsersWrapper = new NoticeUsersWrapper();
+            NoticeWrapper noticeWrapper = new NoticeWrapper();
+            List<NoticeUsers> noticeUsersList =  noticeUsersMapper.selectList(noticeUsersWrapper.eq("user_id", userId));
             List<NoticeListResponse> noticeListResponses = new ArrayList<>();
             List<Integer> noticeIds = new ArrayList<>();
             for (NoticeUsers noticeUsers : noticeUsersList) {
                 noticeIds.add(noticeUsers.getNoticeId());
             }
             searchRequest.setSearch("noticeIds", noticeIds);
-            NoticeWrapper noticeWrapper = new NoticeWrapper();
             noticeWrapper.ofListWithSearch(searchRequest).orderByDesc("created_at");
             SlabPage<Notice> noticeSlabPage = new SlabPage<>(searchRequest);
             IPage<Notice> noticeResults = noticeMapper.selectPage(noticeSlabPage, noticeWrapper);
             for (Notice record : noticeResults.getRecords()) {
                 NoticeListResponse noticeListResponse = new NoticeListResponse();
                 BeanUtils.copyProperties(record, noticeListResponse);
-                User user = userMapper.selectById(record.getUserId());
+                User user = userMapper.selectById(record.getCreatorId());
                 if (user != null && StringUtils.isNotBlank(user.toString())) {
                     noticeListResponse.setUsername(user.getUsername());
                 } else {
@@ -79,9 +80,8 @@ public class NoticeServiceImpl implements INoticeService {
             SlabPage<NoticeListResponse> noticeListResponseSlabPage = new SlabPage<>(searchRequest);
             noticeListResponseSlabPage.setRecords(noticeListResponses);
             noticeListResponseSlabPage.setTotal(noticeResults.getTotal());
-
             //插入操作日志
-            insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.NOTICELIST, OperatePathEnumUtils.NOTICELIST);
+            insertOperateLogUtils.insertOperateLog(userId, LogContentEnumUtils.NOTICELIST, OperatePathEnumUtils.NOTICELIST);
             return noticeListResponseSlabPage;
         }catch (Exception e){
             throw new ConflictException("listWithSearchError");
@@ -91,7 +91,7 @@ public class NoticeServiceImpl implements INoticeService {
     @Override
     public Boolean markReadAll(MarkReadDTO markReadDTO) {
         NoticeUsersWrapper noticeUsersWrapper = new NoticeUsersWrapper();
-        List<NoticeUsers> noticeUsersList = noticeUsersMapper.selectList(noticeUsersWrapper.eq("user_id",markReadDTO.getUserId()).and(noticeUsersQueryWrapper -> noticeUsersQueryWrapper.ne("is_read", "0")));
+        List<NoticeUsers> noticeUsersList = noticeUsersMapper.selectList(noticeUsersWrapper.eq("user_id", markReadDTO.getUserId()).ne("is_read","0"));
         if (noticeUsersList != null && StringUtils.isNotBlank(noticeUsersList.toString())) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
             String date = simpleDateFormat.format(new Date());
@@ -100,7 +100,7 @@ public class NoticeServiceImpl implements INoticeService {
                 noticeUsersMapper.updateById(noticeUsers);
             }
             //插入操作日志
-            insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(markReadDTO.getUserId())), LogContentEnumUtils.NOTICEREADALL, OperatePathEnumUtils.NOTICEREADALL);
+            insertOperateLogUtils.insertOperateLog(markReadDTO.getUserId(), LogContentEnumUtils.NOTICEREADALL, OperatePathEnumUtils.NOTICEREADALL);
             return true;
         } else {
             return false;
@@ -113,13 +113,13 @@ public class NoticeServiceImpl implements INoticeService {
         NoticeListResponse noticeListResponse = new NoticeListResponse();
         Notice notice = noticeMapper.selectById(detailDTO.getNoticeId());
         BeanUtils.copyProperties(notice, noticeListResponse);
-        User user = userMapper.selectById(notice.getUserId());
+        User user = userMapper.selectById(notice.getCreatorId());
         if (user != null && StringUtils.isNotBlank(user.toString())) {
             noticeListResponse.setUsername(user.getUsername());
         } else {
             noticeListResponse.setUsername("root");
         }
-        NoticeUsers noticeUsers = noticeUsersMapper.selectOne(noticeUsersWrapper.eq("notice_id", detailDTO.getNoticeId()).and(noticeUsersQueryWrapper -> noticeUsersWrapper.eq("user_id", detailDTO.getUserId())));
+        NoticeUsers noticeUsers = noticeUsersMapper.selectOne(noticeUsersWrapper.eq("notice_id", detailDTO.getNoticeId()).eq("user_id", detailDTO.getUserId()));
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String date = simpleDateFormat.format(new Date());
         noticeUsers.setIsRead(date);

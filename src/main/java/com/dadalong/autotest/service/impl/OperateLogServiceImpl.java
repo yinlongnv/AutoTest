@@ -65,7 +65,7 @@ public class OperateLogServiceImpl implements IOperateLogService {
 
             Object userId = map.get("userId");
             //插入操作日志
-            insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.LOGLIST, OperatePathEnumUtils.LOGLIST);
+            insertOperateLogUtils.insertOperateLog((Integer) userId, LogContentEnumUtils.LOGLIST, OperatePathEnumUtils.LOGLIST);
             return logListResponseSlabPage;
         }catch (Exception e){
             throw new ConflictException("listWithSearchError");
@@ -93,7 +93,7 @@ public class OperateLogServiceImpl implements IOperateLogService {
             logListResponseList.add(logListResponse);
         }
         //插入操作日志
-        insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.LOGEXPORT, OperatePathEnumUtils.LOGEXPORT);
+        insertOperateLogUtils.insertOperateLog((Integer) userId, LogContentEnumUtils.LOGEXPORT, OperatePathEnumUtils.LOGEXPORT);
         return logListResponseList;
     }
 }

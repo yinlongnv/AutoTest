@@ -23,7 +23,7 @@ public class NoticeWrapper extends QueryWrapper<Notice> {
         List<Integer> noticeIds = (List<Integer>) map.get("noticeIds");
         for (Object noticeId : noticeIds) {
             if (noticeId != null && StringUtils.isNotBlank(noticeId.toString())) {
-                this.eq("notice_id", Integer.parseInt(noticeId.toString())).orderByDesc("created_at");
+                this.eq("notice_id", noticeId).orderByDesc("created_at");
             }
         }
         return this;

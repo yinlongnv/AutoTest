@@ -81,7 +81,7 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
 
             Object userId = map.get("userId");
             //插入操作日志
-            insertOperateLogUtils.insertOperateLog(Integer.parseInt(String.valueOf(userId)), LogContentEnumUtils.APILIST, OperatePathEnumUtils.APILIST);
+            insertOperateLogUtils.insertOperateLog((Integer) userId, LogContentEnumUtils.APILIST, OperatePathEnumUtils.APILIST);
             return apiListResponseSlabPage;
         }catch (Exception e){
             throw new ConflictException("listWithSearchError");
@@ -237,7 +237,7 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
         return true;
     }
 
-    // 自动生成测试用例
+    // 生成测试用例
     public Boolean createCases(CaseRulesDTO caseRulesDTO) {
 //        System.out.println(caseRulesDTO.getCaseRulesList());
         List<List<String>> params = new ArrayList<>();
