@@ -113,7 +113,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             testCaseListResponseSlabPage.setTotal(testCaseResults.getTotal());
             Object userId = map.get("userId");
             //插入操作日志
-            insertOperateLogUtils.insertOperateLog((Integer) userId, LogContentEnumUtils.CASELIST, OperatePathEnumUtils.CASELIST);
+            insertOperateLogUtils.insertOperateLog(Integer.valueOf(String.valueOf(userId)), LogContentEnumUtils.CASELIST, OperatePathEnumUtils.CASELIST);
             return testCaseListResponseSlabPage;
         }catch (Exception e){
             throw new ConflictException("listWithSearchError");

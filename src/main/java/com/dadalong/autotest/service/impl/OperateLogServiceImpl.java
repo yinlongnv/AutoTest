@@ -65,7 +65,7 @@ public class OperateLogServiceImpl implements IOperateLogService {
 
             Object userId = map.get("userId");
             //插入操作日志
-            insertOperateLogUtils.insertOperateLog((Integer) userId, LogContentEnumUtils.LOGLIST, OperatePathEnumUtils.LOGLIST);
+            insertOperateLogUtils.insertOperateLog(Integer.valueOf(String.valueOf(userId)), LogContentEnumUtils.LOGLIST, OperatePathEnumUtils.LOGLIST);
             return logListResponseSlabPage;
         }catch (Exception e){
             throw new ConflictException("listWithSearchError");

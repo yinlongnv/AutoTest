@@ -81,7 +81,7 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
 
             Object userId = map.get("userId");
             //插入操作日志
-            insertOperateLogUtils.insertOperateLog((Integer) userId, LogContentEnumUtils.APILIST, OperatePathEnumUtils.APILIST);
+            insertOperateLogUtils.insertOperateLog(Integer.valueOf(String.valueOf(userId)), LogContentEnumUtils.APILIST, OperatePathEnumUtils.APILIST);
             return apiListResponseSlabPage;
         }catch (Exception e){
             throw new ConflictException("listWithSearchError");
