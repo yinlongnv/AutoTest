@@ -22,7 +22,7 @@ public class NoticeListResponse {
 
     private Integer caseId;// 用例id
     private String htmlUrl;// html测试报告文件名
-    private String isRead;// 是否已读
+    private String isRead;// 是否已读，未读时是0，已读时是已读时的时间戳
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createdAt;// 执行时间
 

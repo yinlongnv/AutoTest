@@ -3,7 +3,7 @@ package com.dadalong.autotest.model.notice;
 import lombok.Data;
 
 /**
- * 查看详情请求参数
+ * 查看通知公告详情
  */
 @Data
 public class DetailDTO {

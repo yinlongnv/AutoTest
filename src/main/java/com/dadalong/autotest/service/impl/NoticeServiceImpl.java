@@ -8,13 +8,9 @@ import com.dadalong.autotest.bean.v1.mapper.*;
 import com.dadalong.autotest.bean.v1.pojo.*;
 import com.dadalong.autotest.bean.v1.wrapper.NoticeUsersWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.NoticeWrapper;
-import com.dadalong.autotest.bean.v1.wrapper.OperateLogWrapper;
 import com.dadalong.autotest.model.notice.DetailDTO;
-import com.dadalong.autotest.model.notice.MarkReadDTO;
-import com.dadalong.autotest.model.response.LogListResponse;
 import com.dadalong.autotest.model.response.NoticeListResponse;
 import com.dadalong.autotest.service.INoticeService;
-import com.dadalong.autotest.service.IOperateLogService;
 import com.dadalong.autotest.utils.InsertOperateLogUtils;
 import com.dadalong.autotest.utils.LogContentEnumUtils;
 import com.dadalong.autotest.utils.OperatePathEnumUtils;
@@ -89,9 +85,9 @@ public class NoticeServiceImpl implements INoticeService {
     }
 
     @Override
-    public Boolean markReadAll(MarkReadDTO markReadDTO) {
+    public Boolean markReadAll(Integer userId) {
         NoticeUsersWrapper noticeUsersWrapper = new NoticeUsersWrapper();
-        List<NoticeUsers> noticeUsersList = noticeUsersMapper.selectList(noticeUsersWrapper.eq("user_id", markReadDTO.getUserId()).ne("is_read","0"));
+        List<NoticeUsers> noticeUsersList = noticeUsersMapper.selectList(noticeUsersWrapper.eq("user_id", userId).ne("is_read","0"));
         if (noticeUsersList != null && StringUtils.isNotBlank(noticeUsersList.toString())) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
             String date = simpleDateFormat.format(new Date());
@@ -100,7 +96,7 @@ public class NoticeServiceImpl implements INoticeService {
                 noticeUsersMapper.updateById(noticeUsers);
             }
             //插入操作日志
-            insertOperateLogUtils.insertOperateLog(markReadDTO.getUserId(), LogContentEnumUtils.NOTICEREADALL, OperatePathEnumUtils.NOTICEREADALL);
+            insertOperateLogUtils.insertOperateLog(userId, LogContentEnumUtils.NOTICEREADALL, OperatePathEnumUtils.NOTICEREADALL);
             return true;
         } else {
             return false;
