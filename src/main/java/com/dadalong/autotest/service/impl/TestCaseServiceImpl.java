@@ -288,7 +288,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             public void run() {
-                //延迟30000ms后执行以下语句
+                //延迟10000ms后执行以下语句
                 String newestFile = handleFileUtils.findNewFile("D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\");
                 testCase.setHtmlUrl(newestFile);
                 testCase.setExecuteByUserId(executeDTO.getUserId());
@@ -310,7 +310,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                     noticeUsers.setUserId(user.getId());
                     noticeUsersMapper.insert(noticeUsers);
                 }// 创建该公告与所有用户的公告用户关联表
-            } }, 30000);
+            } }, 10000);
         // 插入操作日志
         insertOperateLogUtils.insertOperateLog(executeDTO.getUserId(), LogContentEnumUtils.CASEEXECUTE, OperatePathEnumUtils.CASEEXECUTE);
         return true;

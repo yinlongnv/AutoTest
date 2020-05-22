@@ -2,12 +2,12 @@
 <testng-results skipped="0" failed="0" ignored="0" total="2" passed="2">
   <reporter-output>
   </reporter-output>
-  <suite name="演训产品中心API接口测试套件" duration-ms="1393" started-at="2020-05-22T14:22:05 CST" finished-at="2020-05-22T14:22:06 CST">
+  <suite name="演训产品中心API接口测试套件" duration-ms="191" started-at="2020-05-22T22:20:47 CST" finished-at="2020-05-22T22:20:47 CST">
     <groups>
     </groups>
-    <test name="演训产品中心API接口测试用例" duration-ms="1393" started-at="2020-05-22T14:22:05 CST" finished-at="2020-05-22T14:22:06 CST">
+    <test name="演训产品中心API接口测试用例" duration-ms="191" started-at="2020-05-22T22:20:47 CST" finished-at="2020-05-22T22:20:47 CST">
       <class name="com.dadalong.autotest.testng.TestCases">
-        <test-method status="PASS" signature="testGet(java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@4f639f1]" name="testGet" duration-ms="1107" started-at="2020-05-22T14:22:05 CST" finished-at="2020-05-22T14:22:06 CST">
+        <test-method status="PASS" signature="testGet(java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@7f3c8684]" name="testGet" duration-ms="76" started-at="2020-05-22T22:20:47 CST" finished-at="2020-05-22T22:20:47 CST">
           <params>
             <param index="0">
               <value>
@@ -18,16 +18,16 @@
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testGet -->
-        <test-method status="PASS" signature="testPost(java.lang.String, java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@4f639f1]" name="testPost" duration-ms="182" started-at="2020-05-22T14:22:06 CST" finished-at="2020-05-22T14:22:06 CST">
+        <test-method status="PASS" signature="testPost(java.lang.String, java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@7f3c8684]" name="testPost" duration-ms="115" started-at="2020-05-22T22:20:47 CST" finished-at="2020-05-22T22:20:47 CST">
           <params>
             <param index="0">
               <value>
-                <![CDATA[http://localhost:9001/user/createOrEdit]]>
+                <![CDATA[http://localhost:9001/user/login]]>
               </value>
             </param>
             <param index="1">
               <value>
-                <![CDATA[{"password":"72zEor","phoneNumber":"13104561861","role":0,"id":55,"idNumber":"150505194305273197","userId":21,"email":"16tx9six8u@yahoo.com.cn","username":"xFyliPWwrYA"}]]>
+                <![CDATA[{"username":"大大龙","password":"123456","lastIp":"127.0.0.1"}]]>
               </value>
             </param>
           </params>

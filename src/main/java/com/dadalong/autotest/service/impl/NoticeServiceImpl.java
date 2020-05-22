@@ -87,7 +87,7 @@ public class NoticeServiceImpl implements INoticeService {
     @Override
     public Boolean markReadAll(Integer userId) {
         NoticeUsersWrapper noticeUsersWrapper = new NoticeUsersWrapper();
-        List<NoticeUsers> noticeUsersList = noticeUsersMapper.selectList(noticeUsersWrapper.eq("user_id", userId).ne("is_read","0"));
+        List<NoticeUsers> noticeUsersList = noticeUsersMapper.selectList(noticeUsersWrapper.eq("user_id", userId).eq("is_read","0"));
         if (noticeUsersList != null && StringUtils.isNotBlank(noticeUsersList.toString())) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
             String date = simpleDateFormat.format(new Date());
@@ -119,6 +119,7 @@ public class NoticeServiceImpl implements INoticeService {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String date = simpleDateFormat.format(new Date());
         noticeUsers.setIsRead(date);
+        noticeUsersMapper.updateById(noticeUsers);
         //插入操作日志
         insertOperateLogUtils.insertOperateLog(detailDTO.getUserId(), LogContentEnumUtils.NOTICEREAD, OperatePathEnumUtils.NOTICEREAD);
         Api api = apiMapper.selectById(notice.getApiId());
