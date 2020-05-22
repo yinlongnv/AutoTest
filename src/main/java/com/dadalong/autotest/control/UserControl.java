@@ -34,11 +34,11 @@ public class UserControl {
     public @ResponseBody TypedApiResponse login(@RequestBody LoginDTO loginDTO) {
         User user = iUserService.login(loginDTO);
         if (user == null) {
-            return TypedApiResponse.error().message("用户名或密码错误！");
+            return TypedApiResponse.error().message("用户名或密码错误");
         } else if (user.getStatus() == 0){
             return TypedApiResponse.ok().message("登录成功").data(user);
         } else {
-            return TypedApiResponse.error().message("该用户已被禁用！登录失败");
+            return TypedApiResponse.error().message("该用户已被禁用，登录失败");
         }
     }
 

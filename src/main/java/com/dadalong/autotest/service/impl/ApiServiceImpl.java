@@ -239,7 +239,6 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
 
     // 生成测试用例
     public Boolean createCases(CaseRulesDTO caseRulesDTO) {
-//        System.out.println(caseRulesDTO.getCaseRulesList());
         List<List<String>> params = new ArrayList<>();
         List<String> keys = new ArrayList<>();
         // 根据参数规则随机生成测试数据
@@ -322,7 +321,6 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
             input.close();
             ir.close();
             int re = process.waitFor();
-//            System.out.println("py返回值："+re);
             // py 执行成功返回0，继续处理存入case表
             if (re == 0) {
                 Api api = apiMapper.selectById(caseRulesDTO.getApiId());
