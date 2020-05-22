@@ -21,10 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -55,8 +52,10 @@ public class NoticeServiceImpl implements INoticeService {
             List<NoticeUsers> noticeUsersList =  noticeUsersMapper.selectList(noticeUsersWrapper.eq("user_id", userId));
             List<NoticeListResponse> noticeListResponses = new ArrayList<>();
             List<Integer> noticeIds = new ArrayList<>();
+            Map<Integer, NoticeUsers> mapUtil = new HashMap<>();
             for (NoticeUsers noticeUsers : noticeUsersList) {
                 noticeIds.add(noticeUsers.getNoticeId());
+                mapUtil.put(noticeUsers.getNoticeId(), noticeUsers);
             }
             searchRequest.setSearch("noticeIds", noticeIds);
             noticeWrapper.ofListWithSearch(searchRequest).orderByDesc("created_at");
@@ -71,6 +70,7 @@ public class NoticeServiceImpl implements INoticeService {
                 } else {
                     noticeListResponse.setUsername("root");
                 }
+                noticeListResponse.setIsRead(mapUtil.get(record.getId()).getIsRead());
                 noticeListResponses.add(noticeListResponse);
             }
             SlabPage<NoticeListResponse> noticeListResponseSlabPage = new SlabPage<>(searchRequest);
