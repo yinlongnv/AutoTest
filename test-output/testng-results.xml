@@ -2,12 +2,12 @@
 <testng-results skipped="0" failed="0" ignored="0" total="2" passed="2">
   <reporter-output>
   </reporter-output>
-  <suite name="演训产品中心API接口测试套件" duration-ms="772" started-at="2020-05-21T23:21:09 CST" finished-at="2020-05-21T23:21:10 CST">
+  <suite name="演训产品中心API接口测试套件" duration-ms="1618" started-at="2020-05-22T10:00:12 CST" finished-at="2020-05-22T10:00:13 CST">
     <groups>
     </groups>
-    <test name="演训产品中心API接口测试用例" duration-ms="772" started-at="2020-05-21T23:21:09 CST" finished-at="2020-05-21T23:21:10 CST">
+    <test name="演训产品中心API接口测试用例" duration-ms="1618" started-at="2020-05-22T10:00:12 CST" finished-at="2020-05-22T10:00:13 CST">
       <class name="com.dadalong.autotest.testng.TestCases">
-        <test-method status="PASS" signature="testGet(java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@277120b4]" name="testGet" duration-ms="575" started-at="2020-05-21T23:21:09 CST" finished-at="2020-05-21T23:21:10 CST">
+        <test-method status="PASS" signature="testGet(java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@4f1b9d08]" name="testGet" duration-ms="1397" started-at="2020-05-22T10:00:12 CST" finished-at="2020-05-22T10:00:13 CST">
           <params>
             <param index="0">
               <value>
@@ -18,7 +18,7 @@
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testGet -->
-        <test-method status="PASS" signature="testPost(java.lang.String, java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@277120b4]" name="testPost" duration-ms="114" started-at="2020-05-21T23:21:10 CST" finished-at="2020-05-21T23:21:10 CST">
+        <test-method status="PASS" signature="testPost(java.lang.String, java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@4f1b9d08]" name="testPost" duration-ms="119" started-at="2020-05-22T10:00:13 CST" finished-at="2020-05-22T10:00:13 CST">
           <params>
             <param index="0">
               <value>

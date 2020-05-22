@@ -8,7 +8,7 @@ import lombok.Data;
  * 公告-用户关联表
  */
 @Data
-public class NoticeUsers {
+public class NoticeUsers extends Datetime{
 
     /**
      * 公告-用户表id

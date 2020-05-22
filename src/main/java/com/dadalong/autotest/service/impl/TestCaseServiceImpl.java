@@ -6,16 +6,11 @@ import cn.com.dbapp.slab.java.commons.exceptions.ConflictException;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.dadalong.autotest.bean.v1.mapper.ApiMapper;
-import com.dadalong.autotest.bean.v1.mapper.NoticeMapper;
-import com.dadalong.autotest.bean.v1.mapper.TestCaseMapper;
-import com.dadalong.autotest.bean.v1.mapper.UserMapper;
-import com.dadalong.autotest.bean.v1.pojo.Api;
-import com.dadalong.autotest.bean.v1.pojo.Notice;
-import com.dadalong.autotest.bean.v1.pojo.TestCase;
-import com.dadalong.autotest.bean.v1.pojo.User;
+import com.dadalong.autotest.bean.v1.mapper.*;
+import com.dadalong.autotest.bean.v1.pojo.*;
 import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.TestCaseWrapper;
+import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
 import com.dadalong.autotest.model.testCase.*;
 import com.dadalong.autotest.service.ITestCaseService;
@@ -52,6 +47,9 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
 
     @Resource
     private NoticeMapper noticeMapper;
+
+    @Resource
+    private NoticeUsersMapper noticeUsersMapper;
 
     @Resource
     InsertOperateLogUtils insertOperateLogUtils;
@@ -296,13 +294,22 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 testCase.setExecuteByUserId(executeDTO.getUserId());
                 testCase.setExecuteStatus(1);
                 testCase.setExecuteCount(testCase.getExecuteCount()+1);
-                testCaseMapper.updateById(testCase);
+                testCaseMapper.updateById(testCase);// 更新该条被执行用例的数据信息
                 Notice notice = new Notice();
                 notice.setCaseId(executeDTO.getCaseId());
                 notice.setCreatorId(executeDTO.getUserId());
                 notice.setApiId(api.getId());
                 notice.setHtmlUrl(newestFile);
-                noticeMapper.insert(notice);
+                noticeMapper.insert(notice);// 每当用例执行完产生一条公告
+                UserWrapper userWrapper = new UserWrapper();
+                List<User> userList = userMapper.selectList(userWrapper.select("id"));
+                for (User user : userList) {
+                    NoticeUsers noticeUsers = new NoticeUsers();
+                    noticeUsers.setIsRead("0");
+                    noticeUsers.setNoticeId(notice.getId());
+                    noticeUsers.setUserId(user.getId());
+                    noticeUsersMapper.insert(noticeUsers);
+                }// 创建该公告与所有用户的公告用户关联表
             } }, 30000);
         // 插入操作日志
         insertOperateLogUtils.insertOperateLog(executeDTO.getUserId(), LogContentEnumUtils.CASEEXECUTE, OperatePathEnumUtils.CASEEXECUTE);

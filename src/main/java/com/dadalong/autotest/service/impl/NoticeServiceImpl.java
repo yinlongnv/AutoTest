@@ -53,7 +53,7 @@ public class NoticeServiceImpl implements INoticeService {
     public IPage<NoticeListResponse> listWithSearch(SearchRequest searchRequest) {
         try {
             Map<String,Object> map = searchRequest.getSearch();
-            int userId = (int) map.get("userId");
+            int userId = Integer.valueOf(map.get("userId").toString());
             NoticeUsersWrapper noticeUsersWrapper = new NoticeUsersWrapper();
             NoticeWrapper noticeWrapper = new NoticeWrapper();
             List<NoticeUsers> noticeUsersList =  noticeUsersMapper.selectList(noticeUsersWrapper.eq("user_id", userId));

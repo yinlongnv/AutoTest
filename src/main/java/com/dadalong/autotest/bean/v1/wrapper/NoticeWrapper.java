@@ -21,10 +21,8 @@ public class NoticeWrapper extends QueryWrapper<Notice> {
         Object endTime = map.get("endTime");
         this.ofTime(startTime, endTime);
         List<Integer> noticeIds = (List<Integer>) map.get("noticeIds");
-        for (Object noticeId : noticeIds) {
-            if (noticeId != null && StringUtils.isNotBlank(noticeId.toString())) {
-                this.eq("notice_id", noticeId).orderByDesc("created_at");
-            }
+        if (noticeIds!=null && StringUtils.isNotBlank(noticeIds.toString())) {
+            this.in("id",noticeIds).orderByDesc("created_at");
         }
         return this;
     }
