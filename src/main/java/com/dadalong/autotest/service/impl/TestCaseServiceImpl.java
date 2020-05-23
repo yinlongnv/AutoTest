@@ -150,6 +150,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
 
     @Override
     public TestCaseListResponse detail(DetailDTO detailDTO) {
+        System.out.println(detailDTO.getId());
         TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
         TestCase testCase = testCaseMapper.selectById(detailDTO.getId());
         BeanUtils.copyProperties(testCase, testCaseListResponse);
@@ -254,13 +255,15 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             String postData = "{\"username\":\"大大龙\",\"password\":\"123456\",\"lastIp\":\"127.0.0.1\"}";
             String postUrl = "http://localhost:9001/user/login";
             if (caseBody != null && StringUtils.isNotBlank(caseBody)) {
+                System.out.println("caseBody：" + caseBody);
                 JSONObject jsonObject = JSONObject.parseObject(caseBody);
                 String params = "";
                 for(String key : jsonObject.keySet()){
-                    params = key + "=" + jsonObject.get(key).toString() + "&";
+                    params += key + "=" + jsonObject.get(key).toString() + "&";
                 }
-                System.out.println(params);
+                System.out.println("params：" + params);
                 params = params.substring(0, params.length() - 1);// 去除字符串最后一个字符
+                System.out.println("params：" + params);
                 String getUrl = api.getBaseUrl() + api.getApiPath() + "?" + params;
                 System.out.println(getUrl);
                 Map<String, String> map = new HashMap<>();

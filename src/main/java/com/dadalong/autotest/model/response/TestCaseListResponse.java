@@ -37,6 +37,9 @@ public class TestCaseListResponse {
     private String username;//4执行人用户名 + execute_by_user_id
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date lastExecuteTime;//5最近一次执行时间 updated_at
+
+    private String htmlUrl;// 最新一次的测试报告
+
     private Integer executeStatus;//6执行状态
     private Integer executeCount;//7执行次数
 

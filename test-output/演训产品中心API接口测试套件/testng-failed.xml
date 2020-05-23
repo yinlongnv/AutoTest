@@ -7,7 +7,7 @@
   <test thread-count="5" name="演训产品中心API接口测试用例(failed)">
     <classes>
       <class name="com.dadalong.autotest.testng.TestCases">
-        <parameter name="getUrl" value="http://localhost:9001/user/detail?userId=1"/>
+        <parameter name="getUrl" value="http://localhost:9001/case/detail?userId=1"/>
         <parameter name="postUrl" value="http://localhost:9001/user/login"/>
         <parameter name="postData" value="{&quot;username&quot;:&quot;大大龙&quot;,&quot;password&quot;:&quot;123456&quot;,&quot;lastIp&quot;:&quot;127.0.0.1&quot;}"/>
         <methods>
