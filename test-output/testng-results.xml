@@ -2,23 +2,23 @@
 <testng-results skipped="0" failed="0" ignored="0" total="2" passed="2">
   <reporter-output>
   </reporter-output>
-  <suite name="演训产品中心API接口测试套件" duration-ms="846" started-at="2020-05-23T17:09:26 CST" finished-at="2020-05-23T17:09:27 CST">
+  <suite name="演训产品中心API接口测试套件" duration-ms="733" started-at="2020-05-23T18:04:50 CST" finished-at="2020-05-23T18:04:51 CST">
     <groups>
     </groups>
-    <test name="演训产品中心API接口测试用例" duration-ms="846" started-at="2020-05-23T17:09:26 CST" finished-at="2020-05-23T17:09:27 CST">
+    <test name="演训产品中心API接口测试用例" duration-ms="733" started-at="2020-05-23T18:04:50 CST" finished-at="2020-05-23T18:04:51 CST">
       <class name="com.dadalong.autotest.testng.TestCases">
-        <test-method status="PASS" signature="testGet(java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@338bc89a]" name="testGet" duration-ms="558" started-at="2020-05-23T17:09:26 CST" finished-at="2020-05-23T17:09:27 CST">
+        <test-method status="PASS" signature="testGet(java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@52cc2fa8]" name="testGet" duration-ms="498" started-at="2020-05-23T18:04:51 CST" finished-at="2020-05-23T18:04:51 CST">
           <params>
             <param index="0">
               <value>
-                <![CDATA[http://localhost:9001/case/detail?id=12&userId=1]]>
+                <![CDATA[http://localhost:9001/api/detail?id=12&userId=1]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testGet -->
-        <test-method status="PASS" signature="testPost(java.lang.String, java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@338bc89a]" name="testPost" duration-ms="204" started-at="2020-05-23T17:09:27 CST" finished-at="2020-05-23T17:09:27 CST">
+        <test-method status="PASS" signature="testPost(java.lang.String, java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@52cc2fa8]" name="testPost" duration-ms="137" started-at="2020-05-23T18:04:51 CST" finished-at="2020-05-23T18:04:51 CST">
           <params>
             <param index="0">
               <value>

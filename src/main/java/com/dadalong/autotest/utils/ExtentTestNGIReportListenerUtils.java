@@ -8,6 +8,8 @@ import com.aventstack.extentreports.model.TestAttribute;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.ChartLocation;
 import com.aventstack.extentreports.reporter.configuration.Theme;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.testng.*;
 import org.testng.xml.XmlSuite;
 
@@ -20,10 +22,11 @@ public class ExtentTestNGIReportListenerUtils implements IReporter {
     //生成的路径以及文件名
 //    private static final String OUTPUT_FOLDER = "test-output/";
 //    private static final String FILE_NAME = "extent-reports.html";
+
     private static final String OUTPUT_FOLDER = "D://Workspace/IDEA/AutoTest/src/main/resources/static/";
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     String date = simpleDateFormat.format(new Date());
-    private String FILE_NAME = date+".html";
+    private String FILE_NAME = date + ".html";
 
     private ExtentReports extent;
 
