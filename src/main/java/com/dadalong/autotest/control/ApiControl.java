@@ -7,22 +7,18 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dadalong.autotest.model.other.CaseRules;
 import com.dadalong.autotest.model.response.ApiListResponse;
 import com.dadalong.autotest.model.api.*;
-import com.dadalong.autotest.model.response.FilterBaseUrlResponse;
-import com.dadalong.autotest.model.response.FilterMapResponse;
-import com.dadalong.autotest.model.response.ReqBodyResponse;
 import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.utils.FilterMapUtils;
 import com.dadalong.autotest.utils.HandleUploadMsgUtils;
-import com.dadalong.autotest.utils.RandomUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @Api(value="/", description = "接口管理下的全部接口")
@@ -35,9 +31,6 @@ public class ApiControl {
 
     @Resource
     HandleUploadMsgUtils handleUploadMsgUtils;
-
-    @Resource
-    RandomUtils randomUtils;
 
     private final IApiService iApiService;
     private final HttpServletRequest request;
@@ -90,7 +83,7 @@ public class ApiControl {
 
     @ApiOperation(value="批量导入接口数据",httpMethod = "POST")
     @PostMapping("/upload")
-    public TypedApiResponse upload(UploadDTO uploadDTO) {
+    public TypedApiResponse upload(UploadDTO uploadDTO) throws IOException {
         String uploadMsg = iApiService.upload(uploadDTO);
         return handleUploadMsgUtils.handleUploadMsgUtils(uploadMsg);
     }

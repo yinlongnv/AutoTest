@@ -66,6 +66,11 @@ public class ApiWrapper extends QueryWrapper<Api> {
         return this;
     }
 
+    /**
+     * 根据这四项精确定位唯一的api
+     * @param api
+     * @return
+     */
     public ApiWrapper ofApiId(Api api){
         this.eq("project_name", api.getProjectName())
                 .eq("api_group", api.getApiGroup())

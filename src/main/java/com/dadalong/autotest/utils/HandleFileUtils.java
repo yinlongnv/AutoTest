@@ -66,4 +66,18 @@ public class HandleFileUtils {
         return files[0].getName();
     }
 
+    /**
+     * 获取文件名中的文件类型
+     * @param fileName
+     * @return
+     */
+    public String getFileType(String fileName) {
+        String[] strArray = new String[0];
+        if (fileName != null) {
+            strArray = fileName.split("\\.");
+        }
+        int suffixIndex = strArray.length -1;
+        //获取上传文件的文件类型并返回
+        return strArray[suffixIndex];
+    }
 }

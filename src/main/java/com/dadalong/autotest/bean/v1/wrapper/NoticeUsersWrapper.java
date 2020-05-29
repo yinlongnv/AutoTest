@@ -5,5 +5,4 @@ import com.dadalong.autotest.bean.v1.pojo.NoticeUsers;
 
 public class NoticeUsersWrapper extends QueryWrapper<NoticeUsers> {
 
-
 }

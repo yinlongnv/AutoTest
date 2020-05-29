@@ -4,7 +4,7 @@ import cn.com.dbapp.slab.java.commons.models.TypedApiResponse;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Created by 78089 on 2020/5/19.
+ * 处理上传文件返回信息
  */
 @Configuration
 public class HandleUploadMsgUtils {

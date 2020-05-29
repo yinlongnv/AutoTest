@@ -22,7 +22,7 @@ public interface INoticeService {
     Boolean markReadAll(Integer userId);
 
     /**
-     * 查看通知公告详情
+     * 查看通知公告详情并标为已读
      * @param detailDTO
      * @return
      */

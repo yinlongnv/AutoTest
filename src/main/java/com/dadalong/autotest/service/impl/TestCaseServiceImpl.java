@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dadalong.autotest.bean.v1.mapper.*;
 import com.dadalong.autotest.bean.v1.pojo.*;
-import com.dadalong.autotest.bean.v1.wrapper.ApiWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.TestCaseWrapper;
 import com.dadalong.autotest.bean.v1.wrapper.UserWrapper;
 import com.dadalong.autotest.model.response.TestCaseListResponse;
@@ -17,6 +16,7 @@ import com.dadalong.autotest.service.ITestCaseService;
 import com.dadalong.autotest.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.TestNG;
@@ -27,11 +27,10 @@ import org.testng.xml.XmlTest;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-/**
- * Created by 78089 on 2020/4/24.
- */
 @Service
 @Transactional
 public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> implements ITestCaseService {
@@ -60,29 +59,26 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     @Resource
     HandleFileUtils handleFileUtils;
 
+    @Value("${upload-case-path}")
+    String uploadCasePath;
+
     @Override
     public IPage<TestCaseListResponse> listWithSearch(SearchRequest searchRequest) {
         try {
             TestCaseWrapper testCaseWrapper = new TestCaseWrapper();
-            ApiWrapper apiWrapper = new ApiWrapper();
 
             Map<String,Object> map = searchRequest.getSearch();
             if (StringUtils.isNotBlank(map.get("projectName").toString())) {
-                Api a = new Api();
-                a.setProjectName(map.get("projectName").toString());
-                a.setApiGroup(map.get("apiGroup").toString());
-                String apiInfo[] = map.get("apiMerge").toString().split(" ");
-                a.setApiName(apiInfo[0]);
-                a.setApiPath(apiInfo[1]);
-                apiWrapper.ofApiId(a);
-                Integer apiId = apiMapper.selectOne(apiWrapper).getId();
-                searchRequest.setSearch("apiId", apiId);
+                Integer apiId = testCaseUtils.getApiId(map.get("projectName").toString(), map.get("apiGroup").toString(), map.get("apiMerge").toString());
+                if (apiId != 0) {
+                    searchRequest.setSearch("apiId", apiId);
+                }
             }
             testCaseWrapper.ofListWithSearch(searchRequest).orderByDesc("created_at");
             List<TestCaseListResponse> testCaseListResponseList = new ArrayList<>();
 
             SlabPage<TestCase> testCaseSlabPage = new SlabPage<>(searchRequest);
-            IPage<TestCase> testCaseResults = testCaseMapper.selectPage(testCaseSlabPage,testCaseWrapper);
+            IPage<TestCase> testCaseResults = testCaseMapper.selectPage(testCaseSlabPage, testCaseWrapper);
             for (TestCase record : testCaseResults.getRecords()) {
                 Api api = apiMapper.selectById(record.getApiId());
                 TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
@@ -91,19 +87,17 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 String merge = api.getApiName() + " " + api.getApiPath();
                 testCaseListResponse.setApiMerge(merge);
                 BeanUtils.copyProperties(record, testCaseListResponse);
-                User createdBy = userMapper.selectById(record.getUserId());
-                User username = userMapper.selectById(record.getExecuteByUserId());
-                if(createdBy != null && StringUtils.isNotBlank(createdBy.toString())) {
-                    testCaseListResponse.setCreatedBy(createdBy.getUsername());
+
+                Map <String, String> userMap = testCaseUtils.setUserInfo(record);
+                testCaseListResponse.setCreatedBy(userMap.get("createdByUsername"));
+                testCaseListResponse.setUsername(userMap.get("executeByUsername"));
+                if (userMap.get("lastExecuteTime") != null) {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date lastExecuteTime = formatter.parse(userMap.get("lastExecuteTime"));
+                    testCaseListResponse.setLastExecuteTime(lastExecuteTime);
                 } else {
-                    testCaseListResponse.setCreatedBy("root");
+                    testCaseListResponse.setLastExecuteTime(null);
                 }
-                if(username != null && StringUtils.isNotBlank(username.toString())) {
-                    testCaseListResponse.setUsername(username.getUsername());
-                } else {
-                    testCaseListResponse.setUsername("root");
-                }
-                testCaseListResponse.setLastExecuteTime(record.getUpdatedAt());
                 testCaseListResponseList.add(testCaseListResponse);
             }
             SlabPage<TestCaseListResponse> testCaseListResponseSlabPage = new SlabPage<>(searchRequest);
@@ -149,8 +143,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     }
 
     @Override
-    public TestCaseListResponse detail(DetailDTO detailDTO) {
-        System.out.println(detailDTO.getId());
+    public TestCaseListResponse detail(DetailDTO detailDTO) throws ParseException{
         TestCaseListResponse testCaseListResponse = new TestCaseListResponse();
         TestCase testCase = testCaseMapper.selectById(detailDTO.getId());
         BeanUtils.copyProperties(testCase, testCaseListResponse);
@@ -158,75 +151,60 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         BeanUtils.copyProperties(api, testCaseListResponse, "id");
         String merge = api.getApiName() + " " + api.getApiPath();
         testCaseListResponse.setApiMerge(merge);
-        User createdBy = userMapper.selectById(testCase.getUserId());
-        User username = userMapper.selectById(testCase.getExecuteByUserId());
-        if(createdBy != null && StringUtils.isNotBlank(createdBy.toString())) {
-            testCaseListResponse.setCreatedBy(createdBy.getUsername());
+        Map <String, String> userMap = testCaseUtils.setUserInfo(testCase);
+
+        testCaseListResponse.setCreatedBy(userMap.get("createdByUsername"));
+        testCaseListResponse.setUsername(userMap.get("executeByUsername"));
+
+        if (userMap.get("lastExecuteTime") != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date lastExecuteTime = formatter.parse(userMap.get("lastExecuteTime"));
+            testCaseListResponse.setLastExecuteTime(lastExecuteTime);
         } else {
-            testCaseListResponse.setCreatedBy("root");
+            testCaseListResponse.setLastExecuteTime(null);
         }
-        if(username != null && StringUtils.isNotBlank(username.toString())) {
-            testCaseListResponse.setUsername(username.getUsername());
-        } else {
-            testCaseListResponse.setUsername("root");
-        }
-        testCaseListResponse.setLastExecuteTime(testCase.getUpdatedAt());
         //插入操作日志
         insertOperateLogUtils.insertOperateLog(detailDTO.getUserId(), LogContentEnumUtils.CASEDETAIL, OperatePathEnumUtils.CASEDETAIL);
         return testCaseListResponse;
     }
 
     @Override
-    public String upload(UploadDTO uploadDTO) {
+    public String upload(UploadDTO uploadDTO) throws Exception{
         if (uploadDTO.getFile().isEmpty()) {
             return "导入失败，请选择文件";
         }
         String fileName = uploadDTO.getFile().getOriginalFilename();
-        String filePath = "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadCase\\";
-        File dest = new File(filePath + fileName);
-        try {
-            uploadDTO.getFile().transferTo(dest);
-            String[] strArray = new String[0];
-            if (fileName != null) {
-                strArray = fileName.split("\\.");
-            }
-            int suffixIndex = strArray.length -1;
-            //获取上传文件的文件类型
-            String fileType = strArray[suffixIndex];
+        File dest = new File(uploadCasePath + fileName);
+        uploadDTO.getFile().transferTo(dest);
+        String fileType = handleFileUtils.getFileType(fileName);
 
-            Integer apiId = testCaseUtils.getApiId(uploadDTO.getProjectName(), uploadDTO.getApiGroup(), uploadDTO.getApiMerge());
+        Integer apiId = testCaseUtils.getApiId(uploadDTO.getProjectName(), uploadDTO.getApiGroup(), uploadDTO.getApiMerge());
 
-            if (fileType.equals("xlsx")) {
-//                System.out.println("上传的是xlsx");
-                ReadExcelUtils readExcelUtils = new ReadExcelUtils("D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadCase\\case.xlsx");
-                try {
-                    Map<Integer, Map<Integer, Object>> map = readExcelUtils.readExcelContent();
-                    for (Integer key : map.keySet()) {
-                        Map<Integer, Object> line = map.get(key);
-//                        System.out.println(line);
-                        TestCase testCase = new TestCase();
-                        testCase.setCaseBody(line.get(0).toString());
-                        testCase.setCaseDescription(line.get(1).toString());
-                        testCase.setCaseResponse(line.get(2).toString());
-                        testCase.setApiId(apiId);
-                        testCase.setUserId(uploadDTO.getUserId());
-                        testCase.setExecuteStatus(0);
-                        testCaseMapper.insert(testCase);
-                    }
-                    String deletePath = "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadCase";
-                    if (!handleFileUtils.delAllFile(deletePath)) {
-                        //插入操作日志
-                        insertOperateLogUtils.insertOperateLog(uploadDTO.getUserId(), LogContentEnumUtils.CASEIMPORT, OperatePathEnumUtils.CASEIMPORT);
-                        return "批量导入成功";
-                    } else {
-                        return "failed";
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        if (fileType.equals("xlsx")) {
+            ReadExcelUtils readExcelUtils = new ReadExcelUtils("D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadCase\\case.xlsx");
+            try {
+                Map<Integer, Map<Integer, Object>> map = readExcelUtils.readExcelContent();
+                for (Integer key : map.keySet()) {
+                    Map<Integer, Object> line = map.get(key);
+                    TestCase testCase = new TestCase();
+                    testCase.setCaseBody(line.get(0).toString());
+                    testCase.setCaseDescription(line.get(1).toString());
+                    testCase.setCaseResponse(line.get(2).toString());
+                    testCase.setApiId(apiId);
+                    testCase.setUserId(uploadDTO.getUserId());
+                    testCase.setExecuteStatus(0);
+                    testCaseMapper.insert(testCase);
                 }
+                if (!handleFileUtils.delAllFile(uploadCasePath)) {
+                    //插入操作日志
+                    insertOperateLogUtils.insertOperateLog(uploadDTO.getUserId(), LogContentEnumUtils.CASEIMPORT, OperatePathEnumUtils.CASEIMPORT);
+                    return "批量导入成功";
+                } else {
+                    return "failed";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return "批量导入失败";
     }

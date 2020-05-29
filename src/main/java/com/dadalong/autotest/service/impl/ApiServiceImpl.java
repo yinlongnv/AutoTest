@@ -23,6 +23,7 @@ import com.dadalong.autotest.service.IApiService;
 import com.dadalong.autotest.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +55,9 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
 
     @Resource
     PutListToTextUtils putListToTextUtils;
+
+    @Value("${upload-api-path}")
+    String uploadApiPath;
 
     public IPage<ApiListResponse> listWithSearch(SearchRequest searchRequest){
         try {
@@ -111,6 +115,7 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
     public void deleteBatch(BatchDTO batchDTO) {
         try {
             removeByIds(batchDTO.getApiIds());
+            // 把这批要被批量删除的api下的用例也删了，清除数据冗余带来的异常
             for (Integer apiId : batchDTO.getApiIds()) {
                 List<TestCase> testCaseList = testCaseMapper.selectList(new TestCaseWrapper().eq("api_id", apiId));
                 for (TestCase testCase : testCaseList) {
@@ -142,84 +147,68 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
     }
 
     @Override
-    public String upload(UploadDTO uploadDTO) {
+    public String upload(UploadDTO uploadDTO) throws IOException{
         if (uploadDTO.getFile().isEmpty()) {
             return "导入失败，请选择文件";
         }
         String fileName = uploadDTO.getFile().getOriginalFilename();
-        String filePath = "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadApi\\";
-        File dest = new File(filePath + fileName);
-        try {
-            uploadDTO.getFile().transferTo(dest);
-            String[] strArray = new String[0];
-            if (fileName != null) {
-                strArray = fileName.split("\\.");
-            }
-            int suffixIndex = strArray.length -1;
-            //获取上传文件的文件类型
-            String fileType = strArray[suffixIndex];
-            if (fileType.equals("html")) {
-                String[] argument = new String[]{"python", "D://Workspace/IDEA/AutoTest/src/main/resources/static/pyToSql/analysis_html.py", uploadDTO.getUserId().toString(), uploadDTO.getBaseUrl()};
-                try{
-                    Process process = Runtime.getRuntime().exec(argument);
-                    //java代码中的process.waitFor()返回值为0表示我们调用python脚本成功，
-                    //返回值为1表示调用python脚本失败，这和我们通常意义上见到的0与1定义正好相反
-                    int re = process.waitFor();
-//                    System.out.println("python运行的返回值："+re);
-                    //导入成功后删除已保存的api.html文件
-                    if (re == 0) {
-                        String deletePath = "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadApi";
-                        if (!handleFileUtils.delAllFile(deletePath)) {
-                            //插入操作日志
-                            insertOperateLogUtils.insertOperateLog(uploadDTO.getUserId(), LogContentEnumUtils.APIIMPORT, OperatePathEnumUtils.APIIMPORT);
-                            return "批量导入成功";
-                        } else {
-                            return "failed";
-                        }
-                    } else {
-                        return "批量导入失败";
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            } else if (fileType.equals("xlsx")){
-//                System.out.println("上传的是xlsx");
-                ReadExcelUtils readExcelUtils = new ReadExcelUtils("D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadApi\\api.xlsx");
-                try {
-                    Map<Integer, Map<Integer, Object>> map = readExcelUtils.readExcelContent();
-                    for (Integer key : map.keySet()) {
-                        Map<Integer, Object> line = map.get(key);
-//                        System.out.println(line);
-                        Api api = new Api();
-                        api.setBaseUrl(uploadDTO.getBaseUrl());
-                        api.setProjectName(line.get(0).toString());
-                        api.setApiGroup(line.get(1).toString());
-                        api.setApiName(line.get(2).toString());
-                        api.setApiPath(line.get(3).toString());
-                        api.setReqMethod(line.get(4).toString());
-                        api.setApiDescription(line.get(5).toString());
-                        api.setReqHeaders(line.get(6).toString());
-                        api.setReqQuery(line.get(7).toString());
-                        api.setReqBody(line.get(8).toString());
-                        api.setCaseRules(line.get(9).toString());
-                        api.setApiResponse(line.get(10).toString());
-                        api.setUserId(uploadDTO.getUserId());
-                        apiMapper.insert(api);
-                    }
-                    String deletePath = "D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadApi";
-                    if (!handleFileUtils.delAllFile(deletePath)) {
+        File dest = new File(uploadApiPath + fileName);
+        uploadDTO.getFile().transferTo(dest);
+        String fileType = handleFileUtils.getFileType(fileName);
+        if (fileType.equals("html")) {
+            String[] argument = new String[]{"python", "D://Workspace/IDEA/AutoTest/src/main/resources/static/pyToSql/analysis_html.py", uploadDTO.getUserId().toString(), uploadDTO.getBaseUrl()};
+            try{
+                Process process = Runtime.getRuntime().exec(argument);
+                //java代码中的process.waitFor()返回值为0表示我们调用python脚本成功，
+                //返回值为1表示调用python脚本失败，这和我们通常意义上见到的0与1定义正好相反
+                int re = process.waitFor();
+                //导入成功后删除已保存的api.html文件
+                if (re == 0) {
+                    if (!handleFileUtils.delAllFile(uploadApiPath)) {
                         //插入操作日志
                         insertOperateLogUtils.insertOperateLog(uploadDTO.getUserId(), LogContentEnumUtils.APIIMPORT, OperatePathEnumUtils.APIIMPORT);
                         return "批量导入成功";
                     } else {
                         return "failed";
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else {
+                    return "批量导入失败";
                 }
+            }catch (Exception e){
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else if (fileType.equals("xlsx")){
+            ReadExcelUtils readExcelUtils = new ReadExcelUtils("D:\\Workspace\\IDEA\\AutoTest\\src\\main\\resources\\static\\uploadApi\\api.xlsx");
+            try {
+                Map<Integer, Map<Integer, Object>> map = readExcelUtils.readExcelContent();
+                for (Integer key : map.keySet()) {
+                    Map<Integer, Object> line = map.get(key);
+                    Api api = new Api();
+                    api.setBaseUrl(uploadDTO.getBaseUrl());
+                    api.setProjectName(line.get(0).toString());
+                    api.setApiGroup(line.get(1).toString());
+                    api.setApiName(line.get(2).toString());
+                    api.setApiPath(line.get(3).toString());
+                    api.setReqMethod(line.get(4).toString());
+                    api.setApiDescription(line.get(5).toString());
+                    api.setReqHeaders(line.get(6).toString());
+                    api.setReqQuery(line.get(7).toString());
+                    api.setReqBody(line.get(8).toString());
+                    api.setCaseRules(line.get(9).toString());
+                    api.setApiResponse(line.get(10).toString());
+                    api.setUserId(uploadDTO.getUserId());
+                    apiMapper.insert(api);
+                }
+                if (!handleFileUtils.delAllFile(uploadApiPath)) {
+                    //插入操作日志
+                    insertOperateLogUtils.insertOperateLog(uploadDTO.getUserId(), LogContentEnumUtils.APIIMPORT, OperatePathEnumUtils.APIIMPORT);
+                    return "批量导入成功";
+                } else {
+                    return "failed";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return "批量导入失败";
     }

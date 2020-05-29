@@ -6,11 +6,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by 78089 on 2020/5/21.
+ * 处理接口参数数据
  */
 @Configuration
 public class PutListToTextUtils {

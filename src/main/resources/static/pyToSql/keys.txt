@@ -1,0 +1,8 @@
+username
+password
+userId
+id
+idNumber
+phoneNumber
+email
+role

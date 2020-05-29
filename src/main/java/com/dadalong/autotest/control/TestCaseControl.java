@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 
 @Api(value="/", description = "用例管理下的全部接口")
 @RestController
@@ -66,13 +67,13 @@ public class TestCaseControl {
 
     @ApiOperation(value="查看用例详情",httpMethod = "GET")
     @GetMapping("/detail")
-    public TypedApiResponse detail(DetailDTO detailDTO){
+    public TypedApiResponse detail(DetailDTO detailDTO) throws ParseException {
         return TypedApiResponse.ok().message("detail-success").data(iTestCaseService.detail(detailDTO));
     }
 
     @ApiOperation(value="批量导入用例数据",httpMethod = "POST")
     @PostMapping("/upload")
-    public TypedApiResponse upload(UploadDTO uploadDTO) {
+    public TypedApiResponse upload(UploadDTO uploadDTO) throws Exception{
         String uploadMsg = iTestCaseService.upload(uploadDTO);
         return handleUploadMsgUtils.handleUploadMsgUtils(uploadMsg);
     }

@@ -29,6 +29,11 @@ public class TestCaseWrapper extends QueryWrapper<TestCase> {
         return this;
     }
 
+    /**
+     * 筛选执行状态
+     * @param executeStatus
+     * @return
+     */
     public TestCaseWrapper ofExecuteStatus(Object executeStatus){
         if(executeStatus != null && StringUtils.isNotBlank(executeStatus.toString())){
             this.eq("execute_status",Integer.parseInt(executeStatus.toString()));

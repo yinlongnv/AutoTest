@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dadalong.autotest.model.api.*;
 import com.dadalong.autotest.model.response.ApiListResponse;
 
+import java.io.IOException;
+
 public interface IApiService {
 
     /**
@@ -36,7 +38,7 @@ public interface IApiService {
     /**
      * 批量导入的html或xlsx
      */
-    String upload(UploadDTO uploadDTO);
+    String upload(UploadDTO uploadDTO) throws IOException;
 
     /**
      * 填入参数规则

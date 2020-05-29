@@ -10,6 +10,7 @@ import com.dadalong.autotest.model.testCase.*;
 import com.dadalong.autotest.model.user.CreateOrEditUserDTO;
 
 import java.sql.Date;
+import java.text.ParseException;
 import java.util.List;
 
 
@@ -38,12 +39,12 @@ public interface ITestCaseService {
      * 查看用例详情
      * @param detailDTO
      */
-    TestCaseListResponse detail(DetailDTO detailDTO);
+    TestCaseListResponse detail(DetailDTO detailDTO) throws ParseException;
 
     /**
      * 批量导入xlsx
      */
-    String upload(UploadDTO uploadDTO);
+    String upload(UploadDTO uploadDTO) throws Exception;
 
     /**
      * 执行用例

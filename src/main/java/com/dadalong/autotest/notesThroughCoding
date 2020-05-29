@@ -1,3 +1,5 @@
+springboot已经自动配置了支持mongodb，在启动springboot时会自动实例化一个mongo实例，需要禁用springboot自带的配置。
+
 StringUtils中 isNotEmpty 和isNotBlank的区别:
 isNotEmpty ：
 判断某字符串是否非空
