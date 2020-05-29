@@ -4,10 +4,12 @@ import sys
 
 
 class PairWiseUtils:
-    # 1、笛卡尔积 对参数分组全排列
+    # 1、笛卡尔积：对参数分组全组合排列处理
     @staticmethod
     def product(params):
         new_list = []
+        # itertools.product(iterable) 执行笛卡尔积
+        # 遍历
         for x in eval('itertools.product' + str(tuple(params))):
             new_list.append(x)
         return new_list
@@ -27,7 +29,6 @@ class PairWiseUtils:
     # 3、进行pairwise算法计算
     def pairwise(self, all_param, pair_len):
         product_list = self.product(all_param)  # product_list笛卡尔积全排列组合的测试用例
-        # self.pprint(product_list)
         # print ('笛卡尔积全排列组合数量：',len(product_list),'--'*11)
         pw_list = self.get_pairs_list(product_list, pair_len)  # pw_list对测试用例结对拆分后的二维列表
         sub_list_len = len(pw_list[1])  # sub_list_len每个测试用例拆分后一维列表长度
@@ -35,7 +36,6 @@ class PairWiseUtils:
         temp_list = copy.deepcopy(pw_list)  # 【有效组】的原始值与pw_list相同
         del_menu = []  # 无效测试用例编号列表
         hold_menu = []  # 有效测试用例编号列表
-        # self.pprint (pw_list)
         # print ('--'*7,'有效测试用例计算结果','--'*7)
         for cow in pw_list:  # 一维遍历，等同于二维数组按照行遍历
             for column in cow:  # 二维遍历，等同二维数组中任意一行按照‘列’横向遍历
@@ -43,7 +43,7 @@ class PairWiseUtils:
                     x = cow.index(column)  # 待校验元素的横坐标
                     # y = pw_list.index(cow)  # 待校验元素的纵坐标
                     # 有效组中行不能是当前要对比元素所在的行，
-                    # 且带对比元素与【有效组】的行temp_list_cow中的坐标x元素相同，
+                    # 且待对比元素与【有效组】的行temp_list_cow中的坐标x元素相同，
                     # 则认为对比成功，跳出第三层for循环。
                     if temp_list_cow != cow and column == temp_list_cow[x]:
                         flag[x] = 1  # 1表示对比成功

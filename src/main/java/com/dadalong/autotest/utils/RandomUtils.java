@@ -1,6 +1,5 @@
 package com.dadalong.autotest.utils;
 
-import io.swagger.models.auth.In;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,6 +16,7 @@ public class RandomUtils {
     private int getNum(int start, int end) {
         return (int) (Math.random() * (end - start + 1) + start);
     }
+
     /**
      * 随机生成手机号
      */
@@ -35,7 +35,6 @@ public class RandomUtils {
      * @return
      */
     public String getEmailRandom() {
-
         String[] email_suffix = "@gmail.com,@yahoo.com,@msn.com,@hotmail.com,@aol.com,@ask.com,@live.com,@qq.com,@0355.net,@163.com,@163.net,@263.net,@3721.net,@yeah.net,@googlemail.com,@126.com,@sina.com,@sohu.com,@yahoo.com.cn".split(",");
         String base = "abcdefghijklmnopqrstuvwxyz0123456789";
         StringBuffer sb = new StringBuffer();
@@ -85,32 +84,6 @@ public class RandomUtils {
         // 拼接身份证号码
         id = province + city + county + birth + no + check;
         return id;
-    }
-
-    /**
-     * 获取随机密码
-     * @param min
-     * @param max
-     * @return
-     */
-    public List<String> getPasswordRandom(int min, int max) {
-        List<Integer> integers = makeRangeList(min, max);
-        List<String> stringList = new ArrayList<>();
-        for (Integer i : integers) {
-            String result = makeRandomPassword(i);
-            stringList.add(result);
-        }
-        return stringList;
-    }
-    //随机密码生成
-    public String makeRandomPassword(int len){
-        char charr[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~!@#$%^&*.?".toCharArray();
-        StringBuilder sb = new StringBuilder();
-        Random r = new Random();
-        for (int x = 0; x < len; ++x) {
-            sb.append(charr[r.nextInt(charr.length)]);
-        }
-        return sb.toString();
     }
 
     /**
@@ -167,6 +140,33 @@ public class RandomUtils {
         integers.add(a);
         integers.add(b);
         return integers;
+    }
+
+    /**
+     * 获取随机密码
+     * @param min
+     * @param max
+     * @return
+     */
+    public List<String> getPasswordRandom(int min, int max) {
+        List<Integer> integers = makeRangeList(min, max);
+        List<String> stringList = new ArrayList<>();
+        for (Integer i : integers) {
+            String result = makeRandomPassword(i);
+            stringList.add(result);
+        }
+        return stringList;
+    }
+
+    //随机密码生成
+    public String makeRandomPassword(int len){
+        char charr[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~!@#$%^&*.?".toCharArray();
+        StringBuilder sb = new StringBuilder();
+        Random r = new Random();
+        for (int x = 0; x < len; ++x) {
+            sb.append(charr[r.nextInt(charr.length)]);
+        }
+        return sb.toString();
     }
 
     /**

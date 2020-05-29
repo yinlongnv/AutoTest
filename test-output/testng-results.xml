@@ -2,32 +2,32 @@
 <testng-results skipped="0" failed="0" ignored="0" total="2" passed="2">
   <reporter-output>
   </reporter-output>
-  <suite name="演训产品中心API接口测试套件" duration-ms="733" started-at="2020-05-23T18:04:50 CST" finished-at="2020-05-23T18:04:51 CST">
+  <suite name="演训产品中心API接口测试套件" duration-ms="1477" started-at="2020-05-29T21:48:32 CST" finished-at="2020-05-29T21:48:33 CST">
     <groups>
     </groups>
-    <test name="演训产品中心API接口测试用例" duration-ms="733" started-at="2020-05-23T18:04:50 CST" finished-at="2020-05-23T18:04:51 CST">
+    <test name="演训产品中心API接口测试用例" duration-ms="1477" started-at="2020-05-29T21:48:32 CST" finished-at="2020-05-29T21:48:33 CST">
       <class name="com.dadalong.autotest.testng.TestCases">
-        <test-method status="PASS" signature="testGet(java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@52cc2fa8]" name="testGet" duration-ms="498" started-at="2020-05-23T18:04:51 CST" finished-at="2020-05-23T18:04:51 CST">
+        <test-method status="PASS" signature="testGet(java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@1b189788]" name="testGet" duration-ms="1298" started-at="2020-05-29T21:48:32 CST" finished-at="2020-05-29T21:48:33 CST">
           <params>
             <param index="0">
               <value>
-                <![CDATA[http://localhost:9001/api/detail?id=12&userId=1]]>
+                <![CDATA[http://localhost:9001/api/filterMap]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testGet -->
-        <test-method status="PASS" signature="testPost(java.lang.String, java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@52cc2fa8]" name="testPost" duration-ms="137" started-at="2020-05-23T18:04:51 CST" finished-at="2020-05-23T18:04:51 CST">
+        <test-method status="PASS" signature="testPost(java.lang.String, java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestCases@1b189788]" name="testPost" duration-ms="95" started-at="2020-05-29T21:48:33 CST" finished-at="2020-05-29T21:48:33 CST">
           <params>
             <param index="0">
               <value>
-                <![CDATA[http://localhost:9001/user/login]]>
+                <![CDATA[http://localhost:9001/user/createOrEdit]]>
               </value>
             </param>
             <param index="1">
               <value>
-                <![CDATA[{"username":"大大龙","password":"123456","lastIp":"127.0.0.1"}]]>
+                <![CDATA[{"password":"EdgqaY","phoneNumber":"13305911981","role":0,"id":101,"idNumber":"310732200305272265","userId":21,"email":"zub88nuvad@sina.com","username":"K"}]]>
               </value>
             </param>
           </params>

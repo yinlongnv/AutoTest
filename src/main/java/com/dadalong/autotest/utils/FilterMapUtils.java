@@ -34,7 +34,7 @@ public class FilterMapUtils {
     private UserMapper userMapper;
 
     /**
-     * 提取“所属业务+环境域名-所属分组-接口名称+接口路径”级联筛选
+     * 提取“所属业务+环境域名-所属分组-接口名称 接口路径”级联筛选
      * @return
      */
     public FilterMapResponse filterMap() {
@@ -136,15 +136,17 @@ public class FilterMapUtils {
     public List<CaseRules> getReqBodyOrCaseRules (Integer apiId) {
         List<Api> apiList = apiMapper.selectList(new ApiWrapper().eq("req_method", "POST")
                 .like("api_path", "create")
-                .or().like("api_path", "update"));
+                .or().like("api_path", "update")
+                .or().like("api_path", "store"));
         for (Api api : apiList) {
             if (api.getId().equals(apiId)) {
+                // 有用例规则优先显示用例规则，无用例规则显示请求体
                 if (api.getCaseRules()!=null && StringUtils.isNotBlank(api.getCaseRules())) {
                     String jsonStringCaseRules =  api.getCaseRules();
-                    return jsonArrayToCaseRules(jsonStringCaseRules);
+                    return jsonStringToJsonArray(jsonStringCaseRules);
                 } else if (api.getReqBody()!=null && api.getReqBody()!="[]") {
                     String jsonStringReqBody = api.getReqBody();
-                    return jsonArrayToCaseRules(jsonStringReqBody);
+                    return jsonStringToJsonArray(jsonStringReqBody);
                 }
             }
         }
@@ -152,11 +154,11 @@ public class FilterMapUtils {
     }
 
     /**
-     * 将用例规则字符串转换成json数组
+     * 将字符串转换成json数组
      * @param jsonString
      * @return
      */
-    public List<CaseRules> jsonArrayToCaseRules(String jsonString) {
+    public List<CaseRules> jsonStringToJsonArray(String jsonString) {
         List<CaseRules> caseRulesList = new ArrayList<>();
         JsonArray jsonArray = new JsonParser().parse(jsonString).getAsJsonArray();
         CaseRules caseRules;

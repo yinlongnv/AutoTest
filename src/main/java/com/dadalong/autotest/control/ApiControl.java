@@ -118,7 +118,7 @@ public class ApiControl {
         if (caseRulesList != null && StringUtils.isNotBlank(caseRulesList.toString())) {
             return TypedApiResponse.ok().message("getReqQueryOrBody-success").data(caseRulesList);
         } else {
-            return TypedApiResponse.error().message("该接口不符合条件，请直接创建测试用例");
+            return TypedApiResponse.error().message("该接口不符合条件，请直接创建或导入测试用例");
         }
     }
 

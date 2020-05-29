@@ -73,5 +73,13 @@ strings.addAll(Arrays.asList(strArr));
 Myclass myclass = JSONObject.parseObject(jsonStr , Myclass.class);// jsonStr 是String类型。
 数组转字符串：
 
-
+pairwise：
+iterable：可迭代序列，可被遍历的结构；
+tuple(iterable)：将可迭代序列转换成元组形式，类似(1, 2, 3, 4)；
+str()：转换成字符串；
+eval()：执行字符串表达式，并返回表达式的值；
+itertools.product(iterable)：对可迭代序列进行笛卡尔积全组合排列处理；
+itertools.combinations(iterable, r)：创建一个迭代器，返回iterable中所有长度为r的子序列，返回的子序列中的项按输入iterable中的顺序排序；
+copy.deepcopy(iterable)：深拷贝
+list.index(x[, start[, end]])：x——查找的对象；start——可选，查找的起始位置；end——可选，查找的结束位置。
 

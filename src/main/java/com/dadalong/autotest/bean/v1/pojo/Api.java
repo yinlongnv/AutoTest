@@ -65,6 +65,10 @@ public class Api extends Datetime{
      */
     private String caseRules;
     /**
+     * 设置参数规则的次数
+     */
+    private Integer setCasesCount;
+    /**
      * 响应信息
      */
     private String apiResponse;

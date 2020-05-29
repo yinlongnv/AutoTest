@@ -12,10 +12,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class RouterUtils implements WebMvcConfigurer {
 
     @Value("${html-path}")
-    String htmlPath;
+    String path;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/htmlReports/**").addResourceLocations( "file:" + htmlPath);
+        registry.addResourceHandler("/htmlReports/**").addResourceLocations( "file:" + path);
     }
 }

@@ -218,6 +218,7 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
         Api api = apiMapper.selectById(caseRulesDTO.getApiId());
         JSONArray jsonArray= JSONArray.parseArray(JSON.toJSONString(caseRulesDTO.getCaseRulesList()));
         api.setCaseRules(jsonArray.toString());
+        api.setSetCasesCount(api.getSetCasesCount()+1);
         apiMapper.updateById(api);
         // 插入操作日志
         insertOperateLogUtils.insertOperateLog(caseRulesDTO.getUserId(), LogContentEnumUtils.CASERULES, OperatePathEnumUtils.CASERULES);
@@ -232,24 +233,24 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
         List<String> keys = new ArrayList<>();
         // 根据参数规则随机生成测试数据
         for (CaseRules caseRules : caseRulesDTO.getCaseRulesList()) {
-            keys.add(caseRules.getName());
+            keys.add(caseRules.getName());// 收集每一个参数名key
             if (caseRules.getMin()!=null||caseRules.getMax()!=null) {
                 if (caseRules.getMin() == null||caseRules.getMin() == "") {
-                    caseRules.setMin("1");
+                    caseRules.setMin("1");// 未填按最小值1对待
                 }
                 if (caseRules.getMax() == null||caseRules.getMax() == "") {
-                    caseRules.setMax("999");
+                    caseRules.setMax("999");// 未填按最大值999对待
                 }
                 if (caseRules.getType().equals("int")) {
                     List<String> integers = randomUtils.getIntegerRandom(Integer.parseInt(caseRules.getMin()), Integer.parseInt(caseRules.getMax()));
                     params.add(integers);
                 } else if (caseRules.getType().equals("string")) {
-                    List<String> strings;
-                    if (caseRules.getName().contains("password")) {
-                        strings = randomUtils.getPasswordRandom(Integer.parseInt(caseRules.getMin()), Integer.parseInt(caseRules.getMax()));
-                    } else {
-                        strings = randomUtils.getStringOrOtherRandom(Integer.parseInt(caseRules.getMin()), Integer.parseInt(caseRules.getMax()));
-                    }
+                    List<String> strings = randomUtils.getStringOrOtherRandom(Integer.parseInt(caseRules.getMin()), Integer.parseInt(caseRules.getMax()));
+//                    if (caseRules.getName().contains("password")) {
+//                        strings = randomUtils.getPasswordRandom(Integer.parseInt(caseRules.getMin()), Integer.parseInt(caseRules.getMax()));
+//                    } else {
+//                        strings = randomUtils.getStringOrOtherRandom(Integer.parseInt(caseRules.getMin()), Integer.parseInt(caseRules.getMax()));
+//                    }
                     params.add(strings);
                 }
             } else if (caseRules.getOptions()!=null) {
@@ -293,19 +294,19 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
             InputStreamReader ir = new InputStreamReader(process.getInputStream());
             LineNumberReader input = new LineNumberReader(ir);
             String result = input.readLine();
-
+            // 处理生成后的测试用例
             String[] sp = result.split(";");
             String[] wp = Arrays.copyOfRange(sp,1,sp.length);// 除去切分时候的一个空格
             List<JSONObject> jsonObjectList = new ArrayList<>();
             for (String s : wp) {
-                JSONObject jon = JSONObject.parseObject(s);
-                for(String key : jon.keySet()){
+                JSONObject jsonObject = JSONObject.parseObject(s);
+                for(String key : jsonObject.keySet()){
                     if(judgeInt.get(key)){
-                        int num = Integer.valueOf(jon.get(key).toString());
-                        jon.put(key,num);
+                        int num = Integer.valueOf(jsonObject.get(key).toString());
+                        jsonObject.put(key,num);
                     }
                 }
-                jsonObjectList.add(jon);
+                jsonObjectList.add(jsonObject);
             }
             input.close();
             ir.close();
@@ -313,6 +314,12 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
             // py 执行成功返回0，继续处理存入case表
             if (re == 0) {
                 Api api = apiMapper.selectById(caseRulesDTO.getApiId());
+                System.out.println("设置参数规则次数：" + api.getSetCasesCount());
+                if (api.getSetCasesCount()>0) {
+                    // 删除原先设置参数规则后生成的测试用例
+//                    List<TestCase> testCaseList = testCaseMapper.selectList(new TestCaseWrapper().eq("api_id", api.getId()));
+                    testCaseMapper.delete(new TestCaseWrapper().eq("api_id", api.getId()));
+                }
                 String apiResponse = api.getApiResponse();
                 String apiName = api.getApiName();
                 int code = 1;
@@ -325,6 +332,7 @@ public class ApiServiceImpl extends ServiceImpl<ApiMapper,Api> implements IApiSe
                     String caseDescription = apiName + "case" + code;
                     testCase.setCaseDescription(caseDescription);
                     testCase.setCaseBody(jsonObject.toString());
+                    // 插入新增的自动生成的测试用例
                     testCaseMapper.insert(testCase);
                     code ++;
                 }
