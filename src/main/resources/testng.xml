@@ -11,7 +11,8 @@
 <!--                    <include name="logTest1"/>-->
 <!--                </methods>-->
 <!--            </class>-->
-            <class name="com.dadalong.autotest.testng.TestCases" />
+            <class name="com.dadalong.autotest.testng.TestGet" />
+            <class name="com.dadalong.autotest.testng.TestPost" />
         </classes>
     </test>
 

@@ -6,14 +6,14 @@
   </listeners>
   <test thread-count="5" name="演训产品中心API接口测试用例(failed)">
     <classes>
-      <class name="com.dadalong.autotest.testng.TestCases">
-        <parameter name="getUrl" value="http://localhost:9001/case/detail?userId=1"/>
-        <parameter name="postUrl" value="http://localhost:9001/user/login"/>
-        <parameter name="postData" value="{&quot;username&quot;:&quot;大大龙&quot;,&quot;password&quot;:&quot;123456&quot;,&quot;lastIp&quot;:&quot;127.0.0.1&quot;}"/>
+      <class name="com.dadalong.autotest.testng.TestPost">
+        <parameter name="postUrl" value="http://localhost:9001/user/createOrEdit"/>
+        <parameter name="headersString" value="[{&#039;name&#039;: &#039;Content-Type&#039;, &#039;value&#039;: &#039;application/json&#039;, &#039;required&#039;: &#039;1&#039;},{&#039;name&#039;: &#039;Accept&#039;, &#039;value&#039;: &#039;application/json&#039;, &#039;required&#039;: &#039;1&#039;}]"/>
+        <parameter name="postData" value="{&quot;password&quot;:&quot;EdgqaY&quot;,&quot;phoneNumber&quot;:&quot;13305911981&quot;,&quot;role&quot;:0,&quot;id&quot;:101,&quot;idNumber&quot;:&quot;310732200305272265&quot;,&quot;userId&quot;:21,&quot;email&quot;:&quot;zub88nuvad@sina.com&quot;,&quot;username&quot;:&quot;K&quot;}"/>
         <methods>
-          <include name="testGet" invocation-numbers="0"/>
+          <include name="testPost" invocation-numbers="0"/>
         </methods>
-      </class> <!-- com.dadalong.autotest.testng.TestCases -->
+      </class> <!-- com.dadalong.autotest.testng.TestPost -->
     </classes>
   </test> <!-- 演训产品中心API接口测试用例(failed) -->
 </suite> <!-- Failed suite [演训产品中心API接口测试套件] -->

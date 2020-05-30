@@ -9,11 +9,72 @@
 <table>
 <tr><th>Test</th><th># Passed</th><th># Skipped</th><th># Retried</th><th># Failed</th><th>Time (ms)</th><th>Included Groups</th><th>Excluded Groups</th></tr>
 <tr><th colspan="8">演训产品中心API接口测试套件</th></tr>
-<tr><td><a href="#t0">演训产品中心API接口测试用例</a></td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">1,477</td><td></td><td></td></tr>
+<tr><td><a href="#t0">演训产品中心API接口测试用例</a></td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num attn">1</td><td class="num">100</td><td></td><td></td></tr>
 </table>
-<table id='summary'><thead><tr><th>Class</th><th>Method</th><th>Start</th><th>Time (ms)</th></tr></thead><tbody><tr><th colspan="4">演训产品中心API接口测试套件</th></tr></tbody><tbody id="t0"><tr><th colspan="4">演训产品中心API接口测试用例 &#8212; passed</th></tr><tr class="passedeven"><td rowspan="2">com.dadalong.autotest.testng.TestCases</td><td><a href="#m0">testGet</a></td><td rowspan="1">1590760112289</td><td rowspan="1">1298</td></tr><tr class="passedeven"><td><a href="#m1">testPost</a></td><td rowspan="1">1590760113594</td><td rowspan="1">95</td></tr></tbody>
+<table id='summary'><thead><tr><th>Class</th><th>Method</th><th>Start</th><th>Time (ms)</th></tr></thead><tbody><tr><th colspan="4">演训产品中心API接口测试套件</th></tr></tbody><tbody id="t0"><tr><th colspan="4">演训产品中心API接口测试用例 &#8212; failed</th></tr><tr class="failedeven"><td rowspan="1">com.dadalong.autotest.testng.TestPost</td><td><a href="#m0">testPost</a></td><td rowspan="1">1590803575004</td><td rowspan="1">99</td></tr></tbody>
 </table>
-<h2>演训产品中心API接口测试用例</h2><h3 id="m0">com.dadalong.autotest.testng.TestCases#testGet</h3><table class="result"><tr class="param"><th>Parameter #1</th></tr><tr class="param stripe"><td>http://localhost:9001/api/filterMap</td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
-<h3 id="m1">com.dadalong.autotest.testng.TestCases#testPost</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr><tr class="param stripe"><td>http://localhost:9001/user/createOrEdit</td><td>{&quot;password&quot;:&quot;EdgqaY&quot;,&quot;phoneNumber&quot;:&quot;13305911981&quot;,&quot;role&quot;:0,&quot;id&quot;:101,&quot;idNumber&quot;:&quot;310732200305272265&quot;,&quot;userId&quot;:21,&quot;email&quot;:&quot;zub88nuvad@sina.com&quot;,&quot;username&quot;:&quot;K&quot;}</td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h2>演训产品中心API接口测试用例</h2><h3 id="m0">com.dadalong.autotest.testng.TestPost#testPost</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>http://localhost:9001/user/createOrEdit</td><td>{&quot;password&quot;:&quot;EdgqaY&quot;,&quot;phoneNumber&quot;:&quot;13305911981&quot;,&quot;role&quot;:0,&quot;id&quot;:101,&quot;idNumber&quot;:&quot;310732200305272265&quot;,&quot;userId&quot;:21,&quot;email&quot;:&quot;zub88nuvad@sina.com&quot;,&quot;username&quot;:&quot;K&quot;}</td><td>[{&apos;name&apos;: &apos;Content-Type&apos;, &apos;value&apos;: &apos;application/json&apos;, &apos;required&apos;: &apos;1&apos;},{&apos;name&apos;: &apos;Accept&apos;, &apos;value&apos;: &apos;application/json&apos;, &apos;required&apos;: &apos;1&apos;}]</td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">java.lang.AssertionError: expected [00000] but found [40500]
+	at com.dadalong.autotest.testng.TestPost.testPost(TestPost.java:24)
+	at java.util.ArrayList.forEach(ArrayList.java:1257)
+	at com.dadalong.autotest.service.impl.TestCaseServiceImpl.execute(TestCaseServiceImpl.java:282)
+	at com.dadalong.autotest.service.impl.TestCaseServiceImpl$$FastClassBySpringCGLIB$$34dd9cc0.invoke(&lt;generated&gt;)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:771)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:366)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:118)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
+	at com.dadalong.autotest.service.impl.TestCaseServiceImpl$$EnhancerBySpringCGLIB$$e5412c98.execute(&lt;generated&gt;)
+	at com.dadalong.autotest.control.TestCaseControl.execute(TestCaseControl.java:90)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:105)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:879)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:793)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1040)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:943)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:660)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:373)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:868)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1594)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Thread.java:748)
+... Removed 33 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
 </body>
 </html>

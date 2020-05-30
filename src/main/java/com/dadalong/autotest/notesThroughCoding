@@ -83,3 +83,23 @@ itertools.combinations(iterable, r)：创建一个迭代器，返回iterable中�
 copy.deepcopy(iterable)：深拷贝
 list.index(x[, start[, end]])：x——查找的对象；start——可选，查找的起始位置；end——可选，查找的结束位置。
 
+//        XmlSuite suite = new XmlSuite();
+//        suite.setName("演训产品中心API接口测试套件");
+//        XmlTest test = new XmlTest(suite);
+//        test.setName("演训产品中心API接口测试用例");
+//        List<XmlClass> classes = new ArrayList<>();
+//        XmlClass xmlClass = new XmlClass("com.dadalong.autotest.testng.TestCases");
+//        String postData = "{\"username\":\"大大龙\",\"password\":\"123456\",\"lastIp\":\"127.0.0.1\"}";
+//        String postUrl = "http://localhost:9001/user/login";
+//        Map<String, String> map = new HashMap<>();
+//        map.put("postUrl", postUrl);
+//        map.put("postData", postData);
+//        xmlClass.setParameters(map);
+//        classes.add(xmlClass);
+//        test.setXmlClasses(classes);
+//        suite.addListener("com.dadalong.autotest.utils.ExtentTestNGIReportListenerUtils");
+//        List<XmlSuite> suites = new ArrayList<XmlSuite>();
+//        suites.add(suite);
+//        TestNG testNG = new TestNG();
+//        testNG.setXmlSuites(suites);
+//        testNG.run();

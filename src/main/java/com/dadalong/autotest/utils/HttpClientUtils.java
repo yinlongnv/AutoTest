@@ -1,5 +1,8 @@
 package com.dadalong.autotest.utils;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -9,6 +12,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,7 +57,7 @@ public class HttpClientUtils {
     /**
      * http post
      * */
-    public static String post(String url, String data, Map<String, String> heads){
+    public String post(String url, String data, Map<String, String> heads){
         org.apache.http.client.HttpClient httpClient = HttpClients.createDefault();
         HttpResponse httpResponse;
         String result = "";
@@ -76,5 +80,22 @@ public class HttpClientUtils {
             e.printStackTrace();
         }
         return  result;
+    }
+
+    public Map<String, String> changeHeadersStringToMap(String headersString) {
+        Map<String, String> headersMap = new HashMap<>();
+        if (StringUtils.isNotBlank(headersString)) {
+            System.out.println("headersString2：" + headersString);
+            JSONArray jsonArray = JSONArray.parseArray(headersString);
+            System.out.println("jsonArray" + jsonArray);
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                headersMap.put(jsonObject.get("name").toString(), jsonObject.get("value").toString());
+            }
+            System.out.println("map：" + headersMap);
+        } else {
+            headersMap.put("Content-Type", "application/json");
+        }
+        return headersMap;
     }
 }

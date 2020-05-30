@@ -105,13 +105,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
                 return "用户名已存在";
             }
         } else {
-            if (userMapper.selectCount(userWrapper.ne("id", createOrEditUserDTO.getId()).eq("username", createOrEditUserDTO.getUsername())) == 0){
-                //插入操作日志
-                insertOperateLogUtils.insertOperateLog(createOrEditUserDTO.getUserId(), LogContentEnumUtils.USEREDIT, OperatePathEnumUtils.USEREDIT);
-                userMapper.updateById(user);
-                return "编辑成功";
+            if (userMapper.selectOne(new UserWrapper().eq("id", createOrEditUserDTO.getId())) == null) {
+                return "该用户不存在";
             } else {
-                return "用户名已存在";
+                if (userMapper.selectCount(userWrapper.ne("id", createOrEditUserDTO.getId()).eq("username", createOrEditUserDTO.getUsername())) == 0){
+                    //插入操作日志
+                    insertOperateLogUtils.insertOperateLog(createOrEditUserDTO.getUserId(), LogContentEnumUtils.USEREDIT, OperatePathEnumUtils.USEREDIT);
+                    userMapper.updateById(user);
+                    return "编辑成功";
+                } else {
+                    return "用户名已存在";
+                }
             }
         }
     }
