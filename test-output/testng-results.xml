@@ -2,12 +2,12 @@
 <testng-results skipped="0" failed="1" ignored="0" total="1" passed="0">
   <reporter-output>
   </reporter-output>
-  <suite name="演训产品中心API接口测试套件" duration-ms="100" started-at="2020-05-30T09:52:55 CST" finished-at="2020-05-30T09:52:55 CST">
+  <suite name="演训产品中心API接口测试套件" duration-ms="10457" started-at="2020-05-30T16:17:38 CST" finished-at="2020-05-30T16:17:48 CST">
     <groups>
     </groups>
-    <test name="演训产品中心API接口测试用例" duration-ms="100" started-at="2020-05-30T09:52:55 CST" finished-at="2020-05-30T09:52:55 CST">
+    <test name="演训产品中心API接口测试用例" duration-ms="10457" started-at="2020-05-30T16:17:38 CST" finished-at="2020-05-30T16:17:48 CST">
       <class name="com.dadalong.autotest.testng.TestPost">
-        <test-method status="FAIL" signature="testPost(java.lang.String, java.lang.String, java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestPost@6dd91380]" name="testPost" duration-ms="99" started-at="2020-05-30T09:52:55 CST" finished-at="2020-05-30T09:52:55 CST">
+        <test-method status="FAIL" signature="testPost(java.lang.String, java.lang.String, java.lang.String)[pri:0, instance:com.dadalong.autotest.testng.TestPost@51b7028f]" name="testPost" duration-ms="10011" started-at="2020-05-30T16:17:38 CST" finished-at="2020-05-30T16:17:48 CST">
           <params>
             <param index="0">
               <value>
@@ -16,7 +16,7 @@
             </param>
             <param index="1">
               <value>
-                <![CDATA[{"password":"EdgqaY","phoneNumber":"13305911981","role":0,"id":101,"idNumber":"310732200305272265","userId":21,"email":"zub88nuvad@sina.com","username":"K"}]]>
+                <![CDATA[{"password":"KYifcad9ruq","phoneNumber":"15006476775","role":0,"id":101,"idNumber":"320626195409145390","userId":0,"email":"fcjojgoee2@msn.com","username":"a"}]]>
               </value>
             </param>
             <param index="2">
@@ -25,18 +25,21 @@
               </value>
             </param>
           </params>
-          <exception class="java.lang.AssertionError">
+          <exception class="com.alibaba.fastjson.JSONException">
             <message>
-              <![CDATA[expected [00000] but found [40500]]]>
+              <![CDATA[syntax error, expect {, actual EOF, pos 0]]>
             </message>
             <full-stacktrace>
-              <![CDATA[java.lang.AssertionError: expected [00000] but found [40500]
-at org.testng.Assert.fail(Assert.java:97)
-at org.testng.Assert.assertEqualsImpl(Assert.java:136)
-at org.testng.Assert.assertEquals(Assert.java:118)
-at org.testng.Assert.assertEquals(Assert.java:575)
-at org.testng.Assert.assertEquals(Assert.java:585)
-at com.dadalong.autotest.testng.TestPost.testPost(TestPost.java:24)
+              <![CDATA[com.alibaba.fastjson.JSONException: syntax error, expect {, actual EOF, pos 0
+at com.alibaba.fastjson.parser.deserializer.JavaBeanDeserializer.deserialze(JavaBeanDeserializer.java:232)
+at com.alibaba.fastjson.parser.deserializer.ASMJavaBeanDeserializer.parseRest(ASMJavaBeanDeserializer.java:100)
+at Fastjson_ASM_ApiResponse_10.deserialze(Unknown Source)
+at com.alibaba.fastjson.parser.DefaultJSONParser.parseObject(DefaultJSONParser.java:551)
+at com.alibaba.fastjson.JSON.parseObject(JSON.java:251)
+at com.alibaba.fastjson.JSON.parseObject(JSON.java:227)
+at com.alibaba.fastjson.JSON.parseObject(JSON.java:186)
+at com.alibaba.fastjson.JSON.parseObject(JSON.java:304)
+at com.dadalong.autotest.testng.TestPost.testPost(TestPost.java:23)
 at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -73,7 +76,7 @@ at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(Tra
 at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
 at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:749)
 at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:691)
-at com.dadalong.autotest.service.impl.TestCaseServiceImpl$$EnhancerBySpringCGLIB$$e5412c98.execute(<generated>)
+at com.dadalong.autotest.service.impl.TestCaseServiceImpl$$EnhancerBySpringCGLIB$$8b134745.execute(<generated>)
 at com.dadalong.autotest.control.TestCaseControl.execute(TestCaseControl.java:90)
 at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
@@ -127,7 +130,7 @@ at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.jav
 at java.lang.Thread.run(Thread.java:748)
 ]]>
             </full-stacktrace>
-          </exception> <!-- java.lang.AssertionError -->
+          </exception> <!-- com.alibaba.fastjson.JSONException -->
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testPost -->
